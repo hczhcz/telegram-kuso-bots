@@ -240,6 +240,24 @@ bot.onText(/^\/flee/, (msg, match) => {
     }
 });
 
+bot.onText(/^\/smite/, (msg, match) => {
+    if (games[msg.chat.id]) {
+        const game = games[msg.chat.id];
+
+        if (game.time <= 0) {
+            // TODO: get user id from message?
+            // flee(msg, match);
+        } else {
+            bot.sendMessage(
+                msg.chat.id,
+                (msg.from.first_name || msg.from.last_name) + ' 把性伴侣踢下了床'
+            );
+        }
+    } else {
+        na(msg, match);
+    }
+});
+
 bot.onText(/^\/forcestart/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
