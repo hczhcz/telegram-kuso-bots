@@ -203,11 +203,18 @@ bot.onText(/^\/startthreesome/, (msg, match) => {
     }
 });
 
-bot.onText(/^\/extend ([+\-]?\d{1,3})/, (msg, match) => {
+bot.onText(/^\/extend ([+\-]?\d{1,4})/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
         const num = parseInt(match[1], 10);
+
+        if (num > 300) {
+            num = 300;
+        }
+        if (num < -300) {
+            num = -300;
+        }
 
         if (game.time <= 0) {
             game.time -= num;
@@ -225,6 +232,9 @@ bot.onText(/^\/extend ([+\-]?\d{1,3})/, (msg, match) => {
             );
         } else {
             game.total += num;
+            if (game.time < 1) {
+                game.time = 1;
+            }
 
             // TODO: check user
             if (num > 0) {
@@ -361,12 +371,14 @@ setInterval(() => {
                 }
 
                 break;
-            case game.total:
-                finish({
-                    chat: {
-                        id: i,
-                    }
-                }, []);
+        }
+
+        if (game.time >= game.total) {
+            finish({
+                chat: {
+                    id: i,
+                }
+            }, []);
         }
 
         game.time += 1;
