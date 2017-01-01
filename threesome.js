@@ -203,7 +203,7 @@ bot.onText(/^\/startthreesome/, (msg, match) => {
     }
 });
 
-bot.onText(/^\/extend ([+\-]?\d+)/, (msg, match) => {
+bot.onText(/^\/extend ([+\-]?\d{1,3})/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -221,7 +221,7 @@ bot.onText(/^\/extend ([+\-]?\d+)/, (msg, match) => {
             bot.sendMessage(
                 msg.chat.id,
                 '续命成功！'
-                    + '剩余 ' + game.time + ' 秒 /join'
+                    + '剩余 ' + (-game.time) + ' 秒 /join'
             );
         } else {
             game.total += num;
@@ -236,7 +236,7 @@ bot.onText(/^\/extend ([+\-]?\d+)/, (msg, match) => {
             } else {
                 bot.sendMessage(
                     msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + '被吓软了'
+                    (msg.from.first_name || msg.from.last_name) + ' 被吓软了'
                 );
             }
         }
