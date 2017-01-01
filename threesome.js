@@ -124,6 +124,7 @@ bot.onText(/^\/startmasturbate/, (msg, match) => {
             modemin: 1,
             modemax: 1,
             time: -300,
+            total: 60,
         };
 
         bot.sendMessage(
@@ -153,6 +154,7 @@ bot.onText(/^\/startsex/, (msg, match) => {
             modemin: 2,
             modemax: 2,
             time: -300,
+            total: 90,
         };
 
         bot.sendMessage(
@@ -184,6 +186,7 @@ bot.onText(/^\/startthreesome/, (msg, match) => {
             modemin: 3,
             modemax: 3,
             time: -300,
+            total: 120,
         };
 
         bot.sendMessage(
@@ -200,6 +203,48 @@ bot.onText(/^\/startthreesome/, (msg, match) => {
     }
 });
 
+bot.onText(/^\/extend ([+\-]?\d+)/, (msg, match) => {
+    if (games[msg.chat.id]) {
+        const game = games[msg.chat.id];
+
+        const num = parseInt(match[1], 10);
+
+        if (game.time <= 0) {
+            game.time -= num;
+            if (game.time < -600) {
+                game.time = -600;
+            }
+            if (game.time > 0) {
+                game.time = 0;
+            }
+
+            bot.sendMessage(
+                msg.chat.id,
+                '续命成功！'
+                    + '剩余 ' + game.time + ' 秒 /join'
+            );
+        } else {
+            game.total += num;
+
+            // TODO: check user
+            if (num > 0) {
+                bot.sendMessage(
+                    msg.chat.id,
+                    (msg.from.first_name || msg.from.last_name) + ' 用力一挺，'
+                        + '棒棒变得更坚硬了'
+                );
+            } else {
+                bot.sendMessage(
+                    msg.chat.id,
+                    (msg.from.first_name || msg.from.last_name) + '被吓软了'
+                );
+            }
+        }
+    } else {
+        na(msg, match);
+    }
+});
+
 bot.onText(/^\/join/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
@@ -211,7 +256,7 @@ bot.onText(/^\/join/, (msg, match) => {
             if (!game.users[msg.from.id]) {
                 bot.sendMessage(
                     msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 按耐不住，'
+                    (msg.from.first_name || msg.from.last_name) + ' 按捺不住，'
                         + '强行插入了这场' + game.modename
                 );
             }
@@ -228,6 +273,7 @@ bot.onText(/^\/flee/, (msg, match) => {
         if (game.time <= 0) {
             flee(msg, match);
         } else {
+            // TODO: check user
             bot.sendMessage(
                 msg.chat.id,
                 (msg.from.first_name || msg.from.last_name) + ' 拔了出来，'
@@ -248,6 +294,7 @@ bot.onText(/^\/smite/, (msg, match) => {
             // TODO: get user id from message?
             // flee(msg, match);
         } else {
+            // TODO: verify users
             bot.sendMessage(
                 msg.chat.id,
                 (msg.from.first_name || msg.from.last_name) + ' 把性伴侣踢下了床'
@@ -314,7 +361,7 @@ setInterval(() => {
                 }
 
                 break;
-            case 60:
+            case game.total:
                 finish({
                     chat: {
                         id: i,
