@@ -327,6 +327,23 @@ bot.onText(/^\/forcestart/, (msg, match) => {
     }
 });
 
+bot.onText(/^\/forceorgasm/, (msg, match) => {
+    if (games[msg.chat.id]) {
+        const game = games[msg.chat.id];
+
+        if (game.time > 0) {
+            bot.sendMessage(
+                msg.chat.id,
+                (msg.from.first_name || msg.from.last_name) + ' 强制让大家达到了高潮'
+            ).then(() => {
+                game.time = game.total;
+            });
+        }
+    } else {
+        na(msg, match);
+    }
+});
+
 setInterval(() => {
     for (const i in games) {
         const game = games[i];
