@@ -203,11 +203,11 @@ bot.onText(/^\/startthreesome/, (msg, match) => {
     }
 });
 
-bot.onText(/^\/extend ([+\-]?\d{1,4})/, (msg, match) => {
+bot.onText(/^\/extend( +([+\-]?\d+)\w*)?$/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
-        const num = parseInt(match[1], 10);
+        const num = parseInt(match[2] || '30', 10);
 
         if (num > 300) {
             num = 300;
@@ -296,12 +296,13 @@ bot.onText(/^\/flee/, (msg, match) => {
     }
 });
 
-bot.onText(/^\/smite/, (msg, match) => {
+bot.onText(/^\/smite( +@?(\w+))?$/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
         if (game.time <= 0) {
             // TODO: get user id from message?
+            //       if (match[2]) ...
             // flee(msg, match);
         } else {
             // TODO: verify users
