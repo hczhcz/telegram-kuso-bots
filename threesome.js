@@ -264,6 +264,8 @@ bot.onText(/^\/join/, (msg, match) => {
         } else {
             // TODO: check user
             if (!game.users[msg.from.id]) {
+                // game.users[msg.from.id] = true; // TODO
+
                 bot.sendMessage(
                     msg.chat.id,
                     (msg.from.first_name || msg.from.last_name) + ' 按捺不住，'
@@ -306,10 +308,19 @@ bot.onText(/^\/smite( +@?(\w+))?$/, (msg, match) => {
             // flee(msg, match);
         } else {
             // TODO: verify users
-            bot.sendMessage(
-                msg.chat.id,
-                (msg.from.first_name || msg.from.last_name) + ' 把性伴侣踢下了床'
-            );
+            if (match[2]) {
+                bot.sendMessage(
+                    msg.chat.id,
+                    (msg.from.first_name || msg.from.last_name) + ' 把 '
+                    + match[2] + ' 踢下了床'
+                );
+            } else {
+                bot.sendMessage(
+                    msg.chat.id,
+                    (msg.from.first_name || msg.from.last_name) + ' 忍不住射了出来，'
+                    + '离开了'　+ game.modename
+                );
+            }
         }
     } else {
         na(msg, match);
