@@ -62,7 +62,7 @@ const flee = (msg, match) => {
 
 const start = (msg, match) => {
     const game = games[msg.chat.id];
-    console.log(game);
+    console.log(msg.chat.id + ': ' + game);
 
     bot.sendMessage(
         msg.chat.id,
