@@ -203,7 +203,7 @@ bot.onText(/^\/startthreesome/, (msg, match) => {
     }
 });
 
-bot.onText(/^\/extend( +([+\-]?\d+)\w*)?$/, (msg, match) => {
+bot.onText(/^\/extend[^ ]*( +([+\-]?\d+)\w*)?$/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -298,7 +298,7 @@ bot.onText(/^\/flee/, (msg, match) => {
     }
 });
 
-bot.onText(/^\/smite( +@?(\w+))?$/, (msg, match) => {
+bot.onText(/^\/smite[^ ]*( +@?(\w+))?$/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
