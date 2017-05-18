@@ -426,12 +426,45 @@ setInterval(() => {
                 break;
         }
 
-        if (game.time >= game.total) {
-            finish({
-                chat: {
-                    id: i,
-                }
-            }, []);
+        switch (game.time - game.total) {
+            case -10:
+                bot.sendMessage(
+                    i,
+                    '啊……快到了'
+                );
+
+                break;
+            case -5:
+                bot.sendMessage(
+                    i,
+                    '啊…'
+                );
+
+                break;
+            case -3:
+                bot.sendMessage(
+                    i,
+                    '啊啊啊……'
+                );
+
+                break;
+            case -1:
+                bot.sendMessage(
+                    i,
+                    '唔哇啊啊啊啊…………'
+                );
+
+                break;
+            case 0:
+                // mock object
+
+                finish({
+                    chat: {
+                        id: i,
+                    }
+                }, []);
+
+                break;
         }
 
         game.time += 1;
