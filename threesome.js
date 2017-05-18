@@ -434,21 +434,21 @@ setInterval(() => {
                 );
 
                 break;
-            case -5:
+            case -6:
                 bot.sendMessage(
                     i,
                     '啊…'
                 );
 
                 break;
-            case -3:
+            case -4:
                 bot.sendMessage(
                     i,
                     '啊啊啊……'
                 );
 
                 break;
-            case -1:
+            case -2:
                 bot.sendMessage(
                     i,
                     '唔哇啊啊啊啊…………'
