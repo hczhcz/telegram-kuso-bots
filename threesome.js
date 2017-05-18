@@ -1,13 +1,13 @@
 'use strict';
 
 const TelegramBot = require('node-telegram-bot-api');
-const token = require('./token').threesome;
+const token = require('./token');
 
 process.on('uncaughtException', (err) => {
     console.err(err);
 });
 
-const bot = new TelegramBot(token, {
+const bot = new TelegramBot(token.threesome, {
     polling: {
         interval: 1000,
     },
@@ -99,14 +99,20 @@ const na = (msg, match) => {
         '目前没有床上运动进行中，\n'
             + '/startmasturbate 启动一场撸管\n'
             + '/startsex 启动一场啪啪\n'
-            + '/startthreesome 启动 3P 模式'
+            + '/startthreesome 启动 3P 模式',
+        {
+            reply_to_message_id: msg.message_id,
+        }
     );
 };
 
 bot.onText(/^\/nextsex/, (msg, match) => {
     bot.sendMessage(
         msg.chat.id,
-        '我不会通知你的，请洗干净自己来'
+        '我不会通知你的，请洗干净自己来',
+        {
+            reply_to_message_id: msg.message_id,
+        }
     );
 });
 
