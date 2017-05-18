@@ -106,7 +106,24 @@ const na = (msg, match) => {
     );
 };
 
-bot.onText(/^\/nextsex/, (msg, match) => {
+const event = (handler) => {
+    return (msg, match) => {
+        console.log('[' + new Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
+
+        if (token.threesomeBan[msg.from.id]) {
+            bot.sendMessage(
+                '妈的JB都没你啪个毛',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        } else {
+            handler(msg, match);
+        }
+    };
+};
+
+bot.onText(/^\/nextsex/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
         '我不会通知你的，请洗干净自己来',
@@ -114,9 +131,9 @@ bot.onText(/^\/nextsex/, (msg, match) => {
             reply_to_message_id: msg.message_id,
         }
     );
-});
+}));
 
-bot.onText(/^\/startmasturbate/, (msg, match) => {
+bot.onText(/^\/startmasturbate/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -144,9 +161,9 @@ bot.onText(/^\/startmasturbate/, (msg, match) => {
             join(msg, match);
         });
     }
-});
+}));
 
-bot.onText(/^\/startsex/, (msg, match) => {
+bot.onText(/^\/startsex/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -176,9 +193,9 @@ bot.onText(/^\/startsex/, (msg, match) => {
             join(msg, match);
         });
     }
-});
+}));
 
-bot.onText(/^\/startthreesome/, (msg, match) => {
+bot.onText(/^\/startthreesome/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -208,9 +225,9 @@ bot.onText(/^\/startthreesome/, (msg, match) => {
             join(msg, match);
         });
     }
-});
+}));
 
-bot.onText(/^\/extend[^ ]*( +([+\-]?\d+)\w*)?$/, (msg, match) => {
+bot.onText(/^\/extend[^ ]*( +([+\-]?\d+)\w*)?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -260,9 +277,9 @@ bot.onText(/^\/extend[^ ]*( +([+\-]?\d+)\w*)?$/, (msg, match) => {
     } else {
         na(msg, match);
     }
-});
+}));
 
-bot.onText(/^\/join/, (msg, match) => {
+bot.onText(/^\/join/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -283,9 +300,9 @@ bot.onText(/^\/join/, (msg, match) => {
     } else {
         na(msg, match);
     }
-});
+}));
 
-bot.onText(/^\/flee/, (msg, match) => {
+bot.onText(/^\/flee/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -303,9 +320,9 @@ bot.onText(/^\/flee/, (msg, match) => {
     } else {
         na(msg, match);
     }
-});
+}));
 
-bot.onText(/^\/smite[^ ]*( +@?(\w+))?$/, (msg, match) => {
+bot.onText(/^\/smite[^ ]*( +@?(\w+))?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -332,9 +349,9 @@ bot.onText(/^\/smite[^ ]*( +@?(\w+))?$/, (msg, match) => {
     } else {
         na(msg, match);
     }
-});
+}));
 
-bot.onText(/^\/forcestart/, (msg, match) => {
+bot.onText(/^\/forcestart/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -344,9 +361,9 @@ bot.onText(/^\/forcestart/, (msg, match) => {
     } else {
         na(msg, match);
     }
-});
+}));
 
-bot.onText(/^\/forceorgasm/, (msg, match) => {
+bot.onText(/^\/forceorgasm/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -361,7 +378,7 @@ bot.onText(/^\/forceorgasm/, (msg, match) => {
     } else {
         na(msg, match);
     }
-});
+}));
 
 setInterval(() => {
     for (const i in games) {
