@@ -1,22 +1,105 @@
 'use strict';
 
-const TelegramBot = require('node-telegram-bot-api');
+// ======== WeChat bot begin ========
+
+const Wechat = require('wechat4u');
+const qrcode = require('qrcode-terminal');
+
+const bot = new Wechat();
+
+bot.start();
+
+bot.on('uuid', (uuid) => {
+    qrcode.generate(
+        'https://login.weixin.qq.com/l/' + uuid,
+        {
+            small: true,
+        },
+        (qr) => {
+            console.warn(qr);
+        }
+    );
+});
+
+bot.onText = (re, event) => {
+    bot.on('message', (msg) => {
+        if (
+            !msg.isSendBySelf
+            && msg.MsgType === bot.CONF.MSGTYPE_TEXT
+        ) {
+            msg.message_id = 0; // mock
+
+            const tgUser = (user) => {
+                return {
+                    username: bot.contacts[user].getDisplayName(),
+                    first_name: bot.contacts[user].getDisplayName(),
+                    id: user,
+                };
+            };
+
+            const tgGroup = (user) => {
+                return {
+                    username: bot.contacts[user].getDisplayName(),
+                    first_name: bot.contacts[user].getDisplayName(),
+                    id: user,
+                };
+            };
+
+            if (msg.FromUserName.slice(0, 2) === '@@') {
+                const content = msg.OriginalContent.split(':<br/>');
+
+                msg.from = tgUser(content[0]);
+                msg.chat = tgGroup(msg.FromUserName);
+                msg.raw = content[1];
+            } else {
+                msg.from = tgUser(msg.FromUserName);
+                msg.chat = tgUser(msg.FromUserName);
+                msg.raw = msg.Content;
+            }
+
+            const match = msg.raw.match(re);
+
+            if (match) {
+                event(msg, match);
+            }
+        }
+    });
+};
+
+bot.sendMessage = (user, text, options) => {
+    // TODO: callback query
+
+    return bot.sendText(text, user);
+};
+
+bot.on('login', () => {
+    console.log('login');
+});
+
+bot.on('logout', () => {
+    console.log('logout');
+});
+
+// ======== WeChat bot end ========
+
+// const TelegramBot = require('node-telegram-bot-api');
 const token = require('./token');
 
 process.on('uncaughtException', (err) => {
     console.error(err);
 });
 
-const bot = new TelegramBot(token.threesome, {
-    polling: {
-        interval: 1000,
-    },
-});
+// const bot = new TelegramBot(token.threesome, {
+//     polling: {
+//         interval: 1000,
+//     },
+// });
 
 const games = {};
 
 const join = (msg, match) => {
     const game = games[msg.chat.id];
+    console.log(game)
 
     if (!game.users[msg.from.id] && game.usercount < game.modemax) {
         game.usercount += 1;
