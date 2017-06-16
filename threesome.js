@@ -1,7 +1,7 @@
 'use strict';
 
-const token = require('./token');
-const bot = require('./bot.' + token.bot)(token.threesome);
+const config = require('./config');
+const bot = require('./bot.' + config.bot)(config.threesomeToken);
 
 process.on('uncaughtException', (err) => {
     console.error(err);
@@ -104,7 +104,7 @@ const event = (handler) => {
     return (msg, match) => {
         console.log('[' + new Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
 
-        if (token.threesomeBan[msg.from.id]) {
+        if (config.threesomeBan[msg.from.id]) {
             bot.sendMessage(
                 '妈的JB都没你啪个毛',
                 {

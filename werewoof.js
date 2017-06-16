@@ -1,7 +1,7 @@
 'use strict';
 
-const token = require('./token');
-const bot = require('./bot.' + token.bot)(bot.werewoof);
+const config = require('./config');
+const bot = require('./bot.' + config.bot)(config.werewoofToken);
 
 const group = -1001073512575;
 const botname = 'werewoofbot';
