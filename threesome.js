@@ -108,7 +108,7 @@ const event = (handler) => {
 
         if (config.threesomeBan[msg.from.id]) {
             bot.sendMessage(
-                '妈的JB都没你啪个毛',
+                '妈的 JB 都没你啪个毛',
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -502,7 +502,10 @@ bot.onText(/^\/forceorgasm/, event((msg, match) => {
                 bot.sendMessage(
                     msg.chat.id,
                     (msg.from.first_name || msg.from.last_name) + ' 强制让自己达到了高潮'
-                );
+                ).then(() => {
+                    game.usercount -= 1;
+                    delete game.users[msg.from.id];
+                });
             }
         }
     } else {
