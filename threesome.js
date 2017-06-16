@@ -430,6 +430,62 @@ bot.onText(/^\/forcestart/, event((msg, match) => {
     }
 }));
 
+bot.onText(/^\/forcefallback/, event((msg, match) => {
+    if (games[msg.chat.id]) {
+        const game = games[msg.chat.id];
+
+        if (game.time <= 0) {
+            game.time = 0;
+        }
+
+        if (game.usercount < game.modemin) {
+            switch (game.usercount) {
+                case 3:
+                    game.modename = '这场 3P';
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '来一发 3P 就不用担心三缺一啦'
+                    );
+
+                    break;
+                case 2:
+                    game.modename = '滚床单活动';
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '两个人相视一笑，来制造生命的大和谐'
+                    );
+
+                    break;
+                case 1:
+                    game.modename = '撸管';
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '还是自己撸一发吧'
+                    );
+
+                    break;
+                case 0:
+
+                    break;
+                default:
+                    game.modename = '这场群P';
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '其实，群P 也是可以的嘛'
+                    );
+            }
+
+            game.modemin = game.usercount;
+        }
+    } else {
+        na(msg, match);
+    }
+}));
+
 bot.onText(/^\/forceorgasm/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
