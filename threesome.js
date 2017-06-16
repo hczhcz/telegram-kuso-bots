@@ -341,14 +341,14 @@ bot.onText(/^\/join/, event((msg, match) => {
         if (game.time <= 0) {
             join(msg, match);
         } else {
-            // TODO: check user
             if (!game.users[msg.from.id]) {
-                // game.users[msg.from.id] = true; // TODO
+                game.usercount += 1;
+                game.users[msg.from.id] = true;
 
                 bot.sendMessage(
                     msg.chat.id,
                     (msg.from.first_name || msg.from.last_name) + ' 按捺不住，'
-                        + '强行插入了这场' + game.modename
+                        + '强行插入了' + game.modename
                 );
             }
         }
@@ -364,13 +364,24 @@ bot.onText(/^\/flee/, event((msg, match) => {
         if (game.time <= 0) {
             flee(msg, match);
         } else {
-            // TODO: check user
-            bot.sendMessage(
-                msg.chat.id,
-                (msg.from.first_name || msg.from.last_name) + ' 拔了出来，'
-                    + '然后忍不住又插了进去，'
-                    + '回到了' + game.modename
-            );
+            if (game.users[msg.from.id]) {
+                if (Math.random() < 0.5) {
+                    game.usercount -= 1;
+                    delete game.users[msg.from.id];
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        (msg.from.first_name || msg.from.last_name) + ' 拔了出来，'
+                            + '离开了' + game.modename
+                    );
+                } else {
+                    bot.sendMessage(
+                        msg.chat.id,
+                        (msg.from.first_name || msg.from.last_name) + ' 拔了出来，'
+                            + '然后忍不住又插了进去，'
+                            + '回到了' + game.modename
+                    );
+                }
         }
     } else {
         na(msg, match);
