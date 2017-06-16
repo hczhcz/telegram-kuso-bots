@@ -382,6 +382,7 @@ bot.onText(/^\/flee/, event((msg, match) => {
                             + '回到了' + game.modename
                     );
                 }
+            }
         }
     } else {
         na(msg, match);
