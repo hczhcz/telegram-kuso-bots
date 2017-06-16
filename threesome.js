@@ -144,7 +144,6 @@ bot.onText(/^\/startmasturbate/, event((msg, match) => {
             modemin: 1,
             modemax: 1,
             time: -60,
-            total: 60,
         };
 
         bot.sendMessage(
@@ -174,7 +173,6 @@ bot.onText(/^\/startsex/, event((msg, match) => {
             modemin: 2,
             modemax: 2,
             time: -180,
-            total: 180,
         };
 
         bot.sendMessage(
@@ -206,7 +204,6 @@ bot.onText(/^\/startthreesome/, event((msg, match) => {
             modemin: 3,
             modemax: 3,
             time: -300,
-            total: 300,
         };
 
         bot.sendMessage(
@@ -238,7 +235,6 @@ bot.onText(/^\/startgroupsex/, event((msg, match) => {
             modemin: 3,
             modemax: 100,
             time: -300,
-            total: 600,
         };
 
         bot.sendMessage(
@@ -270,7 +266,6 @@ bot.onText(/^\/start100kills/, event((msg, match) => {
             modemin: 100,
             modemax: 100,
             time: -300,
-            total: 900,
         };
 
         bot.sendMessage(
@@ -482,6 +477,8 @@ setInterval(() => {
                         }
                     }, []);
                 }
+
+                game.total = 60 + game.usercount * 30;
 
                 break;
         }
