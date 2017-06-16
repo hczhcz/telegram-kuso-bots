@@ -93,7 +93,9 @@ const na = (msg, match) => {
         '目前没有床上运动进行中，\n'
             + '/startmasturbate 启动一场撸管\n'
             + '/startsex 启动一场啪啪\n'
-            + '/startthreesome 启动 3P 模式',
+            + '/startthreesome 启动 3P 模式'
+            + '/startgroupsex 启动 群P 模式'
+            + '/start100kills 启动 百人斩 模式',
         {
             reply_to_message_id: msg.message_id,
         }
@@ -141,7 +143,7 @@ bot.onText(/^\/startmasturbate/, event((msg, match) => {
             modename: '撸管',
             modemin: 1,
             modemax: 1,
-            time: -300,
+            time: -60,
             total: 60,
         };
 
@@ -171,8 +173,8 @@ bot.onText(/^\/startsex/, event((msg, match) => {
             modename: '滚床单活动',
             modemin: 2,
             modemax: 2,
-            time: -300,
-            total: 90,
+            time: -180,
+            total: 180,
         };
 
         bot.sendMessage(
@@ -204,7 +206,7 @@ bot.onText(/^\/startthreesome/, event((msg, match) => {
             modemin: 3,
             modemax: 3,
             time: -300,
-            total: 120,
+            total: 300,
         };
 
         bot.sendMessage(
@@ -212,6 +214,70 @@ bot.onText(/^\/startthreesome/, event((msg, match) => {
             '在 ' + (msg.from.first_name || '') + ' 的带领下，'
                 + '3P 模式正式启动！'
                 + '输入 /join，群里的禽兽们将会全面进场！',
+            {
+                reply_to_message_id: msg.message_id,
+            }
+        ).then(() => {
+            join(msg, match);
+        });
+    }
+}));
+
+bot.onText(/^\/startgroupsex/, event((msg, match) => {
+    if (games[msg.chat.id]) {
+        const game = games[msg.chat.id];
+
+        if (game.time <= 0) {
+            join(msg, match);
+        }
+    } else {
+        games[msg.chat.id] = {
+            usercount: 0,
+            users: {},
+            modename: '这场群P',
+            modemin: 3,
+            modemax: 100,
+            time: -300,
+            total: 600,
+        };
+
+        bot.sendMessage(
+            msg.chat.id,
+            '在 ' + (msg.from.first_name || '') + ' 的带领下，'
+                + '群P 模式正式启动！'
+                + '输入 /join，群里的禽兽们将会全面进场！',
+            {
+                reply_to_message_id: msg.message_id,
+            }
+        ).then(() => {
+            join(msg, match);
+        });
+    }
+}));
+
+bot.onText(/^\/start100kills/, event((msg, match) => {
+    if (games[msg.chat.id]) {
+        const game = games[msg.chat.id];
+
+        if (game.time <= 0) {
+            join(msg, match);
+        }
+    } else {
+        games[msg.chat.id] = {
+            usercount: 0,
+            users: {},
+            modename: '百人斩',
+            modemin: 100,
+            modemax: 100,
+            time: -300,
+            total: 900,
+        };
+
+        bot.sendMessage(
+            msg.chat.id,
+            '在 ' + (msg.from.first_name || '') + ' 的带领下，'
+                + '百人斩模式正式启动！'
+                + '输入 /join，成为这场豪华盛宴的百分之一！',
             {
                 reply_to_message_id: msg.message_id,
             }
