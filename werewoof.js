@@ -1,18 +1,13 @@
 'use strict';
 
-const TelegramBot = require('node-telegram-bot-api');
-const token = require('./token').werewoof;
+const token = require('./token');
+const bot = require('./bot.' + token.bot)(bot.werewoof);
+
 const group = -1001073512575;
 const botname = 'werewoofbot';
 
 process.on('uncaughtException', (err) => {
     console.err(err);
-});
-
-const bot = new TelegramBot(token, {
-    polling: {
-        interval: 1000,
-    },
 });
 
 const handler = (func) => {

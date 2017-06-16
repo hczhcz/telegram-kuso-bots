@@ -1,16 +1,10 @@
 'use strict';
 
-const TelegramBot = require('node-telegram-bot-api');
 const token = require('./token');
+const bot = require('./bot.' + token.bot)(token.threesome);
 
 process.on('uncaughtException', (err) => {
     console.error(err);
-});
-
-const bot = new TelegramBot(token.threesome, {
-    polling: {
-        interval: 1000,
-    },
 });
 
 const games = {};
