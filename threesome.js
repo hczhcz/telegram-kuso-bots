@@ -93,8 +93,8 @@ const na = (msg, match) => {
         '目前没有床上运动进行中，\n'
             + '/startmasturbate 启动一场撸管\n'
             + '/startsex 启动一场啪啪\n'
-            + '/startthreesome 启动 3P 模式'
-            + '/startgroupsex 启动 群P 模式'
+            + '/startthreesome 启动 3P 模式\n'
+            + '/startgroupsex 启动 群P 模式\n'
             + '/start100kills 启动 百人斩 模式',
         {
             reply_to_message_id: msg.message_id,
@@ -434,12 +434,19 @@ bot.onText(/^\/forceorgasm/, event((msg, match) => {
         const game = games[msg.chat.id];
 
         if (game.time > 0) {
-            bot.sendMessage(
-                msg.chat.id,
-                (msg.from.first_name || msg.from.last_name) + ' 强制让大家达到了高潮'
-            ).then(() => {
-                game.time = game.total;
-            });
+            if (game.usercount > 1 && Math.random() < 0.25) {
+                bot.sendMessage(
+                    msg.chat.id,
+                    (msg.from.first_name || msg.from.last_name) + ' 强制让大家达到了高潮'
+                ).then(() => {
+                    game.time = game.total;
+                });
+            } else {
+                bot.sendMessage(
+                    msg.chat.id,
+                    (msg.from.first_name || msg.from.last_name) + ' 强制让自己达到了高潮'
+                );
+            }
         }
     } else {
         na(msg, match);
