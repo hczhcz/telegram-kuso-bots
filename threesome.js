@@ -72,37 +72,38 @@ const flee = (msg, match) => {
     }
 };
 
-const start = (msg, match) => {
-    const game = games[msg.chat.id];
-    console.log(msg.chat.id + ':')
+const start = (i) => {
+    const game = games[i];
+
+    console.log(i + ':')
     console.log(game);
 
     bot.sendMessage(
-        msg.chat.id,
+        i,
         '开始啪啪啦！啪啪啪啪啪啪啪啪'
     );
 };
 
-const finish = (msg, match) => {
-    const game = games[msg.chat.id];
+const finish = (i) => {
+    const game = games[i];
 
     bot.sendMessage(
-        msg.chat.id,
+        i,
         '啪啪结束'
     );
 
-    delete games[msg.chat.id];
+    delete games[i];
 };
 
-const cancel = (msg, match) => {
-    const game = games[msg.chat.id];
+const cancel = (i) => {
+    const game = games[i];
 
     bot.sendMessage(
-        msg.chat.id,
+        i,
         '禽兽人数不足，已取消' + game.modename
     );
 
-    delete games[msg.chat.id];
+    delete games[i];
 };
 
 const na = (msg, match) => {
@@ -541,20 +542,10 @@ setInterval(() => {
 
                 break;
             case 0:
-                // mock objects
-
                 if (game.usercount >= game.modemin) {
-                    start({
-                        chat: {
-                            id: i,
-                        }
-                    }, []);
+                    start(i);
                 } else {
-                    cancel({
-                        chat: {
-                            id: i,
-                        }
-                    }, []);
+                    cancel(i);
                 }
 
                 game.total = 60 + game.usercount * 30;
@@ -592,13 +583,7 @@ setInterval(() => {
 
                 break;
             case 0:
-                // mock object
-
-                finish({
-                    chat: {
-                        id: i,
-                    }
-                }, []);
+                finish(i);
 
                 break;
         }
