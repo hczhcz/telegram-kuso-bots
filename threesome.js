@@ -11,7 +11,7 @@ const games = {};
 
 const event = (handler) => {
     return (msg, match) => {
-        console.log('[' + new Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
+        console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
 
         if (config.threesomeBan[msg.from.id]) {
             bot.sendMessage(
@@ -590,4 +590,4 @@ setInterval(() => {
 
         game.time += 1;
     }
-}, 900);
+}, 490);
