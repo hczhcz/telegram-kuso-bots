@@ -9,6 +9,24 @@ process.on('uncaughtException', (err) => {
 
 const games = {};
 
+const event = (handler) => {
+    return (msg, match) => {
+        console.log('[' + new Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
+
+        if (config.threesomeBan[msg.from.id]) {
+            bot.sendMessage(
+                msg.chat.id,
+                '妈的 JB 都没你啪个毛',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        } else {
+            handler(msg, match);
+        }
+    };
+};
+
 const join = (msg, match) => {
     const game = games[msg.chat.id];
 
@@ -56,7 +74,7 @@ const flee = (msg, match) => {
 
 const start = (msg, match) => {
     const game = games[msg.chat.id];
-    console.log(msg.chat.id + ': ')
+    console.log(msg.chat.id + ':')
     console.log(game);
 
     bot.sendMessage(
@@ -102,23 +120,6 @@ const na = (msg, match) => {
     );
 };
 
-const event = (handler) => {
-    return (msg, match) => {
-        console.log('[' + new Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
-
-        if (config.threesomeBan[msg.from.id]) {
-            bot.sendMessage(
-                '妈的 JB 都没你啪个毛',
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
-        } else {
-            handler(msg, match);
-        }
-    };
-};
-
 bot.onText(/^\/nextsex/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
@@ -143,7 +144,7 @@ bot.onText(/^\/startmasturbate/, event((msg, match) => {
             modename: '撸管',
             modemin: 1,
             modemax: 1,
-            time: -60,
+            time: -120,
         };
 
         bot.sendMessage(
@@ -475,7 +476,7 @@ bot.onText(/^\/forcefallback/, event((msg, match) => {
 
                     bot.sendMessage(
                         msg.chat.id,
-                        '其实，群P 也是可以的嘛'
+                        '其实，' + game.usercount + 'P 也是可以的嘛'
                     );
             }
 
