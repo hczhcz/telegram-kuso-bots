@@ -304,7 +304,7 @@ bot.onText(/^\/start100kills/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/extend[^ ]*( +([+\-]?\d+)\w*)?$/, event((msg, match) => {
+bot.onText(/^\/extend[^ ]*( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -411,7 +411,7 @@ bot.onText(/^\/flee/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/smite[^ ]*( +@?(\w+))?$/, event((msg, match) => {
+bot.onText(/^\/smite[^ ]*( @?(\w+))?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
