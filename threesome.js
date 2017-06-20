@@ -16,6 +16,24 @@ const fdCommands = fs.openSync('./log.commands', 'a');
 const games = {};
 const commands = {};
 
+(() => {
+    // TODO: from config?
+    const commandLog = JSON.parse('[' + fs.readFileSync('./log.commands') + '{}]');
+
+    for (const i in commandLog) {
+        if (i < commandLog.length - 1) {
+            const entry = commandLog[i];
+
+            commands[entry.chat.id] = commands[entry.chat.id] || {};
+
+            const command = commands[entry.chat.id];
+
+            command[entry.key] = command[entry.key] || [];
+            command[entry.key].push(entry.value);
+        }
+    }
+})();
+
 const event = (handler) => {
     return (msg, match) => {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
