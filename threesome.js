@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs');
+
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.threesomeToken);
 
@@ -7,11 +9,18 @@ process.on('uncaughtException', (err) => {
     console.error(err);
 });
 
+// TODO: from config?
+const fdActions = fs.openSync('./log.actions', 'a');
 const games = {};
 
 const event = (handler) => {
     return (msg, match) => {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
+
+        fs.write(fdActions, JSON.stringify({
+            msg: msg,
+            match: match,
+        }) + ',\n', () => {});
 
         if (config.threesomeBan[msg.from.id]) {
             bot.sendMessage(
@@ -77,6 +86,17 @@ const start = (i) => {
 
     console.log(i + ':')
     console.log(game);
+
+    fs.write(fdActions, JSON.stringify({
+        // mock object
+        msg: {
+            date: Date.now(),
+            chat: {
+                id: i,
+            },
+        },
+        game: game,
+    }) + ',\n', () => {});
 
     bot.sendMessage(
         i,
