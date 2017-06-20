@@ -556,7 +556,7 @@ bot.onText(/^\/forceorgasm/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/list[^ ]*( ([^\r\n_][^\r\n]*))?$/, event((msg, match) => {
+bot.onText(/^\/list[^ ]*( ((?!_)\w+))?$/, event((msg, match) => {
     commands[msg.chat.id] = commands[msg.chat.id] || {};
 
     const command = commands[msg.chat.id];
@@ -594,7 +594,7 @@ bot.onText(/^\/list[^ ]*( ([^\r\n_][^\r\n]*))?$/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/add[^ ]* ([^\r\n_][^\r\n]*)@([^\r\n]+)?$/, event((msg, match) => {
+bot.onText(/^\/add[^ ]* ((?!_)\w+)@([^\r\n]+)$/, event((msg, match) => {
     commands[msg.chat.id] = commands[msg.chat.id] || {};
 
     const command = commands[msg.chat.id];
@@ -618,7 +618,7 @@ bot.onText(/^\/add[^ ]* ([^\r\n_][^\r\n]*)@([^\r\n]+)?$/, event((msg, match) => 
     );
 }));
 
-bot.onText(/./, (msg, match) => {
+bot.onText(/^\/((?!_)\w+)[^ ]*( (.+))?( (.+))?( (.+))?$/, (msg, match) => {
     if (games[msg.chat.id]) {
         commands[msg.chat.id] = commands[msg.chat.id] || {};
 
@@ -627,7 +627,7 @@ bot.onText(/./, (msg, match) => {
         let tot = [];
 
         for (const i in command) {
-            if (msg.text.match(i)) {
+            if (match[1] === i) {
                 for (const j in command[i]) {
                     tot.push(command[i][j]);
                 }
