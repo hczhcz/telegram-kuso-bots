@@ -676,7 +676,7 @@ setInterval(() => {
                     cancel(i);
                 }
 
-                game.total = 60 + game.usercount * 30;
+                game.total = 120 + game.usercount * 60;
 
                 break;
         }
