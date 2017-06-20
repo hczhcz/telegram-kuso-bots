@@ -11,7 +11,10 @@ process.on('uncaughtException', (err) => {
 
 // TODO: from config?
 const fdActions = fs.openSync('./log.actions', 'a');
+const fdCommands = fs.openSync('./log.commands', 'a');
+
 const games = {};
+const commands = {};
 
 const event = (handler) => {
     return (msg, match) => {
@@ -534,6 +537,93 @@ bot.onText(/^\/forceorgasm/, event((msg, match) => {
         na(msg, match);
     }
 }));
+
+bot.onText(/^\/list[^ ]*( ([^\r\n_][^\r\n]*))?$/, event((msg, match) => {
+    commands[msg.chat.id] = commands[msg.chat.id] || {};
+
+    const command = commands[msg.chat.id];
+
+    if (match[2]) {
+        command[match[2]] = command[match[2]] || [];
+
+        let text = '';
+
+        for (const i in command[match[2]]) {
+            text += command[match[2]][i] + '\n';
+        }
+
+        bot.sendMessage(
+            msg.chat.id,
+            text,
+            {
+                reply_to_message_id: msg.message_id,
+            }
+        );
+    } else {
+        let text = '';
+
+        for (const i in command) {
+            text += i;
+        }
+
+        bot.sendMessage(
+            msg.chat.id,
+            text,
+            {
+                reply_to_message_id: msg.message_id,
+            }
+        );
+    }
+}));
+
+bot.onText(/^\/add[^ ]* ([^\r\n_][^\r\n]*)@([^\r\n]+)?$/, event((msg, match) => {
+    commands[msg.chat.id] = commands[msg.chat.id] || {};
+
+    const command = commands[msg.chat.id];
+
+    command[match[1]] = command[match[1]] || [];
+    command[match[1]].push(match[2]);
+    fs.write(fdCommands, JSON.stringify({
+        chat: {
+            id: msg.chat.id,
+        },
+        key: match[1],
+        value: match[2],
+    }) + ',\n', () => {});
+
+    bot.sendMessage(
+        msg.chat.id,
+        '已加入 ' + match[1] + ' 套餐！',
+        {
+            reply_to_message_id: msg.message_id,
+        }
+    );
+}));
+
+bot.onText(/./, (msg, match) => {
+    if (games[msg.chat.id]) {
+        commands[msg.chat.id] = commands[msg.chat.id] || {};
+
+        const command = commands[msg.chat.id];
+
+        let tot = [];
+
+        for (const i in command) {
+            if (msg.text.match(i)) {
+                for (const j in command[i]) {
+                    tot.push(command[i][j]);
+                }
+            }
+        }
+
+        if (tot.length > 0) {
+            bot.sendMessage(
+                msg.chat.id,
+                tot[Math.floor(Math.random() * tot.length)]
+            );
+        }
+    }
+});
 
 setInterval(() => {
     for (const i in games) {
