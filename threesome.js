@@ -620,6 +620,8 @@ bot.onText(/^\/add[^ ]* ((?!_)\w+)@([^\r\n]+)$/, event((msg, match) => {
 
 bot.onText(/^\/((?!_)\w+)[^ ]*( (.+))?( (.+))?( (.+))?$/, (msg, match) => {
     if (games[msg.chat.id]) {
+        const game = games[msg.chat.id];
+
         commands[msg.chat.id] = commands[msg.chat.id] || {};
 
         const command = commands[msg.chat.id];
@@ -629,7 +631,14 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( (.+))?( (.+))?( (.+))?$/, (msg, match) => {
         for (const i in command) {
             if (match[1] === i) {
                 for (const j in command[i]) {
-                    tot.push(command[i][j]);
+                    tot.push(
+                        command[i][j]
+                            .replace('$ME', msg.from.first_name || msg.from.last_name)
+                            .replace('$MODE', game.modename)
+                            .replace('$1', match[3] || '')
+                            .replace('$2', match[5] || '')
+                            .replace('$3', match[7] || '')
+                    );
                 }
             }
         }
