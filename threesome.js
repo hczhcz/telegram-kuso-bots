@@ -622,75 +622,77 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, (
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
-        commands[msg.chat.id] = commands[msg.chat.id] || {};
+        if (game.time > 0) {
+            commands[msg.chat.id] = commands[msg.chat.id] || {};
 
-        const command = commands[msg.chat.id];
+            const command = commands[msg.chat.id];
 
-        let tot = [];
+            let tot = [];
 
-        for (const i in command) {
-            if (match[1] === i) {
-                for (const j in command[i]) {
-                    let text = '';
+            for (const i in command) {
+                if (match[1] === i) {
+                    for (const j in command[i]) {
+                        let text = '';
 
-                    for (let k = 0; k < command[i][j].length; ++k) {
-                        if (command[i][j][k] == '$') {
-                            if (command[i][j].slice(k).startsWith('$ME')) {
-                                text += msg.from.first_name || msg.from.last_name;
-                                k += 2;
-                            }
-
-                            if (command[i][j].slice(k).startsWith('$MODE')) {
-                                text += game.modename;
-                                k += 4;
-                            }
-
-                            if (command[i][j].slice(k).startsWith('$1')) {
-                                if (match[3]) {
-                                    text += match[3] || '';
-                                    k += 1;
-                                } else {
-                                    text = '';
-                                    break;
+                        for (let k = 0; k < command[i][j].length; ++k) {
+                            if (command[i][j][k] == '$') {
+                                if (command[i][j].slice(k).startsWith('$ME')) {
+                                    text += msg.from.first_name || msg.from.last_name;
+                                    k += 2;
                                 }
-                            }
 
-                            if (command[i][j].slice(k).startsWith('$2')) {
-                                if (match[5]) {
-                                    text += match[5] || '';
-                                    k += 1;
-                                } else {
-                                    text = '';
-                                    break;
+                                if (command[i][j].slice(k).startsWith('$MODE')) {
+                                    text += game.modename;
+                                    k += 4;
                                 }
-                            }
 
-                            if (command[i][j].slice(k).startsWith('$3')) {
-                                if (match[7]) {
-                                    text += match[7] || '';
-                                    k += 1;
-                                } else {
-                                    text = '';
-                                    break;
+                                if (command[i][j].slice(k).startsWith('$1')) {
+                                    if (match[3]) {
+                                        text += match[3] || '';
+                                        k += 1;
+                                    } else {
+                                        text = '';
+                                        break;
+                                    }
                                 }
+
+                                if (command[i][j].slice(k).startsWith('$2')) {
+                                    if (match[5]) {
+                                        text += match[5] || '';
+                                        k += 1;
+                                    } else {
+                                        text = '';
+                                        break;
+                                    }
+                                }
+
+                                if (command[i][j].slice(k).startsWith('$3')) {
+                                    if (match[7]) {
+                                        text += match[7] || '';
+                                        k += 1;
+                                    } else {
+                                        text = '';
+                                        break;
+                                    }
+                                }
+                            } else {
+                                text += command[i][j][k];
                             }
-                        } else {
-                            text += command[i][j][k];
                         }
-                    }
 
-                    if (text) {
-                        tot.push(text);
+                        if (text) {
+                            tot.push(text);
+                        }
                     }
                 }
             }
-        }
 
-        if (tot.length > 0) {
-            bot.sendMessage(
-                msg.chat.id,
-                tot[Math.floor(Math.random() * tot.length)]
-            );
+            if (tot.length > 0) {
+                bot.sendMessage(
+                    msg.chat.id,
+                    tot[Math.floor(Math.random() * tot.length)]
+                );
+            }
         }
     }
 });
