@@ -329,7 +329,7 @@ bot.onText(/^\/extend[^ ]*( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
-        const num = parseInt(match[2] || '30', 10);
+        let num = parseInt(match[2] || '30', 10);
 
         if (num > 300) {
             num = 300;
