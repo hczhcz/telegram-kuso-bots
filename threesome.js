@@ -581,7 +581,7 @@ bot.onText(/^\/list[^ ]*( ((?!_)\w+))?$/, event((msg, match) => {
         let text = '';
 
         for (const i in command) {
-            text += i;
+            text += i + '\n';
         }
 
         bot.sendMessage(
@@ -635,36 +635,53 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, (
 
                     for (let k = 0; k < command[i][j].length; ++k) {
                         if (command[i][j][k] == '$') {
-                            if (command[i][j].slice(k).startWith('$ME')) {
+                            if (command[i][j].slice(k).startsWith('$ME')) {
                                 text += msg.from.first_name || msg.from.last_name;
                                 k += 2;
                             }
 
-                            if (command[i][j].slice(k).startWith('$MODE')) {
+                            if (command[i][j].slice(k).startsWith('$MODE')) {
                                 text += game.modename;
                                 k += 4;
                             }
 
-                            if (command[i][j].slice(k).startWith('$1')) {
-                                text += match[3] || '';
-                                k += 1;
+                            if (command[i][j].slice(k).startsWith('$1')) {
+                                if (match[3]) {
+                                    text += match[3] || '';
+                                    k += 1;
+                                } else {
+                                    text = '';
+                                    break;
+                                }
                             }
 
-                            if (command[i][j].slice(k).startWith('$2')) {
-                                text += match[5] || '';
-                                k += 1;
+                            if (command[i][j].slice(k).startsWith('$2')) {
+                                if (match[5]) {
+                                    text += match[5] || '';
+                                    k += 1;
+                                } else {
+                                    text = '';
+                                    break;
+                                }
                             }
 
-                            if (command[i][j].slice(k).startWith('$3')) {
-                                text += match[7] || '';
-                                k += 1;
+                            if (command[i][j].slice(k).startsWith('$3')) {
+                                if (match[7]) {
+                                    text += match[7] || '';
+                                    k += 1;
+                                } else {
+                                    text = '';
+                                    break;
+                                }
                             }
                         } else {
                             text += command[i][j][k];
                         }
                     }
 
-                    tot.push(text);
+                    if (text) {
+                        tot.push(text);
+                    }
                 }
             }
         }
