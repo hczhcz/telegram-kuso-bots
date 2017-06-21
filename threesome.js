@@ -618,7 +618,7 @@ bot.onText(/^\/add[^ ]* ((?!_)\w+)@([^\r\n]+)$/, event((msg, match) => {
     );
 }));
 
-bot.onText(/^\/((?!_)\w+)[^ ]*( (.+))?( (.+))?( (.+))?$/, (msg, match) => {
+bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -631,14 +631,40 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( (.+))?( (.+))?( (.+))?$/, (msg, match) => {
         for (const i in command) {
             if (match[1] === i) {
                 for (const j in command[i]) {
-                    tot.push(
-                        command[i][j]
-                            .replace('$ME', msg.from.first_name || msg.from.last_name)
-                            .replace('$MODE', game.modename)
-                            .replace('$1', match[3] || '')
-                            .replace('$2', match[5] || '')
-                            .replace('$3', match[7] || '')
-                    );
+                    let text = '';
+
+                    for (let k = 0; k < command[i][j].length; ++k) {
+                        if (command[i][j][k] == '$') {
+                            if (command[i][j].slice(k).startWith('$ME')) {
+                                text += msg.from.first_name || msg.from.last_name;
+                                k += 2;
+                            }
+
+                            if (command[i][j].slice(k).startWith('$MODE')) {
+                                text += game.modename;
+                                k += 4;
+                            }
+
+                            if (command[i][j].slice(k).startWith('$1')) {
+                                text += match[3] || '';
+                                k += 1;
+                            }
+
+                            if (command[i][j].slice(k).startWith('$2')) {
+                                text += match[5] || '';
+                                k += 1;
+                            }
+
+                            if (command[i][j].slice(k).startWith('$3')) {
+                                text += match[7] || '';
+                                k += 1;
+                            }
+                        } else {
+                            text += command[i][j][k];
+                        }
+                    }
+
+                    tot.push(text);
                 }
             }
         }
