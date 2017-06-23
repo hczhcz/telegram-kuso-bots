@@ -618,7 +618,7 @@ bot.onText(/^\/add[^ ]* ((?!_)\w+)@([^\r\n]+)$/, event((msg, match) => {
     );
 }));
 
-bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, (msg, match) => {
+bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -695,7 +695,7 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, (
             }
         }
     }
-});
+}));
 
 setInterval(() => {
     for (const i in games) {
