@@ -637,6 +637,16 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, e
                             k += 2;
                         }
 
+                        if (command[i][j].slice(k).startsWith('$YOU')) {
+                            if (msg.reply_to_message) {
+                                text += msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name;
+                                k += 3;
+                            } else {
+                                text = '';
+                                break;
+                            }
+                        }
+
                         if (command[i][j].slice(k).startsWith('$MODE')) {
                             const game = games[msg.chat.id];
 
