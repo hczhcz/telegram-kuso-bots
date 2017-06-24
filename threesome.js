@@ -1,47 +1,21 @@
 'use strict';
 
-const fs = require('fs');
-
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.threesomeToken);
+const data = require('./threesome.data');
 
 process.on('uncaughtException', (err) => {
     console.error(err);
 });
 
-// TODO: from config?
-const fdActions = fs.openSync('./log.actions', 'a');
-const fdCommands = fs.openSync('./log.commands', 'a');
-
-const games = {};
-const commands = {};
-
-(() => {
-    // TODO: from config?
-    const commandLog = JSON.parse('[' + fs.readFileSync('./log.commands') + '{}]');
-
-    for (const i in commandLog) {
-        if (i < commandLog.length - 1) {
-            const entry = commandLog[i];
-
-            commands[entry.chat.id] = commands[entry.chat.id] || {};
-
-            const command = commands[entry.chat.id];
-
-            command[entry.key] = command[entry.key] || [];
-            command[entry.key].push(entry.value);
-        }
-    }
-})();
-
 const event = (handler) => {
     return (msg, match) => {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
 
-        fs.write(fdActions, JSON.stringify({
-            msg: msg,
-            match: match,
-        }) + ',\n', () => {});
+        data.writeMessage(
+            msg,
+            match
+        );
 
         if (config.threesomeBan[msg.from.id]) {
             bot.sendMessage(
@@ -58,7 +32,7 @@ const event = (handler) => {
 };
 
 const join = (msg, match) => {
-    const game = games[msg.chat.id];
+    const game = data.games[msg.chat.id];
 
     if (!game.users[msg.from.id] && game.usercount < game.modemax) {
         game.usercount += 1;
@@ -83,7 +57,7 @@ const join = (msg, match) => {
 };
 
 const flee = (msg, match) => {
-    const game = games[msg.chat.id];
+    const game = data.games[msg.chat.id];
 
     if (game.users[msg.from.id]) {
         game.usercount -= 1;
@@ -103,21 +77,20 @@ const flee = (msg, match) => {
 };
 
 const start = (i) => {
-    const game = games[i];
+    const game = data.games[i];
 
     console.log(i + ':')
     console.log(game);
 
-    fs.write(fdActions, JSON.stringify({
-        // mock object
-        msg: {
+    data.writeGame(
+        {
             date: Date.now(),
             chat: {
                 id: i,
             },
         },
-        game: game,
-    }) + ',\n', () => {});
+        game
+    );
 
     bot.sendMessage(
         i,
@@ -126,25 +99,25 @@ const start = (i) => {
 };
 
 const finish = (i) => {
-    const game = games[i];
+    const game = data.games[i];
 
     bot.sendMessage(
         i,
         '啪啪结束'
     );
 
-    delete games[i];
+    delete data.games[i];
 };
 
 const cancel = (i) => {
-    const game = games[i];
+    const game = data.games[i];
 
     bot.sendMessage(
         i,
         '禽兽人数不足，已取消' + game.modename
     );
 
-    delete games[i];
+    delete data.games[i];
 };
 
 const na = (msg, match) => {
@@ -173,14 +146,14 @@ bot.onText(/^\/nextsex/, event((msg, match) => {
 }));
 
 bot.onText(/^\/startmasturbate/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
             join(msg, match);
         }
     } else {
-        games[msg.chat.id] = {
+        data.games[msg.chat.id] = {
             usercount: 0,
             users: {},
             modename: '撸管',
@@ -202,14 +175,14 @@ bot.onText(/^\/startmasturbate/, event((msg, match) => {
 }));
 
 bot.onText(/^\/startsex/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
             join(msg, match);
         }
     } else {
-        games[msg.chat.id] = {
+        data.games[msg.chat.id] = {
             usercount: 0,
             users: {},
             modename: '滚床单活动',
@@ -233,14 +206,14 @@ bot.onText(/^\/startsex/, event((msg, match) => {
 }));
 
 bot.onText(/^\/startthreesome/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
             join(msg, match);
         }
     } else {
-        games[msg.chat.id] = {
+        data.games[msg.chat.id] = {
             usercount: 0,
             users: {},
             modename: '这场 3P',
@@ -264,14 +237,14 @@ bot.onText(/^\/startthreesome/, event((msg, match) => {
 }));
 
 bot.onText(/^\/startgroupsex/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
             join(msg, match);
         }
     } else {
-        games[msg.chat.id] = {
+        data.games[msg.chat.id] = {
             usercount: 0,
             users: {},
             modename: '这场群P',
@@ -295,14 +268,14 @@ bot.onText(/^\/startgroupsex/, event((msg, match) => {
 }));
 
 bot.onText(/^\/start100kills/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
             join(msg, match);
         }
     } else {
-        games[msg.chat.id] = {
+        data.games[msg.chat.id] = {
             usercount: 0,
             users: {},
             modename: '百人斩',
@@ -326,8 +299,8 @@ bot.onText(/^\/start100kills/, event((msg, match) => {
 }));
 
 bot.onText(/^\/extend[^ ]*( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         let num = parseInt(match[2] || '30', 10);
 
@@ -378,8 +351,8 @@ bot.onText(/^\/extend[^ ]*( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/join/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
             join(msg, match);
@@ -401,8 +374,8 @@ bot.onText(/^\/join/, event((msg, match) => {
 }));
 
 bot.onText(/^\/flee/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
             flee(msg, match);
@@ -433,8 +406,8 @@ bot.onText(/^\/flee/, event((msg, match) => {
 }));
 
 bot.onText(/^\/smite[^ ]*( @?(\w+))?$/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
             // TODO: get user id from message?
@@ -462,8 +435,8 @@ bot.onText(/^\/smite[^ ]*( @?(\w+))?$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/forcestart/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
             game.time = 0;
@@ -474,8 +447,8 @@ bot.onText(/^\/forcestart/, event((msg, match) => {
 }));
 
 bot.onText(/^\/forcefallback/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
             game.time = 0;
@@ -530,8 +503,8 @@ bot.onText(/^\/forcefallback/, event((msg, match) => {
 }));
 
 bot.onText(/^\/forceorgasm/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
 
         if (game.time > 0) {
             if (game.usercount > 1 && Math.random() < 0.25) {
@@ -557,9 +530,9 @@ bot.onText(/^\/forceorgasm/, event((msg, match) => {
 }));
 
 bot.onText(/^\/list[^ ]*( ((?!_)\w+))?$/, event((msg, match) => {
-    commands[msg.chat.id] = commands[msg.chat.id] || {};
+    data.commands[msg.chat.id] = data.commands[msg.chat.id] || {};
 
-    const command = commands[msg.chat.id];
+    const command = data.commands[msg.chat.id];
 
     if (match[2]) {
         command[match[2]] = command[match[2]] || [];
@@ -595,19 +568,19 @@ bot.onText(/^\/list[^ ]*( ((?!_)\w+))?$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/add[^ ]* ((?!_)\w+)@([^\r\n]+)$/, event((msg, match) => {
-    commands[msg.chat.id] = commands[msg.chat.id] || {};
+    data.commands[msg.chat.id] = data.commands[msg.chat.id] || {};
 
-    const command = commands[msg.chat.id];
+    const command = data.commands[msg.chat.id];
 
     command[match[1]] = command[match[1]] || [];
     command[match[1]].push(match[2]);
-    fs.write(fdCommands, JSON.stringify({
-        chat: {
+    data.writeCommand(
+        {
             id: msg.chat.id,
         },
-        key: match[1],
-        value: match[2],
-    }) + ',\n', () => {});
+        match[1],
+        match[2]
+    );
 
     bot.sendMessage(
         msg.chat.id,
@@ -619,9 +592,9 @@ bot.onText(/^\/add[^ ]* ((?!_)\w+)@([^\r\n]+)$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
-    commands[msg.chat.id] = commands[msg.chat.id] || {};
+    data.commands[msg.chat.id] = data.commands[msg.chat.id] || {};
 
-    const command = commands[msg.chat.id];
+    const command = data.commands[msg.chat.id];
 
     let tot = [];
 
@@ -648,7 +621,7 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, e
                 }
 
                 if (command[i][j].slice(k).startsWith('$MODE')) {
-                    const game = games[msg.chat.id];
+                    const game = data.games[msg.chat.id];
 
                     if (game) {
                         text += game.modename;
@@ -707,8 +680,8 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, e
 }));
 
 setInterval(() => {
-    for (const i in games) {
-        const game = games[i];
+    for (const i in data.games) {
+        const game = data.games[i];
 
         switch (game.time) {
             case -60:
