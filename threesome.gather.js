@@ -47,10 +47,10 @@ module.exports = (bot, games) => {
             }
         },
 
-        extend: (msg, num) => {
+        extend: (msg, time) => {
             const game = games[msg.chat.id];
 
-            game.time -= num;
+            game.time -= time;
 
             if (game.time < -600) {
                 game.time = -600;

@@ -155,20 +155,20 @@ bot.onText(/^\/start100kills/, event((msg, match) => {
 }));
 
 bot.onText(/^\/extend[^ ]*( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
-    let num = parseInt(match[2] || '30', 10);
+    let time = parseInt(match[2] || '30', 10);
 
-    if (num > 300) {
-        num = 300;
+    if (time > 300) {
+        time = 300;
     }
-    if (num < -300) {
-        num = -300;
+    if (time < -300) {
+        time = -300;
     }
 
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            gather.extend(msg, num);
+            gather.extend(msg, time);
         } else {
             game.total += num;
             if (game.time < 1) {
