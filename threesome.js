@@ -6,6 +6,7 @@ const bot = require('./bot.' + config.bot)(config.threesomeToken);
 const data = require('./threesome.data')(config.threesomePathActions, config.threesomePathCommands);
 
 const info = require('./threesome.info')(bot);
+const gather = require('./threesome.gather')(bot, data.games);
 process.on('uncaughtException', (err) => {
     console.error(err);
 });
@@ -31,51 +32,6 @@ const event = (handler) => {
             handler(msg, match);
         }
     };
-};
-
-const join = (msg, match) => {
-    const game = data.games[msg.chat.id];
-
-    if (!game.users[msg.from.id] && game.usercount < game.modemax) {
-        game.usercount += 1;
-        game.users[msg.from.id] = true;
-
-        if (game.time > -60) {
-            game.time = -60;
-        }
-
-        bot.sendMessage(
-            msg.chat.id,
-            (msg.from.first_name || msg.from.last_name) + ' 加入了' + game.modename + '，'
-                + game.usercount + ' 名禽兽参加，'
-                + '最少 ' + game.modemin + ' 人参加，'
-                + '最多 ' + game.modemax + ' 人参加'
-        ).then(() => {
-            if (game.usercount === game.modemax) {
-                game.time = 0;
-            }
-        });
-    }
-};
-
-const flee = (msg, match) => {
-    const game = data.games[msg.chat.id];
-
-    if (game.users[msg.from.id]) {
-        game.usercount -= 1;
-        delete game.users[msg.from.id];
-
-        if (game.time > -30) {
-            game.time = -30;
-        }
-
-        bot.sendMessage(
-            msg.chat.id,
-            (msg.from.first_name || msg.from.last_name) + ' 逃离了' + game.modename + '，'
-                + '不再与大家啪啪\n\n'
-                + '剩余 ' + game.usercount + ' 人'
-        );
-    }
 };
 
 const start = (i) => {
@@ -131,7 +87,7 @@ bot.onText(/^\/startmasturbate/, event((msg, match) => {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            join(msg, match);
+            gather.join(msg);
         }
     } else {
         data.games[msg.chat.id] = {
@@ -160,7 +116,7 @@ bot.onText(/^\/startsex/, event((msg, match) => {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            join(msg, match);
+            gather.join(msg);
         }
     } else {
         data.games[msg.chat.id] = {
@@ -191,7 +147,7 @@ bot.onText(/^\/startthreesome/, event((msg, match) => {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            join(msg, match);
+            gather.join(msg);
         }
     } else {
         data.games[msg.chat.id] = {
@@ -222,7 +178,7 @@ bot.onText(/^\/startgroupsex/, event((msg, match) => {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            join(msg, match);
+            gather.join(msg);
         }
     } else {
         data.games[msg.chat.id] = {
@@ -253,7 +209,7 @@ bot.onText(/^\/start100kills/, event((msg, match) => {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            join(msg, match);
+            gather.join(msg);
         }
     } else {
         data.games[msg.chat.id] = {
@@ -280,32 +236,20 @@ bot.onText(/^\/start100kills/, event((msg, match) => {
 }));
 
 bot.onText(/^\/extend[^ ]*( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
+    let num = parseInt(match[2] || '30', 10);
+
+    if (num > 300) {
+        num = 300;
+    }
+    if (num < -300) {
+        num = -300;
+    }
+
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
-        let num = parseInt(match[2] || '30', 10);
-
-        if (num > 300) {
-            num = 300;
-        }
-        if (num < -300) {
-            num = -300;
-        }
-
         if (game.time <= 0) {
-            game.time -= num;
-            if (game.time < -600) {
-                game.time = -600;
-            }
-            if (game.time > 0) {
-                game.time = 0;
-            }
-
-            bot.sendMessage(
-                msg.chat.id,
-                '续命成功！'
-                    + '剩余 ' + (-game.time) + ' 秒 /join'
-            );
+            gather.extend(msg, num);
         } else {
             game.total += num;
             if (game.time < 1) {
@@ -336,7 +280,7 @@ bot.onText(/^\/join/, event((msg, match) => {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            join(msg, match);
+            gather.join(msg);
         } else {
             if (!game.users[msg.from.id]) {
                 game.usercount += 1;
@@ -359,7 +303,7 @@ bot.onText(/^\/flee/, event((msg, match) => {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            flee(msg, match);
+            gather.flee(msg);
         } else {
             if (game.users[msg.from.id]) {
                 if (Math.random() < 0.5) {
@@ -393,7 +337,7 @@ bot.onText(/^\/smite[^ ]*( @?(\w+))?$/, event((msg, match) => {
         if (game.time <= 0) {
             // TODO: get user id from message?
             //       if (match[2]) ...
-            // flee(msg, match);
+            // gather.flee(msg);
         } else {
             // TODO: verify users
             if (match[2]) {
