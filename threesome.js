@@ -2,7 +2,7 @@
 
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.threesomeToken);
-const data = require('./threesome.data');
+const data = require('./threesome.data')(config.threesomePathActions, config.threesomePathCommands);
 
 process.on('uncaughtException', (err) => {
     console.error(err);
