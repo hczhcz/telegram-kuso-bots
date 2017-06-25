@@ -51,6 +51,7 @@ module.exports = (bot, games) => {
             const game = games[msg.chat.id];
 
             game.time -= num;
+
             if (game.time < -600) {
                 game.time = -600;
             }
@@ -58,11 +59,67 @@ module.exports = (bot, games) => {
                 game.time = 0;
             }
 
-            bot.sendMessage(
+            return bot.sendMessage(
                 msg.chat.id,
                 '续命成功！'
                     + '剩余 ' + (-game.time) + ' 秒 /join'
             );
+        },
+
+        start: (msg) => {
+            const game = games[msg.chat.id];
+
+            game.time = 0;
+        },
+
+        fallback: (msg) => {
+            const game = games[msg.chat.id];
+
+            game.time = 0;
+
+            if (game.usercount < game.modemin) {
+                switch (game.usercount) {
+                    case 3:
+                        game.modename = '这场 3P';
+
+                        return bot.sendMessage(
+                            msg.chat.id,
+                            '来一发 3P 就不用担心三缺一啦'
+                        );
+
+                        break;
+                    case 2:
+                        game.modename = '滚床单活动';
+
+                        return bot.sendMessage(
+                            msg.chat.id,
+                            '两个人相视一笑，来制造生命的大和谐'
+                        );
+
+                        break;
+                    case 1:
+                        game.modename = '撸管';
+
+                        return bot.sendMessage(
+                            msg.chat.id,
+                            '还是自己撸一发吧'
+                        );
+
+                        break;
+                    case 0:
+
+                        break;
+                    default:
+                        game.modename = '这场群P';
+
+                        return bot.sendMessage(
+                            msg.chat.id,
+                            '其实，' + game.usercount + 'P 也是可以的嘛'
+                        );
+                }
+
+                game.modemin = game.usercount;
+            }
         },
     };
 };
