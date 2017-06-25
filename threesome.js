@@ -8,6 +8,7 @@ const data = require('./threesome.data')(config.threesomePathActions, config.thr
 const info = require('./threesome.info')(bot);
 const gather = require('./threesome.gather')(bot, data.games);
 const init = require('./threesome.init')(bot, data.games);
+const play = require('./threesome.play')(bot, data.games);
 
 process.on('uncaughtException', (err) => {
     console.error(err);
@@ -170,24 +171,7 @@ bot.onText(/^\/extend[^ ]*( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
         if (game.time <= 0) {
             gather.extend(msg, time);
         } else {
-            game.total += num;
-            if (game.time < 1) {
-                game.time = 1;
-            }
-
-            // TODO: check user
-            if (num > 0) {
-                bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 用力一挺，'
-                        + '棒棒变得更坚硬了'
-                );
-            } else {
-                bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 被吓软了'
-                );
-            }
+            play.extend(msg, time);
         }
     } else {
         info.na(msg);
@@ -201,16 +185,7 @@ bot.onText(/^\/join/, event((msg, match) => {
         if (game.time <= 0) {
             gather.join(msg);
         } else {
-            if (!game.users[msg.from.id]) {
-                game.usercount += 1;
-                game.users[msg.from.id] = true;
-
-                bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 按捺不住，'
-                        + '强行插入了' + game.modename
-                );
-            }
+            play.join(msg);
         }
     } else {
         info.na(msg);
@@ -224,25 +199,7 @@ bot.onText(/^\/flee/, event((msg, match) => {
         if (game.time <= 0) {
             gather.flee(msg);
         } else {
-            if (game.users[msg.from.id]) {
-                if (Math.random() < 0.5) {
-                    game.usercount -= 1;
-                    delete game.users[msg.from.id];
-
-                    bot.sendMessage(
-                        msg.chat.id,
-                        (msg.from.first_name || msg.from.last_name) + ' 拔了出来，'
-                            + '离开了' + game.modename
-                    );
-                } else {
-                    bot.sendMessage(
-                        msg.chat.id,
-                        (msg.from.first_name || msg.from.last_name) + ' 拔了出来，'
-                            + '然后忍不住又插了进去，'
-                            + '回到了' + game.modename
-                    );
-                }
-            }
+            play.flee(msg);
         }
     } else {
         info.na(msg);
@@ -258,20 +215,7 @@ bot.onText(/^\/smite[^ ]*( @?(\w+))?$/, event((msg, match) => {
             //       if (match[2]) ...
             // gather.flee(msg);
         } else {
-            // TODO: verify users
-            if (match[2]) {
-                bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 把 '
-                    + match[2] + ' 踢下了床'
-                );
-            } else {
-                bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 忍不住射了出来，'
-                    + '离开了'　+ game.modename
-                );
-            }
+            play.smite(msg, match[2]);
         }
     } else {
         info.na(msg);
@@ -307,22 +251,7 @@ bot.onText(/^\/forceorgasm/, event((msg, match) => {
         const game = data.games[msg.chat.id];
 
         if (game.time > 0) {
-            if (game.usercount > 1 && Math.random() < 0.25) {
-                bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 强制让大家达到了高潮'
-                ).then(() => {
-                    game.time = game.total;
-                });
-            } else {
-                bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 强制让自己达到了高潮'
-                ).then(() => {
-                    game.usercount -= 1;
-                    delete game.users[msg.from.id];
-                });
-            }
+            play.orgasm(msg);
         }
     } else {
         info.na(msg);
