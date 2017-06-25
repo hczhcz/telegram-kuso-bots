@@ -2,8 +2,10 @@
 
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.threesomeToken);
+
 const data = require('./threesome.data')(config.threesomePathActions, config.threesomePathCommands);
 
+const info = require('./threesome.info')(bot);
 process.on('uncaughtException', (err) => {
     console.error(err);
 });
@@ -120,29 +122,8 @@ const cancel = (i) => {
     delete data.games[i];
 };
 
-const na = (msg, match) => {
-    bot.sendMessage(
-        msg.chat.id,
-        '目前没有床上运动进行中，\n'
-            + '/startmasturbate 启动一场撸管\n'
-            + '/startsex 启动一场啪啪\n'
-            + '/startthreesome 启动 3P 模式\n'
-            + '/startgroupsex 启动 群P 模式\n'
-            + '/start100kills 启动 百人斩 模式',
-        {
-            reply_to_message_id: msg.message_id,
-        }
-    );
-};
-
 bot.onText(/^\/nextsex/, event((msg, match) => {
-    bot.sendMessage(
-        msg.chat.id,
-        '我不会通知你的，请洗干净自己来',
-        {
-            reply_to_message_id: msg.message_id,
-        }
-    );
+    info.next(msg);
 }));
 
 bot.onText(/^\/startmasturbate/, event((msg, match) => {
@@ -346,7 +327,7 @@ bot.onText(/^\/extend[^ ]*( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
             }
         }
     } else {
-        na(msg, match);
+        info.na(msg);
     }
 }));
 
@@ -369,7 +350,7 @@ bot.onText(/^\/join/, event((msg, match) => {
             }
         }
     } else {
-        na(msg, match);
+        info.na(msg);
     }
 }));
 
@@ -401,7 +382,7 @@ bot.onText(/^\/flee/, event((msg, match) => {
             }
         }
     } else {
-        na(msg, match);
+        info.na(msg);
     }
 }));
 
@@ -430,7 +411,7 @@ bot.onText(/^\/smite[^ ]*( @?(\w+))?$/, event((msg, match) => {
             }
         }
     } else {
-        na(msg, match);
+        info.na(msg);
     }
 }));
 
@@ -442,7 +423,7 @@ bot.onText(/^\/forcestart/, event((msg, match) => {
             game.time = 0;
         }
     } else {
-        na(msg, match);
+        info.na(msg);
     }
 }));
 
@@ -498,7 +479,7 @@ bot.onText(/^\/forcefallback/, event((msg, match) => {
             }
         }
     } else {
-        na(msg, match);
+        info.na(msg);
     }
 }));
 
@@ -525,7 +506,7 @@ bot.onText(/^\/forceorgasm/, event((msg, match) => {
             }
         }
     } else {
-        na(msg, match);
+        info.na(msg);
     }
 }));
 
