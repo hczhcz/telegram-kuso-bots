@@ -6,6 +6,7 @@ const bot = require('./bot.' + config.bot)(config.threesomeToken);
 const data = require('./threesome.data')(config.threesomePathActions, config.threesomePathCommands);
 
 const info = require('./threesome.info')(bot);
+const command = require('./threesome.command')(bot, data.games, data.commands);
 const gather = require('./threesome.gather')(bot, data.games);
 const init = require('./threesome.init')(bot, data.games);
 const play = require('./threesome.play')(bot, data.games);
@@ -259,145 +260,27 @@ bot.onText(/^\/forceorgasm/, event((msg, match) => {
 }));
 
 bot.onText(/^\/list[^ ]*( ((?!_)\w+))?$/, event((msg, match) => {
-    data.commands[msg.chat.id] = data.commands[msg.chat.id] || {};
-
-    const command = data.commands[msg.chat.id];
-
     if (match[2]) {
-        command[match[2]] = command[match[2]] || [];
-
-        let text = '';
-
-        for (const i in command[match[2]]) {
-            text += command[match[2]][i] + '\n';
-        }
-
-        bot.sendMessage(
-            msg.chat.id,
-            text,
-            {
-                reply_to_message_id: msg.message_id,
-            }
-        );
+        command.list(msg, match[2]);
     } else {
-        let text = '';
-
-        for (const i in command) {
-            text += i + '\n';
-        }
-
-        bot.sendMessage(
-            msg.chat.id,
-            text,
-            {
-                reply_to_message_id: msg.message_id,
-            }
-        );
+        command.all(msg);
     }
 }));
 
 bot.onText(/^\/add[^ ]* ((?!_)\w+)@([^\r\n]+)$/, event((msg, match) => {
-    data.commands[msg.chat.id] = data.commands[msg.chat.id] || {};
+    command.add(msg, match[1], match[2]);
 
-    const command = data.commands[msg.chat.id];
-
-    command[match[1]] = command[match[1]] || [];
-    command[match[1]].push(match[2]);
     data.writeCommand(
         {
             id: msg.chat.id,
         },
-        match[1],
-        match[2]
-    );
-
-    bot.sendMessage(
-        msg.chat.id,
-        '已加入 ' + match[1] + ' 套餐！',
-        {
-            reply_to_message_id: msg.message_id,
-        }
+        key,
+        value
     );
 }));
 
 bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
-    data.commands[msg.chat.id] = data.commands[msg.chat.id] || {};
-
-    const command = data.commands[msg.chat.id];
-
-    let tot = [];
-
-    const i = match[1];
-
-    for (const j in command[i]) {
-        let text = '';
-
-        for (let k = 0; k < command[i][j].length; ++k) {
-            if (command[i][j][k] == '$') {
-                if (command[i][j].slice(k).startsWith('$ME')) {
-                    text += msg.from.first_name || msg.from.last_name;
-                    k += 2;
-                } else if (command[i][j].slice(k).startsWith('$YOU')) {
-                    if (msg.reply_to_message) {
-                        text += msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name;
-                        k += 3;
-                    } else {
-                        text = '';
-                        break;
-                    }
-                } else if (command[i][j].slice(k).startsWith('$MODE')) {
-                    const game = data.games[msg.chat.id];
-
-                    if (game) {
-                        text += game.modename;
-                        k += 4;
-                    } else {
-                        text = '';
-                        break;
-                    }
-                } else if (command[i][j].slice(k).startsWith('$1')) {
-                    if (match[3]) {
-                        text += match[3] || '';
-                        k += 1;
-                    } else {
-                        text = '';
-                        break;
-                    }
-                } else if (command[i][j].slice(k).startsWith('$2')) {
-                    if (match[5]) {
-                        text += match[5] || '';
-                        k += 1;
-                    } else {
-                        text = '';
-                        break;
-                    }
-                } else if (command[i][j].slice(k).startsWith('$3')) {
-                    if (match[7]) {
-                        text += match[7] || '';
-                        k += 1;
-                    } else {
-                        text = '';
-                        break;
-                    }
-                } else {
-                    text += command[i][j][k];
-                }
-            } else {
-                text += command[i][j][k];
-            }
-        }
-
-        if (text) {
-            tot.push(text);
-        }
-    }
-
-    if (tot.length > 0) {
-        bot.sendMessage(
-            msg.chat.id,
-            tot[Math.floor(Math.random() * tot.length)]
-        );
-    }
+    command.add(msg, match[1], [match[3], match[5], match[7]]);
 }));
 
 setInterval(() => {
