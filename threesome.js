@@ -608,9 +608,7 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, e
                 if (command[i][j].slice(k).startsWith('$ME')) {
                     text += msg.from.first_name || msg.from.last_name;
                     k += 2;
-                }
-
-                if (command[i][j].slice(k).startsWith('$YOU')) {
+                } else if (command[i][j].slice(k).startsWith('$YOU')) {
                     if (msg.reply_to_message) {
                         text += msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name;
                         k += 3;
@@ -618,9 +616,7 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, e
                         text = '';
                         break;
                     }
-                }
-
-                if (command[i][j].slice(k).startsWith('$MODE')) {
+                } else if (command[i][j].slice(k).startsWith('$MODE')) {
                     const game = data.games[msg.chat.id];
 
                     if (game) {
@@ -630,9 +626,7 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, e
                         text = '';
                         break;
                     }
-                }
-
-                if (command[i][j].slice(k).startsWith('$1')) {
+                } else if (command[i][j].slice(k).startsWith('$1')) {
                     if (match[3]) {
                         text += match[3] || '';
                         k += 1;
@@ -640,9 +634,7 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, e
                         text = '';
                         break;
                     }
-                }
-
-                if (command[i][j].slice(k).startsWith('$2')) {
+                } else if (command[i][j].slice(k).startsWith('$2')) {
                     if (match[5]) {
                         text += match[5] || '';
                         k += 1;
@@ -650,9 +642,7 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, e
                         text = '';
                         break;
                     }
-                }
-
-                if (command[i][j].slice(k).startsWith('$3')) {
+                } else if (command[i][j].slice(k).startsWith('$3')) {
                     if (match[7]) {
                         text += match[7] || '';
                         k += 1;
@@ -660,6 +650,8 @@ bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, e
                         text = '';
                         break;
                     }
+                } else {
+                    text += command[i][j][k];
                 }
             } else {
                 text += command[i][j][k];
