@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (bot, games) => {
+module.exports = (bot, games, writeGame) => {
     return {
         join: (msg) => {
             const game = games[msg.chat.id];
@@ -114,6 +114,57 @@ module.exports = (bot, games) => {
                             '其实，' + game.usercount + 'P 也是可以的嘛'
                         );
                 }
+            }
+        },
+
+        tick: (msg) => {
+            const game = games[msg.chat.id];
+
+            switch (game.time) {
+                case -60:
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '剩余一分钟 /join'
+                    );
+                case -30:
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '剩余 30 秒 /join'
+                    );
+                case -10:
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '剩余 10 秒 /join'
+                    );
+                case 0:
+                    if (game.usercount >= game.modemin) {
+                        console.log(msg.chat.id + ':');
+                        console.log(game);
+
+                        game.total = 120 + game.usercount * 60;
+
+                        writeGame(
+                            {
+                                date: Date.now(),
+                                chat: msg.chat, // TODO: use mock msg?
+                            },
+                            game
+                        );
+
+                        return bot.sendMessage(
+                            msg.chat.id,
+                            '开始啪啪啦！啪啪啪啪啪啪啪啪'
+                        );
+                    } else {
+                        const mode = game.modename;
+
+                        delete games[msg.chat.id];
+
+                        return bot.sendMessage(
+                            msg.chat.id,
+                            '禽兽人数不足，已取消' + mode
+                        );
+                    }
             }
         },
     };

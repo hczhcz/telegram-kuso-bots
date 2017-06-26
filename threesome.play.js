@@ -110,5 +110,39 @@ module.exports = (bot, games) => {
                 });
             }
         },
+
+        tick: (msg) => {
+            const game = games[msg.chat.id];
+
+            switch (game.time - game.total) {
+                case -10:
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '啊……快到了'
+                    );
+                case -6:
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '啊…'
+                    );
+                case -4:
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '啊啊啊……'
+                    );
+                case -2:
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '唔哇啊啊啊啊…………'
+                    );
+                case 0:
+                    delete games[msg.chat.id];
+
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '啪啪结束'
+                    );
+            }
+        },
     };
 };

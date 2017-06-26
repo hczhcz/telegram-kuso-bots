@@ -7,7 +7,7 @@ const data = require('./threesome.data')(config.threesomePathActions, config.thr
 
 const info = require('./threesome.info')(bot);
 const command = require('./threesome.command')(bot, data.games, data.commands);
-const gather = require('./threesome.gather')(bot, data.games);
+const gather = require('./threesome.gather')(bot, data.games, data.writeGame);
 const init = require('./threesome.init')(bot, data.games);
 const play = require('./threesome.play')(bot, data.games);
 
@@ -36,48 +36,6 @@ const event = (handler) => {
             handler(msg, match);
         }
     };
-};
-
-const start = (i) => {
-    const game = data.games[i];
-
-    console.log(i + ':');
-    console.log(game);
-
-    data.writeGame(
-        {
-            date: Date.now(),
-            chat: {
-                id: i,
-            },
-        },
-        game
-    );
-
-    bot.sendMessage(
-        i,
-        '开始啪啪啦！啪啪啪啪啪啪啪啪'
-    );
-};
-
-const finish = (i) => {
-    bot.sendMessage(
-        i,
-        '啪啪结束'
-    );
-
-    delete data.games[i];
-};
-
-const cancel = (i) => {
-    const game = data.games[i];
-
-    bot.sendMessage(
-        i,
-        '禽兽人数不足，已取消' + game.modename
-    );
-
-    delete data.games[i];
 };
 
 bot.onText(/^\/nextsex/, event((msg, match) => {
@@ -285,77 +243,24 @@ setInterval(() => {
     for (const i in data.games) {
         const game = data.games[i];
 
-        switch (game.time) {
-            case -60:
-                bot.sendMessage(
-                    i,
-                    '剩余一分钟 /join'
-                );
+        if (game.time <= 0) {
+            gather.tick({
+                // mock object
+                chat: {
+                    id: i,
+                },
+            });
+        } else {
+            play.tick({
+                // mock object
+                chat: {
+                    id: i,
+                },
+            });
 
-                break;
-            case -30:
-                bot.sendMessage(
-                    i,
-                    '剩余 30 秒 /join'
-                );
-
-                break;
-            case -10:
-                bot.sendMessage(
-                    i,
-                    '剩余 10 秒 /join'
-                );
-
-                break;
-            case 0:
-                if (game.usercount >= game.modemin) {
-                    start(i);
-                } else {
-                    cancel(i);
-                }
-
-                game.total = 120 + game.usercount * 60;
-
-                break;
-        }
-
-        switch (game.time - game.total) {
-            case -10:
-                bot.sendMessage(
-                    i,
-                    '啊……快到了'
-                );
-
-                break;
-            case -6:
-                bot.sendMessage(
-                    i,
-                    '啊…'
-                );
-
-                break;
-            case -4:
-                bot.sendMessage(
-                    i,
-                    '啊啊啊……'
-                );
-
-                break;
-            case -2:
-                bot.sendMessage(
-                    i,
-                    '唔哇啊啊啊啊…………'
-                );
-
-                break;
-            case 0:
-                finish(i);
-
-                break;
-        }
-
-        if (game.time > 0 && game.time - game.total < -10) {
-            // TODO
+            if (game.time > 0 && game.time - game.total < -10) {
+                // TODO: random message?
+            }
         }
 
         game.time += 1;
