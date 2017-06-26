@@ -11,13 +11,15 @@ module.exports = (bot, games, commands, writeCommand) => {
                 text += i + '\n';
             }
 
-            return bot.sendMessage(
-                msg.chat.id,
-                text,
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
+            if (text) {
+                return bot.sendMessage(
+                    msg.chat.id,
+                    text,
+                    {
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
+            }
         },
 
         list: (msg, key) => {
@@ -29,13 +31,15 @@ module.exports = (bot, games, commands, writeCommand) => {
                 text += command[key][i] + '\n';
             }
 
-            return bot.sendMessage(
-                msg.chat.id,
-                text,
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
+            if (text) {
+                return bot.sendMessage(
+                    msg.chat.id,
+                    text,
+                    {
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
+            }
         },
 
         add: (msg, key, value) => {
@@ -129,13 +133,11 @@ module.exports = (bot, games, commands, writeCommand) => {
             }
 
             if (tot.length > 0) {
-                bot.sendMessage(
+                return bot.sendMessage(
                     msg.chat.id,
                     tot[Math.floor(Math.random() * tot.length)]
                 );
             }
-
-            // return ...
         },
     };
 };
