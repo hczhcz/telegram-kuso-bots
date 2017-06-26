@@ -62,7 +62,7 @@ module.exports = (bot, games) => {
             return bot.sendMessage(
                 msg.chat.id,
                 '续命成功！'
-                    + '剩余 ' + (-game.time) + ' 秒 /join'
+                    + '剩余 ' + -game.time + ' 秒 /join'
             );
         },
 
@@ -86,8 +86,6 @@ module.exports = (bot, games) => {
                             msg.chat.id,
                             '来一发 3P 就不用担心三缺一啦'
                         );
-
-                        break;
                     case 2:
                         game.modename = '滚床单活动';
 
@@ -95,8 +93,6 @@ module.exports = (bot, games) => {
                             msg.chat.id,
                             '两个人相视一笑，来制造生命的大和谐'
                         );
-
-                        break;
                     case 1:
                         game.modename = '撸管';
 
@@ -104,10 +100,7 @@ module.exports = (bot, games) => {
                             msg.chat.id,
                             '还是自己撸一发吧'
                         );
-
-                        break;
                     case 0:
-
                         break;
                     default:
                         game.modename = '这场群P';

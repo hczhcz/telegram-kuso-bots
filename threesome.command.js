@@ -67,13 +67,13 @@ module.exports = (bot, games, commands) => {
             const game = games[msg.chat.id];
             const command = commands[msg.chat.id];
 
-            let tot = [];
+            const tot = [];
 
             for (const i in command[key]) {
                 let text = '';
 
-                for (let j = 0; j < command[key][i].length; ++j) {
-                    if (command[key][i][j] == '$') {
+                for (let j = 0; j < command[key][i].length; j += 1) {
+                    if (command[key][i][j] === '$') {
                         if (command[key][i].slice(j).startsWith('$ME')) {
                             text += msg.from.first_name || msg.from.last_name;
                             j += 2;

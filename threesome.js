@@ -41,7 +41,7 @@ const event = (handler) => {
 const start = (i) => {
     const game = data.games[i];
 
-    console.log(i + ':')
+    console.log(i + ':');
     console.log(game);
 
     data.writeGame(
@@ -61,8 +61,6 @@ const start = (i) => {
 };
 
 const finish = (i) => {
-    const game = data.games[i];
-
     bot.sendMessage(
         i,
         '啪啪结束'
