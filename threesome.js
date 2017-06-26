@@ -274,13 +274,13 @@ bot.onText(/^\/add[^ ]* ((?!_)\w+)@([^\r\n]+)$/, event((msg, match) => {
         {
             id: msg.chat.id,
         },
-        key,
-        value
+        match[1],
+        match[2]
     );
 }));
 
 bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
-    command.add(msg, match[1], [match[3], match[5], match[7]]);
+    command.get(msg, match[1], [match[3], match[5], match[7]]);
 }));
 
 setInterval(() => {
