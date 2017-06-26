@@ -3,9 +3,7 @@
 module.exports = (bot, games, commands, writeCommand) => {
     return {
         all: (msg) => {
-            commands[msg.chat.id] = commands[msg.chat.id] || {};
-
-            const command = commands[msg.chat.id];
+            const command = commands[msg.chat.id] || {};
 
             let text = '';
 
@@ -23,11 +21,7 @@ module.exports = (bot, games, commands, writeCommand) => {
         },
 
         list: (msg, key) => {
-            commands[msg.chat.id] = commands[msg.chat.id] || {};
-
-            const command = commands[msg.chat.id];
-
-            command[key] = command[key] || [];
+            const command = commands[msg.chat.id] || {};
 
             let text = '';
 
@@ -68,10 +62,8 @@ module.exports = (bot, games, commands, writeCommand) => {
         },
 
         get: (msg, key, args) => {
-            commands[msg.chat.id] = commands[msg.chat.id] || {};
-
             const game = games[msg.chat.id];
-            const command = commands[msg.chat.id];
+            const command = commands[msg.chat.id] || {};
 
             const tot = [];
 
