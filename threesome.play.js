@@ -11,6 +11,10 @@ module.exports = (bot, games) => {
                 game.usercount += 1;
                 game.users[msg.from.id] = true;
 
+                if (!game.usercount) {
+                    game.time = game.total;
+                }
+
                 return bot.sendMessage(
                     msg.chat.id,
                     (msg.from.first_name || msg.from.last_name) + ' 按捺不住，'
@@ -99,6 +103,10 @@ module.exports = (bot, games) => {
                 ).then(() => {
                     game.usercount -= 1;
                     delete game.users[msg.from.id];
+
+                    if (!game.usercount) {
+                        game.time = game.total;
+                    }
                 });
             }
         },
