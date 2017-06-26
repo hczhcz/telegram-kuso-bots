@@ -81,6 +81,7 @@ module.exports = (bot, games) => {
                 switch (game.usercount) {
                     case 3:
                         game.modename = '这场 3P';
+                        game.modemin = 3;
 
                         return bot.sendMessage(
                             msg.chat.id,
@@ -88,6 +89,7 @@ module.exports = (bot, games) => {
                         );
                     case 2:
                         game.modename = '滚床单活动';
+                        game.modemin = 2;
 
                         return bot.sendMessage(
                             msg.chat.id,
@@ -95,6 +97,7 @@ module.exports = (bot, games) => {
                         );
                     case 1:
                         game.modename = '撸管';
+                        game.modemin = 1;
 
                         return bot.sendMessage(
                             msg.chat.id,
@@ -104,14 +107,13 @@ module.exports = (bot, games) => {
                         break;
                     default:
                         game.modename = '这场群P';
+                        game.modemin = 3;
 
                         return bot.sendMessage(
                             msg.chat.id,
                             '其实，' + game.usercount + 'P 也是可以的嘛'
                         );
                 }
-
-                game.modemin = game.usercount;
             }
         },
     };
