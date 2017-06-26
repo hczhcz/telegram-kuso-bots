@@ -46,7 +46,7 @@ module.exports = (pathActions, pathCommands) => {
         },
 
         writeCommand: (chat, key, value) => {
-            data.writeCommand(fdCommands, JSON.stringify({
+            fs.write(fdCommands, JSON.stringify({
                 chat: chat,
                 key: key,
                 value: value,
