@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (bot, games, commands) => {
+module.exports = (bot, games, commands, writeCommand) => {
     return {
         all: (msg) => {
             commands[msg.chat.id] = commands[msg.chat.id] || {};
@@ -51,6 +51,14 @@ module.exports = (bot, games, commands) => {
 
             command[key] = command[key] || [];
             command[key].push(value);
+
+            writeCommand(
+                {
+                    id: msg.chat.id,
+                },
+                key,
+                value
+            );
 
             return bot.sendMessage(
                 msg.chat.id,

@@ -6,7 +6,7 @@ const bot = require('./bot.' + config.bot)(config.threesomeToken);
 const data = require('./threesome.data')(config.threesomePathActions, config.threesomePathCommands);
 
 const info = require('./threesome.info')(bot);
-const command = require('./threesome.command')(bot, data.games, data.commands);
+const command = require('./threesome.command')(bot, data.games, data.commands, data.writeCommand);
 const gather = require('./threesome.gather')(bot, data.games, data.writeGame);
 const init = require('./threesome.init')(bot, data.games);
 const play = require('./threesome.play')(bot, data.games);
@@ -225,14 +225,6 @@ bot.onText(/^\/list[^ ]*( ((?!_)\w+))?$/, event((msg, match) => {
 
 bot.onText(/^\/add[^ ]* ((?!_)\w+)@([^\r\n]+)$/, event((msg, match) => {
     command.add(msg, match[1], match[2]);
-
-    data.writeCommand(
-        {
-            id: msg.chat.id,
-        },
-        match[1],
-        match[2]
-    );
 }));
 
 bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
