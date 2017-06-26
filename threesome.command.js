@@ -53,9 +53,7 @@ module.exports = (bot, games, commands, writeCommand) => {
             command[key].push(value);
 
             writeCommand(
-                {
-                    id: msg.chat.id,
-                },
+                msg.chat,
                 key,
                 value
             );

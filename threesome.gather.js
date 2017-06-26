@@ -144,10 +144,7 @@ module.exports = (bot, games, writeGame) => {
                         game.total = 120 + game.usercount * 60;
 
                         writeGame(
-                            {
-                                date: Date.now(),
-                                chat: msg.chat, // TODO: use mock msg?
-                            },
+                            msg,
                             game
                         );
 

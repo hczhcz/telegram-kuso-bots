@@ -238,6 +238,7 @@ setInterval(() => {
         if (game.time <= 0) {
             gather.tick({
                 // mock object
+                date: Date.now(),
                 chat: {
                     id: i,
                 },
@@ -245,6 +246,7 @@ setInterval(() => {
         } else {
             play.tick({
                 // mock object
+                date: Date.now(),
                 chat: {
                     id: i,
                 },
