@@ -261,9 +261,9 @@ setInterval(() => {
                 let userneed = 3;
                 const args = [];
 
-                for (const i in game.users) {
+                for (const j in game.users) {
                     if (Math.random() < userneed / userbase) {
-                        args.push(game.users[i].first_name || game.users[i].last_name);
+                        args.push(game.users[j].first_name || game.users[j].last_name);
 
                         userneed -= 1;
                     }
@@ -272,7 +272,13 @@ setInterval(() => {
                 }
 
                 if (Math.random() < 0.05) {
-                    command.get(msg, '', args);
+                    command.get({
+                        // mock object
+                        date: Date.now(),
+                        chat: {
+                            id: i,
+                        },
+                    }, '', args);
                 }
             }
         }

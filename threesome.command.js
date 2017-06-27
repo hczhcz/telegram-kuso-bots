@@ -135,7 +135,8 @@ module.exports = (bot, games, commands, writeCommand) => {
                 }
 
                 let newLevel = 0;
-                for (j in match) {
+
+                for (const j in match) {
                     newLevel += match[j];
                 }
 
