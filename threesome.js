@@ -215,15 +215,15 @@ bot.onText(/^\/forceorgasm/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/list[^ ]*( ((?!_)\w+))?$/, event((msg, match) => {
-    if (match[2]) {
-        command.list(msg, match[2]);
-    } else {
-        command.all(msg);
-    }
+bot.onText(/^\/listall$/, event((msg, match) => {
+    command.all(msg);
 }));
 
-bot.onText(/^\/add[^ ]* ((?!_)\w+)@([^\r\n]+)$/, event((msg, match) => {
+bot.onText(/^\/list[^ ]*( ((?!_)\w*))?$/, event((msg, match) => {
+    command.list(msg, match[2]);
+}));
+
+bot.onText(/^\/add[^ ]* ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
     command.add(msg, match[1], match[2]);
 }));
 
@@ -256,7 +256,9 @@ setInterval(() => {
             });
 
             if (game.time > 0 && game.time - game.total < -10) {
-                // TODO: random message?
+                if (Math.random() <= 0.05) {
+                    command.get(msg, '', []); // TODO
+                }
             }
         }
 

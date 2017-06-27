@@ -9,7 +9,7 @@ module.exports = (bot, games) => {
 
             if (!game.users[msg.from.id]) {
                 game.usercount += 1;
-                game.users[msg.from.id] = true;
+                game.users[msg.from.id] = msg.from;
 
                 if (!game.usercount) {
                     game.time = game.total;

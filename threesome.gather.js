@@ -7,7 +7,7 @@ module.exports = (bot, games, writeGame) => {
 
             if (!game.users[msg.from.id] && game.usercount < game.modemax) {
                 game.usercount += 1;
-                game.users[msg.from.id] = true;
+                game.users[msg.from.id] = msg.from;
 
                 if (game.time > -60) {
                     game.time = -60;
