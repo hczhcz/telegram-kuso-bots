@@ -179,7 +179,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                 }
 
                 // shuffle
-                for (const i = args.length - 1; i >= 0; i -= 1) {
+                for (let i = args.length - 1; i >= 0; i -= 1) {
                     const pos = Math.floor(Math.random() * (i + 1));
 
                     const tmp = args[i];
