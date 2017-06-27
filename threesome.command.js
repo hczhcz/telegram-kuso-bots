@@ -163,19 +163,28 @@ module.exports = (bot, games, commands, writeCommand) => {
         tick: (msg) => {
             const game = games[msg.chat.id];
 
-            if (Math.random() < Math.min(game.usercount, 3) / 6) {
-                let userbase = game.usercount;
-                let userneed = Math.floor(Math.random() * 4);
+            if (Math.random() < Math.min(game.usercount, 3) / 12) {
                 const args = [];
 
-                for (const j in game.users) {
-                    if (Math.random() < userneed / userbase) {
-                        args.push(game.users[j].first_name || game.users[j].last_name);
+                let userbase = game.usercount;
+                let userneed = Math.min(Math.floor(Math.random() * (game.usercount + 1)), 3);
 
+                for (const i in game.users) {
+                    if (Math.random() < userneed / userbase) {
+                        args.push(game.users[i].first_name || game.users[i].last_name);
                         userneed -= 1;
                     }
 
                     userbase -= 1;
+                }
+
+                // shuffle
+                for (const i = args.length - 1; i >= 0; i -= 1) {
+                    const pos = Math.floor(Math.random() * (i + 1));
+
+                    const tmp = args[i];
+                    args[i] = args[pos];
+                    args[pos] = tmp;
                 }
 
                 self.get(msg, '', args);
