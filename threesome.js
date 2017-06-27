@@ -220,7 +220,7 @@ bot.onText(/^\/listall$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/list[^ ]*( ((?!_)\w*))?$/, event((msg, match) => {
-    command.list(msg, match[2]);
+    command.list(msg, match[2] || '');
 }));
 
 bot.onText(/^\/add[^ ]* ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {

@@ -11,10 +11,6 @@ module.exports = (bot, games) => {
                 game.usercount += 1;
                 game.users[msg.from.id] = msg.from;
 
-                if (!game.usercount) {
-                    game.time = game.total;
-                }
-
                 return bot.sendMessage(
                     msg.chat.id,
                     (msg.from.first_name || msg.from.last_name) + ' 按捺不住，'
@@ -30,6 +26,10 @@ module.exports = (bot, games) => {
                 if (Math.random() < 0.5) {
                     game.usercount -= 1;
                     delete game.users[msg.from.id];
+
+                    if (!game.usercount) {
+                        game.time = game.total;
+                    }
 
                     return bot.sendMessage(
                         msg.chat.id,
@@ -58,6 +58,13 @@ module.exports = (bot, games) => {
                     + player + ' 踢下了床'
                 );
             } else {
+                game.usercount -= 1;
+                delete game.users[msg.from.id];
+
+                if (!game.usercount) {
+                    game.time = game.total;
+                }
+
                 return bot.sendMessage(
                     msg.chat.id,
                     (msg.from.first_name || msg.from.last_name) + ' 忍不住射了出来，'

@@ -58,7 +58,7 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '已加入 ' + key + ' 套餐！',
+                '已加入 ' + (key || 'bot自言自语') + ' 套餐！',
                 {
                     reply_to_message_id: msg.message_id,
                 }
