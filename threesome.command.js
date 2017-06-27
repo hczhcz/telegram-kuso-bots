@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (bot, games, commands, writeCommand) => {
-    return {
+    const self = {
         all: (msg) => {
             const command = commands[msg.chat.id] || {};
 
@@ -177,9 +177,9 @@ module.exports = (bot, games, commands, writeCommand) => {
                 userbase -= 1;
             }
 
-            if (Math.random() < Math.min(game.usercount, 5) / 60) {
-                module.exports.get(msg, '', args);
-            }
+            self.get(msg, '', args);
         },
     };
+
+    return self;
 };
