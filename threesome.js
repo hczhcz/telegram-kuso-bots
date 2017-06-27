@@ -229,7 +229,7 @@ bot.onText(/^\/add[^ ]* ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
 
 bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
     // to avoid spam between bots
-    if (Math.random() <= 0.99) {
+    if (Math.random() < 0.99) {
         command.get(msg, match[1], [match[3], match[5], match[7]]);
     }
 }));
@@ -255,9 +255,24 @@ setInterval(() => {
                 },
             });
 
+            // TODO: move to threesome.command.js?
             if (game.time > 0 && game.time - game.total < -10) {
-                if (Math.random() <= 0.05) {
-                    command.get(msg, '', []); // TODO
+                let userbase = game.usercount;
+                let userneed = 3;
+                const args = [];
+
+                for (const i in game.users) {
+                    if (Math.random() < userneed / userbase) {
+                        args.push(game.users[i].first_name || game.users[i].last_name);
+
+                        userneed -= 1;
+                    }
+
+                    userbase -= 1;
+                }
+
+                if (Math.random() < 0.05) {
+                    command.get(msg, '', args);
                 }
             }
         }
