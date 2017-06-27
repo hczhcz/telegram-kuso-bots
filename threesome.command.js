@@ -73,6 +73,7 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             for (const i in command[key]) {
                 let text = '';
+                let chance = 1;
 
                 for (let j = 0; j < command[key][i].length; j += 1) {
                     if (command[key][i][j] === '$') {
@@ -82,41 +83,46 @@ module.exports = (bot, games, commands, writeCommand) => {
                         } else if (command[key][i].slice(j).startsWith('$YOU')) {
                             if (msg.reply_to_message) {
                                 text += msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name;
+                                chance += 1;
                                 j += 3;
                             } else {
-                                text = '';
+                                chance = 0;
                                 break;
                             }
                         } else if (command[key][i].slice(j).startsWith('$MODE')) {
                             if (game) {
                                 text += game.modename;
+                                chance += 1;
                                 j += 4;
                             } else {
-                                text = '';
+                                chance = 0;
                                 break;
                             }
                         } else if (command[key][i].slice(j).startsWith('$1')) {
                             if (args[0]) {
                                 text += args[0] || '';
+                                chance += 1;
                                 j += 1;
                             } else {
-                                text = '';
+                                chance = 0;
                                 break;
                             }
                         } else if (command[key][i].slice(j).startsWith('$2')) {
                             if (args[1]) {
                                 text += args[1] || '';
+                                chance += 1;
                                 j += 1;
                             } else {
-                                text = '';
+                                chance = 0;
                                 break;
                             }
                         } else if (command[key][i].slice(j).startsWith('$3')) {
                             if (args[2]) {
                                 text += args[2] || '';
+                                chance += 1;
                                 j += 1;
                             } else {
-                                text = '';
+                                chance = 0;
                                 break;
                             }
                         } else {
@@ -127,7 +133,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                     }
                 }
 
-                if (text) {
+                for (let j = 0; j < chance; j += 1) {
                     tot.push(text);
                 }
             }
