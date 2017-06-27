@@ -102,7 +102,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                         } else if (command[key][i].slice(j).startsWith('$1')) {
                             if (args[0]) {
                                 text += args[0] || '';
-                                match.args = Math.max(match.args, 1);
+                                match.args = Math.max(match.args || 0, 1);
                                 j += 1;
                             } else {
                                 match = null;
@@ -111,7 +111,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                         } else if (command[key][i].slice(j).startsWith('$2')) {
                             if (args[1]) {
                                 text += args[1] || '';
-                                match.args = Math.max(match.args, 2);
+                                match.args = Math.max(match.args || 0, 2);
                                 j += 1;
                             } else {
                                 match = null;
@@ -120,7 +120,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                         } else if (command[key][i].slice(j).startsWith('$3')) {
                             if (args[2]) {
                                 text += args[2] || '';
-                                match.args = Math.max(match.args, 3);
+                                match.args = Math.max(match.args || 0, 3);
                                 j += 1;
                             } else {
                                 match = null;
@@ -134,19 +134,21 @@ module.exports = (bot, games, commands, writeCommand) => {
                     }
                 }
 
-                let newLevel = 0;
+                if (match) {
+                    let newLevel = 0;
 
-                for (const j in match) {
-                    newLevel += match[j];
-                }
-
-                if (level <= newLevel) {
-                    if (level < newLevel) {
-                        tot = [];
-                        level = newLevel;
+                    for (const j in match) {
+                        newLevel += match[j];
                     }
 
-                    tot.push(text);
+                    if (level <= newLevel) {
+                        if (level < newLevel) {
+                            tot = [];
+                            level = newLevel;
+                        }
+
+                        tot.push(text);
+                    }
                 }
             }
 

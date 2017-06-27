@@ -258,7 +258,7 @@ setInterval(() => {
             // TODO: move to threesome.command.js?
             if (game.time > 0 && game.time - game.total < -10) {
                 let userbase = game.usercount;
-                let userneed = 3;
+                let userneed = Math.floor(Math.random() * 4);
                 const args = [];
 
                 for (const j in game.users) {
