@@ -163,21 +163,23 @@ module.exports = (bot, games, commands, writeCommand) => {
         tick: (msg) => {
             const game = games[msg.chat.id];
 
-            let userbase = game.usercount;
-            let userneed = Math.floor(Math.random() * 4);
-            const args = [];
+            if (Math.random() < Math.min(game.usercount, 3) / 6) {
+                let userbase = game.usercount;
+                let userneed = Math.floor(Math.random() * 4);
+                const args = [];
 
-            for (const j in game.users) {
-                if (Math.random() < userneed / userbase) {
-                    args.push(game.users[j].first_name || game.users[j].last_name);
+                for (const j in game.users) {
+                    if (Math.random() < userneed / userbase) {
+                        args.push(game.users[j].first_name || game.users[j].last_name);
 
-                    userneed -= 1;
+                        userneed -= 1;
+                    }
+
+                    userbase -= 1;
                 }
 
-                userbase -= 1;
+                self.get(msg, '', args);
             }
-
-            self.get(msg, '', args);
         },
     };
 

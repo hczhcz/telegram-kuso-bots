@@ -255,16 +255,14 @@ setInterval(() => {
                 },
             });
 
-            if (game.time > 0 && game.time - game.total < -10) {
-                if (Math.random() < Math.min(game.usercount, 5) / 60) {
-                    command.tick({
-                        // mock object
-                        date: Date.now(),
-                        chat: {
-                            id: i,
-                        },
-                    });
-                }
+            if (game.time > 0 && game.time - game.total < -10 && game.time % 5 === 0) {
+                command.tick({
+                    // mock object
+                    date: Date.now(),
+                    chat: {
+                        id: i,
+                    },
+                });
             }
         }
 
