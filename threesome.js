@@ -255,31 +255,14 @@ setInterval(() => {
                 },
             });
 
-            // TODO: move to threesome.command.js?
             if (game.time > 0 && game.time - game.total < -10) {
-                let userbase = game.usercount;
-                let userneed = Math.floor(Math.random() * 4);
-                const args = [];
-
-                for (const j in game.users) {
-                    if (Math.random() < userneed / userbase) {
-                        args.push(game.users[j].first_name || game.users[j].last_name);
-
-                        userneed -= 1;
-                    }
-
-                    userbase -= 1;
-                }
-
-                if (Math.random() < 0.05) {
-                    command.get({
-                        // mock object
-                        date: Date.now(),
-                        chat: {
-                            id: i,
-                        },
-                    }, '', args);
-                }
+                command.tick({
+                    // mock object
+                    date: Date.now(),
+                    chat: {
+                        id: i,
+                    },
+                });
             }
         }
 

@@ -159,5 +159,27 @@ module.exports = (bot, games, commands, writeCommand) => {
                 );
             }
         },
+
+        tick: (msg) => {
+            const game = games[msg.chat.id];
+
+            let userbase = game.usercount;
+            let userneed = Math.floor(Math.random() * 4);
+            const args = [];
+
+            for (const j in game.users) {
+                if (Math.random() < userneed / userbase) {
+                    args.push(game.users[j].first_name || game.users[j].last_name);
+
+                    userneed -= 1;
+                }
+
+                userbase -= 1;
+            }
+
+            if (Math.random() < Math.min(game.usercount, 5) / 60) {
+                module.exports.get(msg, '', args);
+            }
+        },
     };
 };
