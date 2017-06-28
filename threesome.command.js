@@ -8,7 +8,7 @@ module.exports = (bot, games, commands, writeCommand) => {
             let text = '';
 
             for (const i in command) {
-                text += i + '\n';
+                text += (i || '<bot自言自语>') + '\n';
             }
 
             if (text) {
