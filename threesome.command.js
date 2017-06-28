@@ -83,92 +83,95 @@ module.exports = (bot, games, commands, writeCommand) => {
                 let text = '';
                 let match = {};
 
-                if (entry.used && Math.random() >= (now - entry.used) / 30000 - 1) {
-                    continue;
-                }
-
-                for (let j = 0; j < entry.text.length; j += 1) {
-                    if (entry.text[j] === '$') {
-                        if (entry.text.slice(j).startsWith('$ME')) {
-                            text += msg.from.first_name || msg.from.last_name;
-                            j += 2;
-                        } else if (entry.text.slice(j).startsWith('$YOU')) {
-                            if (msg.reply_to_message) {
-                                text += msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name;
-                                match.you = 1;
-                                j += 3;
+                if (!entry.used || Math.random() < (now - entry.used) / 30000 - 1) {
+                    for (let j = 0; j < entry.text.length; j += 1) {
+                        if (entry.text[j] === '$') {
+                            if (entry.text.slice(j).startsWith('$ME')) {
+                                text += msg.from.first_name || msg.from.last_name;
+                                j += 2;
+                            } else if (entry.text.slice(j).startsWith('$YOU')) {
+                                if (msg.reply_to_message) {
+                                    text += msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name;
+                                    match.you = 1;
+                                    j += 3;
+                                } else {
+                                    match = null;
+                                    break;
+                                }
+                            } else if (entry.text.slice(j).startsWith('$MODE')) {
+                                if (game) {
+                                    text += game.modename;
+                                    match.mode = 1;
+                                    j += 4;
+                                } else {
+                                    match = null;
+                                    break;
+                                }
+                            } else if (entry.text.slice(j).startsWith('$1')) {
+                                if (args[0]) {
+                                    text += args[0] || '';
+                                    match.args = Math.max(match.args || 0, 1);
+                                    j += 1;
+                                } else {
+                                    match = null;
+                                    break;
+                                }
+                            } else if (entry.text.slice(j).startsWith('$2')) {
+                                if (args[1]) {
+                                    text += args[1] || '';
+                                    match.args = Math.max(match.args || 0, 2);
+                                    j += 1;
+                                } else {
+                                    match = null;
+                                    break;
+                                }
+                            } else if (entry.text.slice(j).startsWith('$3')) {
+                                if (args[2]) {
+                                    text += args[2] || '';
+                                    match.args = Math.max(match.args || 0, 3);
+                                    j += 1;
+                                } else {
+                                    match = null;
+                                    break;
+                                }
                             } else {
-                                match = null;
-                                break;
-                            }
-                        } else if (entry.text.slice(j).startsWith('$MODE')) {
-                            if (game) {
-                                text += game.modename;
-                                match.mode = 1;
-                                j += 4;
-                            } else {
-                                match = null;
-                                break;
-                            }
-                        } else if (entry.text.slice(j).startsWith('$1')) {
-                            if (args[0]) {
-                                text += args[0] || '';
-                                match.args = Math.max(match.args || 0, 1);
-                                j += 1;
-                            } else {
-                                match = null;
-                                break;
-                            }
-                        } else if (entry.text.slice(j).startsWith('$2')) {
-                            if (args[1]) {
-                                text += args[1] || '';
-                                match.args = Math.max(match.args || 0, 2);
-                                j += 1;
-                            } else {
-                                match = null;
-                                break;
-                            }
-                        } else if (entry.text.slice(j).startsWith('$3')) {
-                            if (args[2]) {
-                                text += args[2] || '';
-                                match.args = Math.max(match.args || 0, 3);
-                                j += 1;
-                            } else {
-                                match = null;
-                                break;
+                                text += entry.text[j];
                             }
                         } else {
                             text += entry.text[j];
                         }
-                    } else {
-                        text += entry.text[j];
-                    }
-                }
-
-                if (match) {
-                    let newLevel = 0;
-
-                    for (const j in match) {
-                        newLevel += match[j];
                     }
 
-                    if (level <= newLevel) {
-                        if (level < newLevel) {
-                            tot = [];
-                            level = newLevel;
+                    if (match) {
+                        let newLevel = 0;
+
+                        for (const j in match) {
+                            newLevel += match[j];
                         }
 
-                        tot.push(text);
+                        if (level <= newLevel) {
+                            if (level < newLevel) {
+                                tot = [];
+                                level = newLevel;
+                            }
 
-                        entry.used = now;
+                            tot.push({
+                                text: text,
+                                entry: entry,
+                            });
+                        }
                     }
                 }
             }
 
             if (tot.length > 0) {
+                const choice = Math.floor(Math.random() * tot.length);
+
+                tot[choice].entry.used = now;
+
                 return bot.sendMessage(
                     msg.chat.id,
-                    tot[Math.floor(Math.random() * tot.length)]
+                    tot[choice].text
                 );
             }
         },
