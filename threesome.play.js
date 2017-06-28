@@ -51,13 +51,24 @@ module.exports = (bot, games) => {
             const game = games[msg.chat.id];
 
             if (player) {
-                // TODO: verify users
+                for (const i in game.users) {
+                    const target = game.users[i];
 
-                return bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 把 '
-                    + player + ' 踢下了床'
-                );
+                    if (target.username === player) {
+                        game.usercount -= 1;
+                        delete game.users[i];
+
+                        if (!game.usercount) {
+                            game.time = game.total;
+                        }
+
+                        return bot.sendMessage(
+                            msg.chat.id,
+                            (msg.from.first_name || msg.from.last_name) + ' 把 '
+                            + (target.first_name || target.last_name) + ' 踢下了床'
+                        );
+                    }
+                }
             } else if (game.users[msg.from.id]) {
                 game.usercount -= 1;
                 delete game.users[msg.from.id];
