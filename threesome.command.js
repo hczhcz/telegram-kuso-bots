@@ -84,8 +84,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                 let match = {};
 
                 if (entry.used && Math.random() >= (now - entry.used) / 30000 - 1) {
-                    match = null;
-                    break;
+                    continue;
                 }
 
                 for (let j = 0; j < entry.text.length; j += 1) {
@@ -177,7 +176,7 @@ module.exports = (bot, games, commands, writeCommand) => {
         tick: (msg) => {
             const game = games[msg.chat.id];
 
-            if (Math.random() < (3 + Math.min(game.usercount, 3)) / 12) {
+            if (Math.random() < (1 + Math.min(game.usercount, 3)) / 12) {
                 const args = [];
 
                 let userbase = game.usercount;
