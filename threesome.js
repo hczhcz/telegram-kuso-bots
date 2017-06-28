@@ -228,10 +228,7 @@ bot.onText(/^\/add[^ ]* ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
-    // to avoid spam between bots
-    if (Math.random() < 0.99) {
-        command.get(msg, match[1], [match[3], match[5], match[7]]);
-    }
+    command.get(msg, match[1], [match[3], match[5], match[7]]);
 }));
 
 setInterval(() => {

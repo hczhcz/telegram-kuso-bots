@@ -28,7 +28,9 @@ module.exports = (bot, games, commands, writeCommand) => {
             let text = '';
 
             for (const i in command[key]) {
-                text += command[key][i] + '\n';
+                const entry = command[key][i];
+
+                text += entry.text + '\n';
             }
 
             if (text) {
@@ -48,7 +50,9 @@ module.exports = (bot, games, commands, writeCommand) => {
             const command = commands[msg.chat.id];
 
             command[key] = command[key] || [];
-            command[key].push(value);
+            command[key].push({
+                text: value,
+            });
 
             writeCommand(
                 msg.chat,
@@ -68,20 +72,28 @@ module.exports = (bot, games, commands, writeCommand) => {
         get: (msg, key, args) => {
             const game = games[msg.chat.id];
             const command = commands[msg.chat.id] || {};
+            const now = Date.now();
 
             let tot = [];
             let level = 0;
 
             for (const i in command[key]) {
+                const entry = command[key][i];
+
                 let text = '';
                 let match = {};
 
-                for (let j = 0; j < command[key][i].length; j += 1) {
-                    if (command[key][i][j] === '$') {
-                        if (command[key][i].slice(j).startsWith('$ME')) {
+                if (entry.used && Math.random() >= (now - entry.used) / 60000) {
+                    match = null;
+                    break;
+                }
+
+                for (let j = 0; j < entry.text.length; j += 1) {
+                    if (entry.text[j] === '$') {
+                        if (entry.text.slice(j).startsWith('$ME')) {
                             text += msg.from.first_name || msg.from.last_name;
                             j += 2;
-                        } else if (command[key][i].slice(j).startsWith('$YOU')) {
+                        } else if (entry.text.slice(j).startsWith('$YOU')) {
                             if (msg.reply_to_message) {
                                 text += msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name;
                                 match.you = 1;
@@ -90,7 +102,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                                 match = null;
                                 break;
                             }
-                        } else if (command[key][i].slice(j).startsWith('$MODE')) {
+                        } else if (entry.text.slice(j).startsWith('$MODE')) {
                             if (game) {
                                 text += game.modename;
                                 match.mode = 1;
@@ -99,7 +111,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                                 match = null;
                                 break;
                             }
-                        } else if (command[key][i].slice(j).startsWith('$1')) {
+                        } else if (entry.text.slice(j).startsWith('$1')) {
                             if (args[0]) {
                                 text += args[0] || '';
                                 match.args = Math.max(match.args || 0, 1);
@@ -108,7 +120,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                                 match = null;
                                 break;
                             }
-                        } else if (command[key][i].slice(j).startsWith('$2')) {
+                        } else if (entry.text.slice(j).startsWith('$2')) {
                             if (args[1]) {
                                 text += args[1] || '';
                                 match.args = Math.max(match.args || 0, 2);
@@ -117,7 +129,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                                 match = null;
                                 break;
                             }
-                        } else if (command[key][i].slice(j).startsWith('$3')) {
+                        } else if (entry.text.slice(j).startsWith('$3')) {
                             if (args[2]) {
                                 text += args[2] || '';
                                 match.args = Math.max(match.args || 0, 3);
@@ -127,10 +139,10 @@ module.exports = (bot, games, commands, writeCommand) => {
                                 break;
                             }
                         } else {
-                            text += command[key][i][j];
+                            text += entry.text[j];
                         }
                     } else {
-                        text += command[key][i][j];
+                        text += entry.text[j];
                     }
                 }
 
@@ -148,6 +160,8 @@ module.exports = (bot, games, commands, writeCommand) => {
                         }
 
                         tot.push(text);
+
+                        entry.used = now;
                     }
                 }
             }
@@ -183,6 +197,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                     const pos = Math.floor(Math.random() * (i + 1));
 
                     const tmp = args[i];
+
                     args[i] = args[pos];
                     args[pos] = tmp;
                 }
