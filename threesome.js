@@ -113,7 +113,7 @@ bot.onText(/^\/start100kills/, event((msg, match) => {
 }));
 
 bot.onText(/^\/extend(@\w+)?( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
-    let time = parseInt(match[2] || '30', 10);
+    let time = parseInt(match[3] || '30', 10);
 
     if (time > 300) {
         time = 300;
@@ -169,10 +169,10 @@ bot.onText(/^\/smite(@\w+)?( @?(\w+))?$/, event((msg, match) => {
 
         if (game.time <= 0) {
             // TODO: get user id from message?
-            //       if (match[2]) ...
+            //       if (match[3]) ...
             // gather.flee(msg);
         } else {
-            play.smite(msg, match[2]);
+            play.smite(msg, match[3]);
         }
     } else {
         info.na(msg);
@@ -220,15 +220,15 @@ bot.onText(/^\/listall$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/list(@\w+)?( ((?!_)\w*))?$/, event((msg, match) => {
-    command.list(msg, match[2] || '');
+    command.list(msg, match[3] || '');
 }));
 
 bot.onText(/^\/add(@\w+)? ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
-    command.add(msg, match[1], match[2]);
+    command.add(msg, match[2], match[3]);
 }));
 
 bot.onText(/^\/((?!_)\w+)(@\w+)?( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
-    command.get(msg, match[1], [match[3], match[5], match[7]]);
+    command.get(msg, match[1], [match[4], match[6], match[8]]);
 }));
 
 setInterval(() => {
