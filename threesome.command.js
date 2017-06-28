@@ -83,7 +83,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                 let text = '';
                 let match = {};
 
-                if (entry.used && Math.random() >= (now - entry.used) / 60000) {
+                if (entry.used && Math.random() >= (now - entry.used) / 30000 - 1) {
                     match = null;
                     break;
                 }
@@ -177,7 +177,7 @@ module.exports = (bot, games, commands, writeCommand) => {
         tick: (msg) => {
             const game = games[msg.chat.id];
 
-            if (Math.random() < Math.min(game.usercount, 3) / 12) {
+            if (Math.random() < (3 + Math.min(game.usercount, 3)) / 12) {
                 const args = [];
 
                 let userbase = game.usercount;
