@@ -65,7 +65,7 @@ module.exports = (bot, games) => {
                         return bot.sendMessage(
                             msg.chat.id,
                             (msg.from.first_name || msg.from.last_name) + ' 把 '
-                            + (target.first_name || target.last_name) + ' 踢下了床'
+                                + (target.first_name || target.last_name) + ' 踢下了床'
                         );
                     }
                 }
@@ -80,7 +80,7 @@ module.exports = (bot, games) => {
                 return bot.sendMessage(
                     msg.chat.id,
                     (msg.from.first_name || msg.from.last_name) + ' 忍不住射了出来，'
-                    + '离开了' + game.modename
+                        + '离开了' + game.modename
                 );
             }
         },

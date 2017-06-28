@@ -47,6 +47,46 @@ module.exports = (bot, games, writeGame) => {
             }
         },
 
+        smite: (msg, player) => {
+            const game = games[msg.chat.id];
+
+            if (player) {
+                for (const i in game.users) {
+                    const target = game.users[i];
+
+                    if (target.username === player) {
+                        game.usercount -= 1;
+                        delete game.users[i];
+
+                        if (game.time > -30) {
+                            game.time = -30;
+                        }
+
+                        return bot.sendMessage(
+                            msg.chat.id,
+                            (msg.from.first_name || msg.from.last_name) + ' 把 '
+                                + (target.first_name || target.last_name) + ' 踢下了床，'
+                                + '剩余 ' + game.usercount + ' 人'
+                        );
+                    }
+                }
+            } else if (game.users[msg.from.id]) {
+                game.usercount -= 1;
+                delete game.users[msg.from.id];
+
+                if (game.time > -30) {
+                    game.time = -30;
+                }
+
+                return bot.sendMessage(
+                    msg.chat.id,
+                    (msg.from.first_name || msg.from.last_name) + ' 摔下了床，'
+                        + '不再与大家啪啪\n\n'
+                        + '剩余 ' + game.usercount + ' 人'
+                );
+            }
+        },
+
         extend: (msg, time) => {
             const game = games[msg.chat.id];
 

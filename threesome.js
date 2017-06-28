@@ -168,9 +168,7 @@ bot.onText(/^\/smite(@\w+)?( @?(\w+))?$/, event((msg, match) => {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            // TODO: get user id from message?
-            //       if (match[3]) ...
-            // gather.flee(msg);
+            gather.smite(msg, match[3]);
         } else {
             play.smite(msg, match[3]);
         }
