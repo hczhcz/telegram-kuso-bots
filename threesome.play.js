@@ -50,14 +50,15 @@ module.exports = (bot, games) => {
         smite: (msg, player) => {
             const game = games[msg.chat.id];
 
-            // TODO: verify users
             if (player) {
+                // TODO: verify users
+
                 return bot.sendMessage(
                     msg.chat.id,
                     (msg.from.first_name || msg.from.last_name) + ' 把 '
                     + player + ' 踢下了床'
                 );
-            } else {
+            } else if (game.users[msg.from.id]) {
                 game.usercount -= 1;
                 delete game.users[msg.from.id];
 
@@ -108,11 +109,13 @@ module.exports = (bot, games) => {
                     msg.chat.id,
                     (msg.from.first_name || msg.from.last_name) + ' 强制让自己达到了高潮'
                 ).then(() => {
-                    game.usercount -= 1;
-                    delete game.users[msg.from.id];
+                    if (game.users[msg.from.id]) {
+                        game.usercount -= 1;
+                        delete game.users[msg.from.id];
 
-                    if (!game.usercount) {
-                        game.time = game.total;
+                        if (!game.usercount) {
+                            game.time = game.total;
+                        }
                     }
                 });
             }
