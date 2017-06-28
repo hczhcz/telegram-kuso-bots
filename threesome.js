@@ -112,7 +112,7 @@ bot.onText(/^\/start100kills/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/extend[^ ]*( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
+bot.onText(/^\/extend(@\w+)?( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
     let time = parseInt(match[2] || '30', 10);
 
     if (time > 300) {
@@ -163,7 +163,7 @@ bot.onText(/^\/flee/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/smite[^ ]*( @?(\w+))?$/, event((msg, match) => {
+bot.onText(/^\/smite(@\w+)?( @?(\w+))?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -219,15 +219,15 @@ bot.onText(/^\/listall$/, event((msg, match) => {
     command.all(msg);
 }));
 
-bot.onText(/^\/list[^ ]*( ((?!_)\w*))?$/, event((msg, match) => {
+bot.onText(/^\/list(@\w+)?( ((?!_)\w*))?$/, event((msg, match) => {
     command.list(msg, match[2] || '');
 }));
 
-bot.onText(/^\/add[^ ]* ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
+bot.onText(/^\/add(@\w+)? ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
     command.add(msg, match[1], match[2]);
 }));
 
-bot.onText(/^\/((?!_)\w+)[^ ]*( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
+bot.onText(/^\/((?!_)\w+)(@\w+)?( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
     command.get(msg, match[1], [match[3], match[5], match[7]]);
 }));
 
