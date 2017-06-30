@@ -8,7 +8,7 @@ module.exports = (bot, games, commands, writeCommand) => {
             let text = '';
 
             for (const i in command) {
-                text += (i || '<bot自言自语>') + '\n';
+                text += (i.slice(1) || '<bot自言自语>') + '\n';
             }
 
             if (text) {
@@ -27,8 +27,8 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             let text = '';
 
-            for (const i in command[key]) {
-                const entry = command[key][i];
+            for (const i in command['@' + key]) {
+                const entry = command['@' + key][i];
 
                 text += entry.text + '\n';
             }
@@ -49,8 +49,8 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             const command = commands[msg.chat.id];
 
-            command[key] = command[key] || [];
-            command[key].push({
+            command['@' + key] = command['@' + key] || [];
+            command['@' + key].push({
                 text: value,
             });
 
@@ -77,8 +77,8 @@ module.exports = (bot, games, commands, writeCommand) => {
             let tot = [];
             let level = 0;
 
-            for (const i in command[key]) {
-                const entry = command[key][i];
+            for (const i in command['@' + key]) {
+                const entry = command['@' + key][i];
 
                 let text = '';
                 let match = {};

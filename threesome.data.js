@@ -21,8 +21,8 @@ module.exports = (pathActions, pathCommands) => {
 
                 const command = commands[entry.chat.id];
 
-                command[entry.key] = command[entry.key] || [];
-                command[entry.key].push({
+                command['@' + entry.key] = command['@' + entry.key] || [];
+                command['@' + entry.key].push({
                     text: entry.value,
                 });
             }
