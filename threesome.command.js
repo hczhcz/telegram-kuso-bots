@@ -50,6 +50,19 @@ module.exports = (bot, games, commands, writeCommand) => {
             const command = commands[msg.chat.id];
 
             command['@' + key] = command['@' + key] || [];
+
+            for (const i in command['@' + key]) {
+                if (command['@' + key][i].text === value) {
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '已经加过了啦！',
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                }
+            }
+
             command['@' + key].push({
                 text: value,
             });
