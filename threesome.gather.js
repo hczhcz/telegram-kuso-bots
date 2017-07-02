@@ -51,19 +51,21 @@ module.exports = (bot, games, writeGame) => {
             const game = games[msg.chat.id];
 
             if (msg.reply_to_message) {
-                game.usercount -= 1;
-                delete game.users[msg.reply_to_message.from.id];
+                if (game.users[msg.reply_to_message.from.id]) {
+                    game.usercount -= 1;
+                    delete game.users[msg.reply_to_message.from.id];
 
-                if (game.time > -30) {
-                    game.time = -30;
+                    if (game.time > -30) {
+                        game.time = -30;
+                    }
+
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        (msg.from.first_name || msg.from.last_name) + ' 把 '
+                            + (msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name) + ' 踢下了床，'
+                            + '剩余 ' + game.usercount + ' 人'
+                    );
                 }
-
-                return bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 把 '
-                        + (msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name) + ' 踢下了床，'
-                        + '剩余 ' + game.usercount + ' 人'
-                );
             } else {
                 self.flee(msg);
             }
