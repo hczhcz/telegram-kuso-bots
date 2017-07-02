@@ -94,6 +94,10 @@ module.exports = (bot, games) => {
 
             game.total += time;
 
+            if (game.time > game.total) {
+                game.total = game.time;
+            }
+
             // TODO: check user
             if (time > 0) {
                 return bot.sendMessage(
