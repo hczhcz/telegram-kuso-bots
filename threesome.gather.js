@@ -47,6 +47,34 @@ module.exports = (bot, games, writeGame) => {
             }
         },
 
+        invite: (msg) => {
+            const game = games[msg.chat.id];
+
+            if (msg.reply_to_message) {
+                if (!game.users[msg.reply_to_message.from.id] && game.usercount < game.modemax) {
+                    game.usercount += 1;
+                    game.users[msg.reply_to_message.from.id] = msg.reply_to_message.from;
+
+                    if (game.time > -60) {
+                        game.time = -60;
+                    }
+
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        (msg.from.first_name || msg.from.last_name) + ' 给 '
+                            + (msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name) + ' 灌下了春药，'
+                            + game.usercount + ' 名禽兽参加，'
+                            + '最少 ' + game.modemin + ' 人参加，'
+                            + '最多 ' + game.modemax + ' 人参加'
+                    ).then(() => {
+                        if (game.usercount === game.modemax) {
+                            game.time = 0;
+                        }
+                    });
+                }
+            }
+        },
+
         smite: (msg) => {
             const game = games[msg.chat.id];
 

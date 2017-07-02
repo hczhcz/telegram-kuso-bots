@@ -163,6 +163,20 @@ bot.onText(/^\/flee/, event((msg, match) => {
     }
 }));
 
+bot.onText(/^\/invite/, event((msg, match) => {
+    if (data.games[msg.chat.id]) {
+        const game = data.games[msg.chat.id];
+
+        if (game.time <= 0) {
+            gather.invite(msg);
+        } else {
+            play.invite(msg);
+        }
+    } else {
+        info.na(msg);
+    }
+}));
+
 bot.onText(/^\/smite/, event((msg, match) => {
     // notice: smiting with "@username" is deprecated
 

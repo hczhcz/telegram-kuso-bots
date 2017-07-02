@@ -47,6 +47,25 @@ module.exports = (bot, games) => {
             }
         },
 
+        invite: (msg) => {
+            const game = games[msg.chat.id];
+
+            if (msg.reply_to_message) {
+                game.total += 60;
+
+                if (!game.users[msg.reply_to_message.from.id]) {
+                    game.usercount += 1;
+                    game.users[msg.reply_to_message.from.id] = msg.reply_to_message.from;
+
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        (msg.from.first_name || msg.from.last_name) + ' 强行推倒了 '
+                            + (msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name)
+                    );
+                }
+            }
+        },
+
         smite: (msg) => {
             const game = games[msg.chat.id];
 
