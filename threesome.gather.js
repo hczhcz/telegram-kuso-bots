@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (bot, games, writeGame) => {
-    return {
+    const self = {
         join: (msg) => {
             const game = games[msg.chat.id];
 
@@ -64,20 +64,8 @@ module.exports = (bot, games, writeGame) => {
                         + (msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name) + ' 踢下了床，'
                         + '剩余 ' + game.usercount + ' 人'
                 );
-            } else if (game.users[msg.from.id]) {
-                game.usercount -= 1;
-                delete game.users[msg.from.id];
-
-                if (game.time > -30) {
-                    game.time = -30;
-                }
-
-                return bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 摔下了床，'
-                        + '不再与大家啪啪\n\n'
-                        + '剩余 ' + game.usercount + ' 人'
-                );
+            } else {
+                self.flee(msg);
             }
         },
 
@@ -199,4 +187,6 @@ module.exports = (bot, games, writeGame) => {
             }
         },
     };
+
+    return self;
 };
