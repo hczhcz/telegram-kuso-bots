@@ -47,29 +47,23 @@ module.exports = (bot, games, writeGame) => {
             }
         },
 
-        smite: (msg, player) => {
+        smite: (msg) => {
             const game = games[msg.chat.id];
 
-            if (player) {
-                for (const i in game.users) {
-                    const target = game.users[i];
+            if (msg.reply_to_message) {
+                game.usercount -= 1;
+                delete game.users[msg.reply_to_message.from.id];
 
-                    if (target.username === player) {
-                        game.usercount -= 1;
-                        delete game.users[i];
-
-                        if (game.time > -30) {
-                            game.time = -30;
-                        }
-
-                        return bot.sendMessage(
-                            msg.chat.id,
-                            (msg.from.first_name || msg.from.last_name) + ' 把 '
-                                + (target.first_name || target.last_name) + ' 踢下了床，'
-                                + '剩余 ' + game.usercount + ' 人'
-                        );
-                    }
+                if (game.time > -30) {
+                    game.time = -30;
                 }
+
+                return bot.sendMessage(
+                    msg.chat.id,
+                    (msg.from.first_name || msg.from.last_name) + ' 把 '
+                        + (msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name) + ' 踢下了床，'
+                        + '剩余 ' + game.usercount + ' 人'
+                );
             } else if (game.users[msg.from.id]) {
                 game.usercount -= 1;
                 delete game.users[msg.from.id];
