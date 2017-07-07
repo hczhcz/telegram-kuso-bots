@@ -17,9 +17,12 @@ process.on('uncaughtException', (err) => {
 
 const event = (handler) => {
     return (msg, match) => {
-        console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
+        if (!msg.has_log) {
+            console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
+            data.writeMessage(msg);
 
-        data.writeMessage(msg);
+            msg.has_log = true;
+        }
 
         if (config.threesomeBan[msg.from.id]) {
             bot.sendMessage(
