@@ -19,10 +19,7 @@ const event = (handler) => {
     return (msg, match) => {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
 
-        data.writeMessage(
-            msg,
-            match
-        );
+        data.writeMessage(msg);
 
         if (config.threesomeBan[msg.from.id]) {
             bot.sendMessage(

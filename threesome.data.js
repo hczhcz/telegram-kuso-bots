@@ -33,10 +33,9 @@ module.exports = (pathActions, pathCommands) => {
         games: games,
         commands: commands,
 
-        writeMessage: (msg, match) => {
+        writeMessage: (msg) => {
             fs.write(fdActions, JSON.stringify({
                 msg: msg,
-                match: match,
             }) + ',\n', () => {});
         },
 
