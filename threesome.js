@@ -109,8 +109,8 @@ bot.onText(/^\/start100kills/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/extend(@\w+)?( ([+\-]?\d+)\w*)?$/, event((msg, match) => {
-    let time = parseInt(match[3] || '30', 10);
+bot.onText(/^\/extend(?:@\w+)?(?: ([+\-]?\d+)\w*)?$/, event((msg, match) => {
+    let time = parseInt(match[1] || '30', 10);
 
     if (time > 300) {
         time = 300;
@@ -230,16 +230,16 @@ bot.onText(/^\/listall$/, event((msg, match) => {
     command.all(msg);
 }));
 
-bot.onText(/^\/list(@\w+)?( ((?!_)\w*))?$/, event((msg, match) => {
-    command.list(msg, match[3] || '');
+bot.onText(/^\/list(?:@\w+)?(?: ((?!_)\w*))?$/, event((msg, match) => {
+    command.list(msg, match[1] || '');
 }));
 
-bot.onText(/^\/add(@\w+)? ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
-    command.add(msg, match[2], match[3]);
+bot.onText(/^\/add(?:@\w+)? ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
+    command.add(msg, match[1], match[2]);
 }));
 
-bot.onText(/^\/((?!_)\w+)(@\w+)?( ([^\r\n ]+))?( ([^\r\n ]+))?( ([^\r\n ]+))?$/, event((msg, match) => {
-    command.get(msg, match[1], [match[4], match[6], match[8]]);
+bot.onText(/^\/((?!_)\w+)(?:@\w+)?(?: ([^\r\n ]+))?(?: ([^\r\n ]+))?(?: ([^\r\n ]+))?$/, event((msg, match) => {
+    command.get(msg, match[1], [match[2], match[3], match[4]]);
 }));
 
 setInterval(() => {
