@@ -38,6 +38,31 @@ const event = (handler) => {
     };
 };
 
+const playerEvent = (msg, handler) => {
+    for (const i in msg.entities) {
+        switch (msg.entities[i].type) {
+            case 'mention':
+                // TODO: not supported
+                // bot.get???(
+                //     msg.text.slice(
+                //         msg.entities[i].offset + 1,
+                //         msg.entities[i].offset + msg.entities[i].length
+                //     )
+                // ).then((member) => {
+                //     handler(member.user);
+                // });
+
+                // return;
+            case 'text_mention':
+                handler(msg.entities[i].user);
+
+                return;
+        }
+    }
+
+    handler(msg.reply_to_message && msg.reply_to_message.from);
+};
+
 bot.onText(/^\/nextsex/, event((msg, match) => {
     info.next(msg);
 }));
@@ -164,55 +189,35 @@ bot.onText(/^\/flee/, event((msg, match) => {
 }));
 
 bot.onText(/^\/invite(?:@\w+)?(?: @\w+)?$/, event((msg, match) => {
-    let player = null;
+    playerEvent(msg, (player) => {
+        if (data.games[msg.chat.id]) {
+            const game = data.games[msg.chat.id];
 
-    if (msg.reply_to_message) {
-        player = msg.reply_to_message.from;
-    }
-
-    for (const i in msg.entities) {
-        if (msg.entities[i].type === 'mention') {
-            player = msg.entities[0].user;
-        }
-    }
-
-    if (data.games[msg.chat.id]) {
-        const game = data.games[msg.chat.id];
-
-        if (game.time <= 0) {
-            gather.invite(msg, player);
+            if (game.time <= 0) {
+                gather.invite(msg, player);
+            } else {
+                play.invite(msg, player);
+            }
         } else {
-            play.invite(msg, player);
+            info.na(msg);
         }
-    } else {
-        info.na(msg);
-    }
+    });
 }));
 
 bot.onText(/^\/smite(?:@\w+)?(?: @\w+)?$/, event((msg, match) => {
-    let player = null;
+    playerEvent(msg, (player) => {
+        if (data.games[msg.chat.id]) {
+            const game = data.games[msg.chat.id];
 
-    if (msg.reply_to_message) {
-        player = msg.reply_to_message.from;
-    }
-
-    for (const i in msg.entities) {
-        if (msg.entities[i].type === 'mention') {
-            player = msg.entities[0].user;
-        }
-    }
-
-    if (data.games[msg.chat.id]) {
-        const game = data.games[msg.chat.id];
-
-        if (game.time <= 0) {
-            gather.smite(msg, player);
+            if (game.time <= 0) {
+                gather.smite(msg, player);
+            } else {
+                play.smite(msg, player);
+            }
         } else {
-            play.smite(msg, player);
+            info.na(msg);
         }
-    } else {
-        info.na(msg);
-    }
+    });
 }));
 
 bot.onText(/^\/forcestart/, event((msg, match) => {
