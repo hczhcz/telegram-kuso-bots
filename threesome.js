@@ -163,30 +163,52 @@ bot.onText(/^\/flee/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/invite/, event((msg, match) => {
+bot.onText(/^\/invite(?:@\w+)?(?: @\w+)?$/, event((msg, match) => {
+    let player = null;
+
+    if (msg.reply_to_message) {
+        player = msg.reply_to_message.from;
+    }
+
+    for (const i in msg.entities) {
+        if (msg.entities[i].type === 'mention') {
+            player = msg.entities[0].user;
+        }
+    }
+
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            gather.invite(msg);
+            gather.invite(msg, player);
         } else {
-            play.invite(msg);
+            play.invite(msg, player);
         }
     } else {
         info.na(msg);
     }
 }));
 
-bot.onText(/^\/smite/, event((msg, match) => {
-    // notice: smiting with "@username" is deprecated
+bot.onText(/^\/smite(?:@\w+)?(?: @\w+)?$/, event((msg, match) => {
+    let player = null;
+
+    if (msg.reply_to_message) {
+        player = msg.reply_to_message.from;
+    }
+
+    for (const i in msg.entities) {
+        if (msg.entities[i].type === 'mention') {
+            player = msg.entities[0].user;
+        }
+    }
 
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
         if (game.time <= 0) {
-            gather.smite(msg);
+            gather.smite(msg, player);
         } else {
-            play.smite(msg);
+            play.smite(msg, player);
         }
     } else {
         info.na(msg);

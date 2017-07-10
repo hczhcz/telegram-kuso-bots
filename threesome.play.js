@@ -47,32 +47,32 @@ module.exports = (bot, games) => {
             }
         },
 
-        invite: (msg) => {
+        invite: (msg, player) => {
             const game = games[msg.chat.id];
 
-            if (msg.reply_to_message) {
+            if (player) {
                 game.total += 60;
 
-                if (!game.users[msg.reply_to_message.from.id]) {
+                if (!game.users[player.id]) {
                     game.usercount += 1;
-                    game.users[msg.reply_to_message.from.id] = msg.reply_to_message.from;
+                    game.users[player.id] = player;
 
                     return bot.sendMessage(
                         msg.chat.id,
                         (msg.from.first_name || msg.from.last_name) + ' 强行推倒了 '
-                            + (msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name)
+                            + (player.first_name || player.last_name)
                     );
                 }
             }
         },
 
-        smite: (msg) => {
+        smite: (msg, player) => {
             const game = games[msg.chat.id];
 
-            if (msg.reply_to_message) {
-                if (game.users[msg.reply_to_message.from.id]) {
+            if (player) {
+                if (game.users[player.id]) {
                     game.usercount -= 1;
-                    delete game.users[msg.reply_to_message.from.id];
+                    delete game.users[player.id];
 
                     if (!game.usercount) {
                         game.time = game.total;
@@ -81,7 +81,7 @@ module.exports = (bot, games) => {
                     return bot.sendMessage(
                         msg.chat.id,
                         (msg.from.first_name || msg.from.last_name) + ' 把 '
-                            + (msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name) + ' 踢下了床'
+                            + (player.first_name || player.last_name) + ' 踢下了床'
                     );
                 }
             } else {
