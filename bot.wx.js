@@ -71,6 +71,13 @@ module.exports = () => {
         return bot.sendText(text, user);
     };
 
+    bot.getChatAdministrators = (chat) => {
+        return new Promise((resolve, reject) => {
+            // TODO
+            resolve([]);
+        });
+    };
+
     bot.on('login', () => {
         console.log('login');
     });

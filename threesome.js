@@ -42,17 +42,24 @@ const playerEvent = (msg, handler) => {
     for (const i in msg.entities) {
         switch (msg.entities[i].type) {
             case 'mention':
-                // TODO: not supported
-                // bot.get???(
-                //     msg.text.slice(
-                //         msg.entities[i].offset + 1,
-                //         msg.entities[i].offset + msg.entities[i].length
-                //     )
-                // ).then((member) => {
-                //     handler(member.user);
-                // });
+                // TODO: support all users instead of admins only
+                // TODO: detect if the chat is a group
+                bot.getChatAdministrators(msg.chat.id).then((members) => {
+                    const username = msg.text.slice(
+                        msg.entities[i].offset + 1,
+                        msg.entities[i].offset + msg.entities[i].length
+                    );
 
-                // return;
+                    for (const j in members) {
+                        if (members[j].user.username === username) {
+                            handler(members[j].user);
+
+                            return;
+                        }
+                    }
+                });
+
+                return;
             case 'text_mention':
                 handler(msg.entities[i].user);
 
@@ -188,7 +195,7 @@ bot.onText(/^\/flee/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/invite(?:@\w+)?(?: @\w+)?$/, event((msg, match) => {
+bot.onText(/^\/invite(?:@\w+)?(?: @?\w+)?$/, event((msg, match) => {
     playerEvent(msg, (player) => {
         if (data.games[msg.chat.id]) {
             const game = data.games[msg.chat.id];
@@ -204,7 +211,7 @@ bot.onText(/^\/invite(?:@\w+)?(?: @\w+)?$/, event((msg, match) => {
     });
 }));
 
-bot.onText(/^\/smite(?:@\w+)?(?: @\w+)?$/, event((msg, match) => {
+bot.onText(/^\/smite(?:@\w+)?(?: @?\w+)?$/, event((msg, match) => {
     playerEvent(msg, (player) => {
         if (data.games[msg.chat.id]) {
             const game = data.games[msg.chat.id];
