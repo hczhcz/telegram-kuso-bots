@@ -171,6 +171,8 @@ module.exports = (bot, games) => {
                         msg.chat.id,
                         '啪啪结束'
                     );
+                default:
+                    // nothing
             }
         },
     };

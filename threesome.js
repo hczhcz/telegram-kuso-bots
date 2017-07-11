@@ -65,6 +65,8 @@ const playerEvent = (msg, handler) => {
                 handler(msg.entities[i].user);
 
                 return;
+            default:
+                // nothing
         }
     }
 

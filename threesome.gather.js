@@ -214,6 +214,8 @@ module.exports = (bot, games, writeGame) => {
                             '禽兽人数不足，已取消' + mode
                         );
                     }
+                default:
+                    // nothing
             }
         },
     };

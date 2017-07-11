@@ -36,14 +36,18 @@ module.exports = (pathActions, pathCommands) => {
         writeMessage: (msg) => {
             fs.write(fdActions, JSON.stringify({
                 msg: msg,
-            }) + ',\n', () => {});
+            }) + ',\n', () => {
+                // nothing
+            });
         },
 
         writeGame: (msg, game) => {
             fs.write(fdActions, JSON.stringify({
                 msg: msg,
                 game: game,
-            }) + ',\n', () => {});
+            }) + ',\n', () => {
+                // nothing
+            });
         },
 
         writeCommand: (chat, key, value) => {
@@ -51,7 +55,9 @@ module.exports = (pathActions, pathCommands) => {
                 chat: chat,
                 key: key,
                 value: value,
-            }) + ',\n', () => {});
+            }) + ',\n', () => {
+                // nothing
+            });
         },
     };
 };
