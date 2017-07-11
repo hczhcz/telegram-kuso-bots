@@ -43,21 +43,22 @@ const playerEvent = (msg, handler) => {
         switch (msg.entities[i].type) {
             case 'mention':
                 // TODO: support all users instead of admins only
-                // TODO: detect if the chat is a group
-                bot.getChatAdministrators(msg.chat.id).then((members) => {
-                    const username = msg.text.slice(
-                        msg.entities[i].offset + 1,
-                        msg.entities[i].offset + msg.entities[i].length
-                    );
+                if (msg.chat.type !== 'private') {
+                    bot.getChatAdministrators(msg.chat.id).then((members) => {
+                        const username = msg.text.slice(
+                            msg.entities[i].offset + 1,
+                            msg.entities[i].offset + msg.entities[i].length
+                        );
 
-                    for (const j in members) {
-                        if (members[j].user.username === username) {
-                            handler(members[j].user);
+                        for (const j in members) {
+                            if (members[j].user.username === username) {
+                                handler(members[j].user);
 
-                            return;
+                                return;
+                            }
                         }
-                    }
-                });
+                    });
+                }
 
                 return;
             case 'text_mention':
