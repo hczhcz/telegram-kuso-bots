@@ -72,10 +72,10 @@ module.exports = () => {
     };
 
     bot.getChatAdministrators = (chat) => {
-        return new Promise((resolve, reject) => {
-            // TODO
-            resolve([]);
-        });
+        // notice: temporary solution
+        // TODO
+
+        return Promise.resolve([]);
     };
 
     bot.on('login', () => {
