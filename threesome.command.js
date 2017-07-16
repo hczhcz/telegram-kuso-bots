@@ -192,7 +192,7 @@ module.exports = (bot, games, commands, writeCommand) => {
         tick: (msg) => {
             const game = games[msg.chat.id];
 
-            if (Math.random() < (1 + Math.min(game.usercount, 3)) / 12) {
+            if (Math.random() < (1 + Math.min(game.usercount, 3)) / 8) {
                 const args = [];
 
                 let userbase = game.usercount;

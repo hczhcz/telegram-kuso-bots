@@ -303,7 +303,7 @@ setInterval(() => {
                 },
             });
 
-            if (game.time > 0 && game.time - game.total < -10 && game.time % 5 === 0) {
+            if (game.time > 0 && game.time - game.total < -15 && game.time % 10 === 0) {
                 command.tick({
                     // mock object
                     date: Date.now(),

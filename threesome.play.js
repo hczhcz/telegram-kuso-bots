@@ -144,22 +144,22 @@ module.exports = (bot, games) => {
             const game = games[msg.chat.id];
 
             switch (game.time - game.total) {
-                case -10:
+                case -15:
                     return bot.sendMessage(
                         msg.chat.id,
                         '啊……快到了'
                     );
-                case -6:
+                case -9:
                     return bot.sendMessage(
                         msg.chat.id,
                         '啊…'
                     );
-                case -4:
+                case -6:
                     return bot.sendMessage(
                         msg.chat.id,
                         '啊啊啊……'
                     );
-                case -2:
+                case -3:
                     return bot.sendMessage(
                         msg.chat.id,
                         '唔哇啊啊啊啊…………'
