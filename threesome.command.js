@@ -100,8 +100,14 @@ module.exports = (bot, games, commands, writeCommand) => {
                     for (let j = 0; j < entry.text.length; j += 1) {
                         if (entry.text[j] === '$') {
                             if (entry.text.slice(j).startsWith('$ME')) {
-                                text += msg.from.first_name || msg.from.last_name;
-                                j += 2;
+                                // notice: protection for mock objects
+                                if (msg.from) {
+                                    text += msg.from.first_name || msg.from.last_name;
+                                    j += 2;
+                                } else {
+                                    match = null;
+                                    break;
+                                }
                             } else if (entry.text.slice(j).startsWith('$YOU')) {
                                 if (msg.reply_to_message) {
                                     text += msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name;
