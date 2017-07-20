@@ -6,10 +6,10 @@ const bot = require('./bot.' + config.bot)(config.threesomeToken);
 const data = require('./threesome.data')(config.threesomePathActions, config.threesomePathCommands);
 
 const info = require('./threesome.info')(bot);
-const command = require('./threesome.command')(bot, data.games, data.commands, data.writeCommand);
 const gather = require('./threesome.gather')(bot, data.games, data.writeGame);
 const init = require('./threesome.init')(bot, data.games);
 const play = require('./threesome.play')(bot, data.games);
+const command = require('./threesome.command')(bot, data.games, data.commands, data.writeCommand);
 
 process.on('uncaughtException', (err) => {
     console.error(err);
@@ -26,13 +26,7 @@ const event = (handler, atIndex) => {
             }
 
             if (config.threesomeBan[msg.from.id]) {
-                bot.sendMessage(
-                    msg.chat.id,
-                    '妈的 JB 都没你啪个毛',
-                    {
-                        reply_to_message_id: msg.message_id,
-                    }
-                );
+                info.banned(msg);
             } else {
                 handler(msg, match);
             }

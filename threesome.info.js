@@ -26,5 +26,15 @@ module.exports = (bot) => {
                 }
             );
         },
+
+        banned: (msg) => {
+            return bot.sendMessage(
+                msg.chat.id,
+                '妈的 JB 都没你啪个毛',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        },
     };
 };
