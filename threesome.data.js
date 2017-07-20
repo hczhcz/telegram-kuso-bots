@@ -41,6 +41,14 @@ module.exports = (pathActions, pathCommands) => {
             });
         },
 
+        writeQuery: (query) => {
+            fs.write(fdActions, JSON.stringify({
+                query: query,
+            }) + ',\n', () => {
+                // nothing
+            });
+        },
+
         writeGame: (msg, game) => {
             fs.write(fdActions, JSON.stringify({
                 msg: msg,

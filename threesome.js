@@ -10,6 +10,7 @@ const gather = require('./threesome.gather')(bot, data.games, data.writeGame);
 const init = require('./threesome.init')(bot, data.games);
 const play = require('./threesome.play')(bot, data.games);
 const command = require('./threesome.command')(bot, data.games, data.commands, data.writeCommand);
+const inline = require('./threesome.inline')(bot);
 
 process.on('uncaughtException', (err) => {
     console.error(err);
@@ -25,6 +26,7 @@ const event = (handler, atIndex) => {
                 msg.has_log = true;
             }
 
+            // notice: take care of the inline query event
             if (config.threesomeBan[msg.from.id]) {
                 info.banned(msg);
             } else {
@@ -277,6 +279,17 @@ bot.onText(/^\/add(@\w+)? ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
 bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n ]+))?(?: ([^\r\n ]+))?(?: ([^\r\n ]+))?$/, event((msg, match) => {
     command.get(msg, match[1], [match[3], match[4], match[5]]);
 }, 2));
+
+bot.on('inline_query', (query) => {
+    console.log('[' + Date() + '] inline:' + query.from.id + ' ' + query.query);
+    data.writeQuery(query);
+
+    if (config.threesomeBan[query.from.id]) {
+        inline.banned(query);
+    } else {
+        inline.answer(query);
+    }
+});
 
 setInterval(() => {
     for (const i in data.games) {
