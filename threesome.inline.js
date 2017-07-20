@@ -4,7 +4,10 @@ module.exports = (bot) => {
     return {
         answer: (query) => {
             const randomSeparator = () => {
-                const content = ['…', '……', '………', '。。', '。。。'];
+                const content = [
+                    '…', '…', '…', '……', '……', '………',
+                    '。。', '。。。',
+                ];
 
                 return content[Math.floor(Math.random() * content.length)];
             };
@@ -23,7 +26,7 @@ module.exports = (bot) => {
 
                 let str = content[Math.floor(Math.random() * content.length)];
 
-                while (str.length < 20 && Math.random() < 0.5) {
+                while (str.length < 20 && Math.random() < 0.25) {
                     str += randomSeparator() + content[Math.floor(Math.random() * content.length)];
                 }
 
@@ -35,12 +38,14 @@ module.exports = (bot) => {
             const tokens = query.query.split(' ');
 
             for (const i in tokens) {
-                str += tokens[i] + randomSeparator() + randomText() + randomSeparator();
+                if (tokens[i]) {
+                    str += tokens[i] + randomSeparator() + randomText() + randomSeparator();
+                }
             }
 
             return bot.answerInlineQuery(query.id, [{
                 type: 'article',
-                id: 0,
+                id: 'CONTENT',
                 title: '娇喘',
                 input_message_content: {
                     message_text: str,
@@ -51,7 +56,7 @@ module.exports = (bot) => {
         banned: (query) => {
             return bot.answerInlineQuery(query.id, [{
                 type: 'article',
-                id: 0,
+                id: 'BANNED',
                 title: '娇喘',
                 input_message_content: {
                     message_text: '妈的 JB 都没我啪个毛',
