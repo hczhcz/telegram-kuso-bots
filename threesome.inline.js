@@ -35,7 +35,13 @@ module.exports = (bot) => {
 
             let str = randomText() + randomSeparator();
 
-            const tokens = query.query.split(' ');
+            let tokens = null;
+
+            if (query.query.match('@')) {
+                tokens = query.query.split('@');
+            } else {
+                tokens = query.query.split(' ');
+            }
 
             for (const i in tokens) {
                 if (tokens[i]) {
@@ -50,7 +56,10 @@ module.exports = (bot) => {
                 input_message_content: {
                     message_text: str,
                 },
-            }]);
+            }], {
+                cache_time: 0,
+                is_personal: true,
+            });
         },
 
         banned: (query) => {
@@ -61,7 +70,10 @@ module.exports = (bot) => {
                 input_message_content: {
                     message_text: '妈的 JB 都没我啪个毛',
                 },
-            }]);
+            }], {
+                cache_time: 0,
+                is_personal: true,
+            });
         },
     };
 };
