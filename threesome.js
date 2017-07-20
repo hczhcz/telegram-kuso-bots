@@ -73,11 +73,11 @@ const playerEvent = (msg, handler) => {
     handler(msg.reply_to_message && msg.reply_to_message.from);
 };
 
-bot.onText(/^\/nextsex/, event((msg, match) => {
+bot.onText(/^\/nextsex(?:@\w+)?$/, event((msg, match) => {
     info.next(msg);
 }));
 
-bot.onText(/^\/startmasturbate/, event((msg, match) => {
+bot.onText(/^\/startmasturbate(?:@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -91,7 +91,7 @@ bot.onText(/^\/startmasturbate/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/startsex/, event((msg, match) => {
+bot.onText(/^\/startsex(?:@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -105,7 +105,7 @@ bot.onText(/^\/startsex/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/startthreesome/, event((msg, match) => {
+bot.onText(/^\/startthreesome(?:@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -119,7 +119,7 @@ bot.onText(/^\/startthreesome/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/startgroupsex/, event((msg, match) => {
+bot.onText(/^\/startgroupsex(?:@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -133,7 +133,7 @@ bot.onText(/^\/startgroupsex/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/start100kills/, event((msg, match) => {
+bot.onText(/^\/start100kills(?:@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -170,7 +170,7 @@ bot.onText(/^\/extend(?:@\w+)?(?: ([+\-]?\d+)\w*)?$/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/join/, event((msg, match) => {
+bot.onText(/^\/join(?:@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -184,7 +184,7 @@ bot.onText(/^\/join/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/flee/, event((msg, match) => {
+bot.onText(/^\/flee(?:@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -230,7 +230,7 @@ bot.onText(/^\/smite(?:@\w+)?(?: @?\w+)?$/, event((msg, match) => {
     });
 }));
 
-bot.onText(/^\/forcestart/, event((msg, match) => {
+bot.onText(/^\/forcestart(?:@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -242,7 +242,7 @@ bot.onText(/^\/forcestart/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/forcefallback/, event((msg, match) => {
+bot.onText(/^\/forcefallback(?:@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -254,7 +254,7 @@ bot.onText(/^\/forcefallback/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/forceorgasm/, event((msg, match) => {
+bot.onText(/^\/forceorgasm(?:@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
         const game = data.games[msg.chat.id];
 
@@ -266,7 +266,7 @@ bot.onText(/^\/forceorgasm/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/listall$/, event((msg, match) => {
+bot.onText(/^\/listall(?:@\w+)?$/, event((msg, match) => {
     command.all(msg);
 }));
 
