@@ -17,14 +17,18 @@ bot.on('message', (msg) => {
     }
 });
 
-bot.onText('/ban', (msg, match) => {
+bot.onText(/\/ban/, (msg, match) => {
     if (config.blockAdmin[msg.from.id]) {
+        console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ban');
+
         enable = true;
     }
 });
 
-bot.onText('/unban', (msg, match) => {
+bot.onText(/\/unban/, (msg, match) => {
     if (config.blockAdmin[msg.from.id]) {
+        console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' unban');
+
         enable = false;
     }
 });
