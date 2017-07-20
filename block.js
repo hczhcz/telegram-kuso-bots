@@ -7,10 +7,24 @@ process.on('uncaughtException', (err) => {
     console.err(err);
 });
 
+let enable = true;
+
 bot.on('message', (msg) => {
-    if (config.block[msg.from.id]) {
+    if (enable && config.blockBan[msg.from.id]) {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + msg.text);
 
         bot.deleteMessage(msg.chat.id, msg.message_id);
+    }
+});
+
+bot.onText('/ban', (msg, match) => {
+    if (config.blockAdmin[msg.from.id]) {
+        enable = true;
+    }
+});
+
+bot.onText('/unban', (msg, match) => {
+    if (config.blockAdmin[msg.from.id]) {
+        enable = false;
     }
 });
