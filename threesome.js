@@ -281,14 +281,19 @@ bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n ]+))?(?: ([^\r\n ]+))?(?: ([^\r\n ]+
 }, 2));
 
 bot.on('inline_query', (query) => {
-    console.log('[' + Date() + '] inline:' + query.from.id + ' ' + query.query);
-    data.writeQuery(query);
+    // console.log('[' + Date() + '] inline:' + query.from.id + ' ' + query.query);
+    // data.writeQuery(query);
 
     if (config.threesomeBan[query.from.id]) {
         inline.banned(query);
     } else {
         inline.answer(query);
     }
+});
+
+bot.on('chosen_inline_result', (chosen) => {
+    console.log('[' + Date() + '] inline:' + chosen.from.id + ' ' + chosen.query.query);
+    data.writeQuery(chosen);
 });
 
 setInterval(() => {

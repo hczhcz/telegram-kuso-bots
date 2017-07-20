@@ -41,9 +41,9 @@ module.exports = (pathActions, pathCommands) => {
             });
         },
 
-        writeQuery: (query) => {
+        writeQuery: (chosen) => {
             fs.write(fdActions, JSON.stringify({
-                query: query,
+                chosen: chosen,
             }) + ',\n', () => {
                 // nothing
             });
