@@ -15,9 +15,9 @@ process.on('uncaughtException', (err) => {
     console.error(err);
 });
 
-const event = (handler) => {
+const event = (handler, atIndex) => {
     return (msg, match) => {
-        if (!match[1] || match[1] === '@' + config.threesomeUsername) {
+        if (!match[atIndex || 1] || match[atIndex || 1] === '@' + config.threesomeUsername) {
             if (!msg.has_log) {
                 console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
                 data.writeMessage(msg);
@@ -281,8 +281,8 @@ bot.onText(/^\/add(@\w+)? ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n ]+))?(?: ([^\r\n ]+))?(?: ([^\r\n ]+))?$/, event((msg, match) => {
-    command.get(msg, match[2], [match[3], match[4], match[5]]);
-}));
+    command.get(msg, match[1], [match[3], match[4], match[5]]);
+}, 2));
 
 setInterval(() => {
     for (const i in data.games) {
