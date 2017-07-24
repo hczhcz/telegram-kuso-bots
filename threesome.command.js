@@ -33,15 +33,13 @@ module.exports = (bot, games, commands, writeCommand) => {
                 text += entry.text + '\n';
             }
 
-            if (text) {
-                return bot.sendMessage(
-                    msg.chat.id,
-                    text,
-                    {
-                        reply_to_message_id: msg.message_id,
-                    }
-                );
-            }
+            return bot.sendMessage(
+                msg.chat.id,
+                text || '<什么都没有呢>',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
         },
 
         add: (msg, key, value) => {
