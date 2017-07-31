@@ -7,28 +7,9 @@ module.exports = (pathActions, pathCommands) => {
     const fdActions = fs.openSync(pathActions, 'a');
     const fdCommands = fs.openSync(pathCommands, 'a');
 
-    const games = {};
-    const commands = {};
-
-    // TODO: from config?
-    readline.createInterface({
-        input: fs.createReadStream(pathCommands),
-    }).on('line', (line) => {
-        const entry = JSON.parse(line);
-
-        commands[entry.chat.id] = commands[entry.chat.id] || {};
-
-        const command = commands[entry.chat.id];
-
-        command['@' + entry.key] = command['@' + entry.key] || [];
-        command['@' + entry.key].push({
-            text: entry.value,
-        });
-    });
-
-    return {
-        games: games,
-        commands: commands,
+    const self = {
+        games: {},
+        commands: {},
 
         writeMessage: (msg) => {
             fs.write(fdActions, JSON.stringify({
@@ -64,5 +45,24 @@ module.exports = (pathActions, pathCommands) => {
                 // nothing
             });
         },
+
+        loadCommands: () => {
+            readline.createInterface({
+                input: fs.createReadStream(pathCommands),
+            }).on('line', (line) => {
+                const entry = JSON.parse(line);
+
+                self.commands[entry.chat.id] = self.commands[entry.chat.id] || {};
+
+                const command = self.commands[entry.chat.id];
+
+                command['@' + entry.key] = command['@' + entry.key] || [];
+                command['@' + entry.key].push({
+                    text: entry.value,
+                });
+            });
+        },
     };
+
+    return self;
 };
