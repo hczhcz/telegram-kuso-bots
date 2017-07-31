@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const readline = require('readline');
 
 module.exports = (pathActions, pathCommands) => {
     const fdActions = fs.openSync(pathActions, 'a');
@@ -9,25 +10,21 @@ module.exports = (pathActions, pathCommands) => {
     const games = {};
     const commands = {};
 
-    (() => {
-        // TODO: from config?
-        const commandLog = JSON.parse('[' + fs.readFileSync(pathCommands) + '{}]');
+    // TODO: from config?
+    readline.createInterface({
+        input: fs.createReadStream(pathCommands),
+    }).on('line', (line) => {
+        const entry = JSON.parse(line);
 
-        for (const i in commandLog) {
-            if (i < commandLog.length - 1) {
-                const entry = commandLog[i];
+        commands[entry.chat.id] = commands[entry.chat.id] || {};
 
-                commands[entry.chat.id] = commands[entry.chat.id] || {};
+        const command = commands[entry.chat.id];
 
-                const command = commands[entry.chat.id];
-
-                command['@' + entry.key] = command['@' + entry.key] || [];
-                command['@' + entry.key].push({
-                    text: entry.value,
-                });
-            }
-        }
-    })();
+        command['@' + entry.key] = command['@' + entry.key] || [];
+        command['@' + entry.key].push({
+            text: entry.value,
+        });
+    });
 
     return {
         games: games,
@@ -36,7 +33,7 @@ module.exports = (pathActions, pathCommands) => {
         writeMessage: (msg) => {
             fs.write(fdActions, JSON.stringify({
                 msg: msg,
-            }) + ',\n', () => {
+            }) + '\n', () => {
                 // nothing
             });
         },
@@ -44,7 +41,7 @@ module.exports = (pathActions, pathCommands) => {
         writeQuery: (chosen) => {
             fs.write(fdActions, JSON.stringify({
                 chosen: chosen,
-            }) + ',\n', () => {
+            }) + '\n', () => {
                 // nothing
             });
         },
@@ -53,7 +50,7 @@ module.exports = (pathActions, pathCommands) => {
             fs.write(fdActions, JSON.stringify({
                 msg: msg,
                 game: game,
-            }) + ',\n', () => {
+            }) + '\n', () => {
                 // nothing
             });
         },
@@ -63,7 +60,7 @@ module.exports = (pathActions, pathCommands) => {
                 chat: chat,
                 key: key,
                 value: value,
-            }) + ',\n', () => {
+            }) + '\n', () => {
                 // nothing
             });
         },
