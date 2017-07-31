@@ -296,6 +296,8 @@ bot.on('chosen_inline_result', (chosen) => {
     data.writeQuery(chosen);
 });
 
+data.loadCommands();
+
 setInterval(() => {
     for (const i in data.games) {
         const game = data.games[i];
