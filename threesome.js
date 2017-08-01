@@ -9,6 +9,7 @@ const info = require('./threesome.info')(bot);
 const gather = require('./threesome.gather')(bot, data.games, data.writeGame);
 const init = require('./threesome.init')(bot, data.games);
 const play = require('./threesome.play')(bot, data.games);
+const stat = require('./threesome.stat')(bot, data.stats);
 const command = require('./threesome.command')(bot, data.games, data.commands, data.writeCommand);
 const inline = require('./threesome.inline')(bot);
 
@@ -262,6 +263,12 @@ bot.onText(/^\/forceorgasm(@\w+)?$/, event((msg, match) => {
     } else {
         info.na(msg);
     }
+}));
+
+bot.onText(/^\/stat(@\w+)?$/, event((msg, match) => {
+    playerEvent(msg, (player) => {
+        stat.stat(msg, player);
+    });
 }));
 
 bot.onText(/^\/listall(@\w+)?$/, event((msg, match) => {
