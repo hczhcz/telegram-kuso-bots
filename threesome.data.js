@@ -10,6 +10,7 @@ module.exports = (pathActions, pathCommands) => {
     const self = {
         games: {},
         commands: {},
+        stats: {},
 
         writeMessage: (msg) => {
             fs.write(fdActions, JSON.stringify({
@@ -61,6 +62,9 @@ module.exports = (pathActions, pathCommands) => {
                     text: entry.value,
                 });
             });
+        },
+
+        loadStats: () => {
         },
     };
 
