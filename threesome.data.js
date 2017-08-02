@@ -84,19 +84,16 @@ module.exports = (pathActions, pathCommands) => {
 
                         const gameStat = self.stats.game[entry.msg.chat.id];
 
-                        gameStat.chat[entry.game.usercount] = gameStat.chat[entry.game.usercount] || 0;
-                        gameStat.chat[entry.game.usercount] += 1;
+                        gameStat.chat[entry.game.usercount] = (gameStat.chat[entry.game.usercount] || 0) + 1;
 
                         for (const i in entry.game.users) {
                             gameStat.user[i] = gameStat.user[i] || {};
-                            gameStat.user[i][entry.game.usercount] = gameStat.user[i][entry.game.usercount] || 0;
-                            gameStat.user[i][entry.game.usercount] += 1;
+                            gameStat.user[i][entry.game.usercount] = (gameStat.user[i][entry.game.usercount] || 0) + 1;
 
                             for (const j in entry.game.users) {
                                 if (j !== i) {
                                     gameStat.pair[i] = gameStat.pair[i] || {};
-                                    gameStat.pair[i][j] = gameStat.pair[i][j] || 0;
-                                    gameStat.pair[i][j] += 1;
+                                    gameStat.pair[i][j] = (gameStat.pair[i][j] || 0) + 1;
                                 }
                             }
                         }
@@ -104,8 +101,8 @@ module.exports = (pathActions, pathCommands) => {
                         self.stats.command[entry.msg.chat.id] = self.stats.command[entry.msg.chat.id] || {
                             chat: {},
                             user: {},
-                            pair: {},
                             reply: {},
+                            pair: {},
                             replyPair: {},
                         };
 
@@ -118,21 +115,47 @@ module.exports = (pathActions, pathCommands) => {
                             console.error(entry);
                         }
 
-                        // TODO
+                        commandStat.chat[command] = (commandStat.chat[command] || 0) + 1;
+
+                        const i = entry.msg.from.id;
+
+                        commandStat.user[i] = commandStat.user[i] || {};
+                        commandStat.user[i][command] = (commandStat.user[i][command] || 0) + 1;
+
+                        // TODO: support @username?
+                        if (entry.msg.reply_to_message) {
+                            const j = entry.msg.reply_to_message.from.id;
+
+                            commandStat.reply[j] = commandStat.reply[j] || {};
+                            commandStat.reply[j][command] = (commandStat.reply[j][command] || 0) + 1;
+
+                            commandStat.pair[i] = commandStat.pair[i] || {};
+                            commandStat.pair[i][j] = commandStat.pair[i][j] || {};
+                            commandStat.pair[i][j][command] = (commandStat.pair[i][j][command] || 0) + 1;
+
+                            commandStat.replyPair[j] = commandStat.replyPair[j] || {};
+                            commandStat.replyPair[j][i] = commandStat.replyPair[j][i] || {};
+                            commandStat.replyPair[j][i][command] = (commandStat.replyPair[j][i][command] || 0) + 1;
+                        }
                     }
                 } else if (entry.chosen) {
-                    self.stats.inline[entry.chosen.from.id] = self.stats.inline[entry.chosen.from.id] || {
-                        count: 0,
-                        sumLength: 0,
-                        maxLength: 0,
-                    };
+                    self.stats.inline[entry.chosen.from.id] = self.stats.inline[entry.chosen.from.id] || {};
 
                     const inlineStat = self.stats.inline[entry.chosen.from.id];
 
                     if (entry.result_id === 'CONTENT') {
-                        // TODO
+                        // notice: see the implementation of inline query
+                        if (entry.chosen.query.match('@')) {
+                            const len = entry.chosen.query.split('@').length;
+
+                            inlineStat[len] = (inlineStat[len] || 0) + 1;
+                        } else {
+                            const len = entry.chosen.query.split(' ').length;
+
+                            inlineStat[len] = (inlineStat[len] || 0) + 1;
+                        }
                     } else if (entry.chosen.result_id === 'CONTENT_TMP') {
-                        // TODO
+                        // notice: ignore because of too many duplication records
                     } else {
                         // never reach
                         console.error(entry);

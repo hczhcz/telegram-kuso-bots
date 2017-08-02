@@ -43,6 +43,7 @@ module.exports = (bot) => {
 
             let tokens = null;
 
+            // notice: the implementation in the stats module should be consistent with this one
             if (query.query.match('@')) {
                 tokens = query.query.split('@');
             } else {
