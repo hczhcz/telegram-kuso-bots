@@ -46,15 +46,15 @@ module.exports = (bot, stats) => {
 
                 if (level === 3) {
                     for (const i in data) {
-                        for (const j in data) {
-                            for (const k in data) {
+                        for (const j in data[i]) {
+                            for (const k in data[i][j]) {
                                 stat([data[i][j][k], i, j, k]);
                             }
                         }
                     }
                 } else if (level === 2) {
                     for (const i in data) {
-                        for (const j in data) {
+                        for (const j in data[i]) {
                             stat([data[i][j], i, j]);
                         }
                     }
@@ -72,11 +72,11 @@ module.exports = (bot, stats) => {
                 };
             };
 
-            const gameStat = stats.game[msg.chat.id];
-            const commandStat = stats.command[msg.chat.id];
-            const inlineStat = stats.inline[player.id];
-
             if (player) {
+                const gameStat = stats.game[msg.chat.id];
+                const commandStat = stats.command[msg.chat.id];
+                const inlineStat = stats.inline[player.id];
+
                 const gameUserStat = statSize(gameStat.user[player.id]);
                 const gamePairStat = statTop(gameStat.pair[player.id], 1);
                 const commandUserStat = statTop(commandStat.user[player.id], 1);
@@ -133,6 +133,9 @@ module.exports = (bot, stats) => {
                     }
                 );
             } else {
+                const gameStat = stats.game[msg.chat.id];
+                const commandStat = stats.command[msg.chat.id];
+
                 const gameChatStat = statSize(gameStat.chat);
                 const gameUserTotalStat = statTop(gameStat.userTotal, 1);
                 const gamePairStat = statTop(gameStat.pair, 2);
