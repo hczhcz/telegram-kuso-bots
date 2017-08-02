@@ -122,12 +122,7 @@ module.exports = (pathActions, pathCommands) => {
 
                         const commandStat = self.stats.command[entry.msg.chat.id];
 
-                        const command = entry.msg.text.match(/^\/((?!_)\w+)/)[1];
-
-                        if (!command) {
-                            // TODO
-                            console.error(entry);
-                        }
+                        const command = entry.msg.text.match(/^\/(?!_)\w+/)[0];
 
                         commandStat.chat[command] = (commandStat.chat[command] || 0) + 1;
 

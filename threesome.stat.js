@@ -14,7 +14,7 @@ module.exports = (bot, stats) => {
                     sum += i * data[i];
                 }
 
-                const ave = Math.round(sum / count * 100) * 0.01 || 0;
+                const ave = Math.round(sum / count * 100) / 100 || 0;
 
                 return {
                     count: count,
@@ -117,12 +117,12 @@ module.exports = (bot, stats) => {
                         + (commandReplyStat.top2[1] || '') + '（' + (commandReplyStat.top2[0] || 0) + ' 次），'
                         + (commandReplyStat.top3[1] || '') + '（' + (commandReplyStat.top3[0] || 0) + ' 次）\n'
 
-                        + '其中，' + (stats.name[player.id] || '') + ' 经常被：\n'
-                        + (stats.name[commandReplyPairStat.top1[1]] || '') + ' ' + (commandReplyPairStat.top1[2] || '')
+                        + '其中，' + (stats.name[player.id] || '') + ' 经常：\n'
+                        + '被 ' + (stats.name[commandReplyPairStat.top1[1]] || '') + ' ' + (commandReplyPairStat.top1[2] || '')
                         + '（' + (commandReplyPairStat.top1[0] || 0) + ' 次），'
-                        + (stats.name[commandReplyPairStat.top2[1]] || '') + ' ' + (commandReplyPairStat.top2[2] || '')
+                        + '被 ' + (stats.name[commandReplyPairStat.top2[1]] || '') + ' ' + (commandReplyPairStat.top2[2] || '')
                         + '（' + (commandReplyPairStat.top2[0] || 0) + ' 次），'
-                        + (stats.name[commandReplyPairStat.top3[1]] || '') + ' ' + (commandReplyPairStat.top3[2] || '')
+                        + '被 ' + (stats.name[commandReplyPairStat.top3[1]] || '') + ' ' + (commandReplyPairStat.top3[2] || '')
                         + '（' + (commandReplyPairStat.top3[0] || 0) + ' 次）\n\n'
 
                         + (stats.name[player.id] || '') + ' 呻吟了 ' + inlineUserStat.count + ' 次，'
