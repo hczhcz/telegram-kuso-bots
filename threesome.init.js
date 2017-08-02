@@ -54,7 +54,7 @@ module.exports = (bot, games) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '在 ' + (msg.from.first_name || '') + ' 的带领下，'
+                '在 ' + (msg.from.first_name || msg.from.last_name) + ' 的带领下，'
                     + '3P 模式正式启动！'
                     + '输入 /join，群里的禽兽们将会全面进场！',
                 {
@@ -75,7 +75,7 @@ module.exports = (bot, games) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '在 ' + (msg.from.first_name || '') + ' 的带领下，'
+                '在 ' + (msg.from.first_name || msg.from.last_name) + ' 的带领下，'
                     + '群P 模式正式启动！'
                     + '输入 /join，群里的禽兽们将会全面进场！',
                 {
@@ -96,7 +96,7 @@ module.exports = (bot, games) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '在 ' + (msg.from.first_name || '') + ' 的带领下，'
+                '在 ' + (msg.from.first_name || msg.from.last_name) + ' 的带领下，'
                     + '百人斩模式正式启动！'
                     + '输入 /join，成为这场豪华盛宴的百分之一！',
                 {
