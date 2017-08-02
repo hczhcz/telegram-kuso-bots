@@ -23,7 +23,7 @@ module.exports = (bot, stats) => {
                 };
             };
 
-            const statTop = (data, level) => {
+            const statTop = (data, level, symmetry) => {
                 let count = 0;
                 let top1 = [0];
                 let top2 = [0];
@@ -55,7 +55,9 @@ module.exports = (bot, stats) => {
                 } else if (level === 2) {
                     for (const i in data) {
                         for (const j in data[i]) {
-                            stat([data[i][j], i, j]);
+                            if (!symmetry || i < j) {
+                                stat([data[i][j], i, j]);
+                            }
                         }
                     }
                 } else {
@@ -92,7 +94,7 @@ module.exports = (bot, stats) => {
                         + '2P 有 ' + (gameStat.user[player.id][2] || 0) + ' 次\n'
                         + '撸管 有 ' + (gameStat.user[player.id][1] || 0) + ' 次\n'
                         + (stats.name[player.id] || '') + ' 最多参与过 ' + gameUserStat.max + 'P\n'
-                        + '每次啪啪平均 ' + gameUserStat.ave + ' 人\n'
+                        + '每次啪啪平均 ' + gameUserStat.ave + ' 人\n\n'
 
                         + (stats.name[player.id] || '') + ' 最喜欢的性伴侣是：\n'
                         + (stats.name[gamePairStat.top1[1]] || '') + '（' + (gamePairStat.top1[0] || 0) + ' 次）\n'
@@ -138,16 +140,63 @@ module.exports = (bot, stats) => {
 
                 const gameChatStat = statSize(gameStat.chat);
                 const gameUserTotalStat = statTop(gameStat.userTotal, 1);
-                const gamePairStat = statTop(gameStat.pair, 2);
+                const gamePairStat = statTop(gameStat.pair, 2, true);
                 const commandChatStat = statTop(commandStat.chat, 1);
                 const commandUserStat = statTop(commandStat.user, 2);
                 const commandPairStat = statTop(commandStat.pair, 3);
                 const commandReplyStat = statTop(commandStat.reply, 2);
-                const commandReplyPairStat = statTop(commandStat.replyPair, 3);
 
                 return bot.sendMessage(
                     msg.chat.id,
-                    '',
+                    '本群总共啪啪了 ' + gameChatStat.count + ' 次，其中：\n'
+                        + '3P 有 ' + (gameStat.chat[3] || 0) + ' 次\n'
+                        + '2P 有 ' + (gameStat.chat[2] || 0) + ' 次\n'
+                        + '撸管 有 ' + (gameStat.chat[1] || 0) + ' 次\n'
+                        + '本群最多发生过 ' + gameChatStat.max + 'P\n'
+                        + '每次啪啪平均 ' + gameChatStat.ave + ' 人\n\n'
+
+                        + '本群最勤劳的是：\n'
+                        + (stats.name[gameUserTotalStat.top1[1]] || '') + '（' + (gameUserTotalStat.top1[0] || 0) + ' 次）\n'
+                        + (stats.name[gameUserTotalStat.top2[1]] || '') + '（' + (gameUserTotalStat.top2[0] || 0) + ' 次）\n'
+                        + (stats.name[gameUserTotalStat.top3[1]] || '') + '（' + (gameUserTotalStat.top3[0] || 0) + ' 次）\n'
+
+                        + '本群最缠绵的是：\n'
+                        + (stats.name[gamePairStat.top1[1]] || '') + ' 和 ' + (stats.name[gamePairStat.top1[2]] || '')
+                        + '（' + (gamePairStat.top1[0] || 0) + ' 次）\n'
+                        + (stats.name[gamePairStat.top2[1]] || '') + ' 和 ' + (stats.name[gamePairStat.top2[2]] || '')
+                        + '（' + (gamePairStat.top2[0] || 0) + ' 次）\n'
+                        + (stats.name[gamePairStat.top3[1]] || '') + ' 和 ' + (stats.name[gamePairStat.top3[2]] || '')
+                        + '（' + (gamePairStat.top3[0] || 0) + ' 次）\n\n'
+
+                        + '所有人总共触发过 ' + commandChatStat.count + ' 个 trigger，最多的 trigger 是：\n'
+                        + (commandChatStat.top1[1] || '') + '（' + (commandChatStat.top1[0] || 0) + ' 次）\n'
+                        + (commandChatStat.top2[1] || '') + '（' + (commandChatStat.top2[0] || 0) + ' 次）\n'
+                        + (commandChatStat.top3[1] || '') + '（' + (commandChatStat.top3[0] || 0) + ' 次）\n'
+
+                        + '其中：\n'
+                        + (stats.name[commandUserStat.top1[1]] || '') + ' 喜欢 ' + (commandUserStat.top1[2] || '')
+                        + '（' + (commandUserStat.top1[0] || 0) + ' 次）\n'
+                        + (stats.name[commandUserStat.top2[1]] || '') + ' 喜欢 ' + (commandUserStat.top2[2] || '')
+                        + '（' + (commandUserStat.top2[0] || 0) + ' 次）\n'
+                        + (stats.name[commandUserStat.top3[1]] || '') + ' 喜欢 ' + (commandUserStat.top3[2] || '')
+                        + '（' + (commandUserStat.top3[0] || 0) + ' 次）\n'
+
+                        + (stats.name[commandPairStat.top1[1]] || '') + ' 经常 '
+                        + (commandPairStat.top1[3] || '') + ' ' + (stats.name[commandPairStat.top1[2]] || '')
+                        + '（' + (commandPairStat.top1[0] || 0) + ' 次）\n'
+                        + (stats.name[commandPairStat.top2[1]] || '') + ' 经常 '
+                        + (commandPairStat.top2[3] || '') + ' ' + (stats.name[commandPairStat.top2[2]] || '')
+                        + '（' + (commandPairStat.top2[0] || 0) + ' 次）\n'
+                        + (stats.name[commandPairStat.top3[1]] || '') + ' 经常 '
+                        + (commandPairStat.top3[3] || '') + ' ' + (stats.name[commandPairStat.top3[2]] || '')
+                        + '（' + (commandPairStat.top3[0] || 0) + ' 次）\n'
+
+                        + (stats.name[commandReplyStat.top1[1]] || '') + ' 常被 ' + (commandReplyStat.top1[2] || '')
+                        + '（' + (commandReplyStat.top1[0] || 0) + ' 次）\n'
+                        + (stats.name[commandReplyStat.top2[1]] || '') + ' 常被 ' + (commandReplyStat.top2[2] || '')
+                        + '（' + (commandReplyStat.top2[0] || 0) + ' 次）\n'
+                        + (stats.name[commandReplyStat.top3[1]] || '') + ' 常被 ' + (commandReplyStat.top3[2] || '')
+                        + '（' + (commandReplyStat.top3[0] || 0) + ' 次）',
                     {
                         reply_to_message_id: msg.message_id,
                     }
