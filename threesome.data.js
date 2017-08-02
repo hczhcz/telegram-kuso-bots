@@ -163,7 +163,7 @@ module.exports = (pathActions, pathCommands) => {
 
                     genName(entry.chosen.from);
 
-                    if (entry.result_id === 'CONTENT') {
+                    if (entry.chosen.result_id === 'CONTENT') {
                         // notice: see the implementation of inline query
                         if (entry.chosen.query.match('@')) {
                             const len = entry.chosen.query.split('@').length;

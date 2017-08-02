@@ -82,12 +82,52 @@ module.exports = (bot, stats) => {
                 const commandUserStat = statTop(commandStat.user[player.id], 1);
                 const commandPairStat = statTop(commandStat.pair[player.id], 2);
                 const commandReplyStat = statTop(commandStat.reply[player.id], 1);
-                const commandreplyPairStat = statTop(commandStat.replyPair[player.id], 2);
+                const commandReplyPairStat = statTop(commandStat.replyPair[player.id], 2);
                 const inlineUserStat = statSize(inlineStat);
 
                 return bot.sendMessage(
                     msg.chat.id,
-                    '',
+                    (stats.name[player.id] || '') + ' 啪啪了 ' + gameUserStat.count + ' 次，其中：\n'
+                        + '3P 有 ' + (gameStat.user[player.id][3] || 0) + ' 次，'
+                        + '2P 有 ' + (gameStat.user[player.id][2] || 0) + ' 次，'
+                        + '撸管 有 ' + (gameStat.user[player.id][1] || 0) + ' 次\n'
+                        + (stats.name[player.id] || '') + ' 最多参与过 ' + gameUserStat.max + 'P，'
+                        + '每次啪啪平均 ' + gameUserStat.ave + ' 人\n'
+
+                        + (stats.name[player.id] || '') + ' 最喜欢的性伴侣是：\n'
+                        + (stats.name[gamePairStat.top1[1]] || '') + '（' + (gamePairStat.top1[0] || 0) + ' 次），'
+                        + (stats.name[gamePairStat.top2[1]] || '') + '（' + (gamePairStat.top2[0] || 0) + ' 次），'
+                        + (stats.name[gamePairStat.top3[1]] || '') + '（' + (gamePairStat.top3[0] || 0) + ' 次）\n\n'
+
+                        + (stats.name[player.id] || '') + ' 触发过 ' + commandUserStat.count + ' 个 trigger，最多的 trigger 是：\n'
+                        + (stats.name[commandUserStat.top1[1]] || '') + '（' + (commandUserStat.top1[0] || 0) + ' 次），'
+                        + (stats.name[commandUserStat.top2[1]] || '') + '（' + (commandUserStat.top2[0] || 0) + ' 次），'
+                        + (stats.name[commandUserStat.top3[1]] || '') + '（' + (commandUserStat.top3[0] || 0) + ' 次）\n'
+
+                        + '其中，' + (stats.name[player.id] || '') + ' 经常：\n'
+                        + (commandPairStat.top1[2] || '') + ' ' + (stats.name[commandPairStat.top1[1]] || '')
+                        + '（' + (commandPairStat.top1[0] || 0) + ' 次），'
+                        + (commandPairStat.top2[2] || '') + ' ' + (stats.name[commandPairStat.top2[1]] || '')
+                        + '（' + (commandPairStat.top2[0] || 0) + ' 次），'
+                        + (commandPairStat.top3[2] || '') + ' ' + (stats.name[commandPairStat.top3[1]] || '')
+                        + '（' + (commandPairStat.top3[0] || 0) + ' 次）\n\n'
+
+                        + (stats.name[player.id] || '') + ' 接受过 ' + commandReplyStat.count + ' 个 trigger，最多的 trigger 是：\n'
+                        + (stats.name[commandReplyStat.top1[1]] || '') + '（' + (commandReplyStat.top1[0] || 0) + ' 次），'
+                        + (stats.name[commandReplyStat.top2[1]] || '') + '（' + (commandReplyStat.top2[0] || 0) + ' 次），'
+                        + (stats.name[commandReplyStat.top3[1]] || '') + '（' + (commandReplyStat.top3[0] || 0) + ' 次）\n'
+
+                        + '其中，' + (stats.name[player.id] || '') + ' 经常被：\n'
+                        + (stats.name[commandReplyPairStat.top1[1]] || '') + ' ' + (commandReplyPairStat.top1[2] || '')
+                        + '（' + (commandReplyPairStat.top1[0] || 0) + ' 次），'
+                        + (stats.name[commandReplyPairStat.top2[1]] || '') + ' ' + (commandReplyPairStat.top2[2] || '')
+                        + '（' + (commandReplyPairStat.top2[0] || 0) + ' 次），'
+                        + (stats.name[commandReplyPairStat.top3[1]] || '') + ' ' + (commandReplyPairStat.top3[2] || '')
+                        + '（' + (commandReplyPairStat.top3[0] || 0) + ' 次）\n\n'
+
+                        + (stats.name[player.id] || '') + ' 呻吟了 ' + inlineUserStat.count + ' 次，'
+                        + '最长的呻吟有 ' + inlineUserStat.max + ' 段，'
+                        + '平均呻吟长度 ' + inlineUserStat.ave + ' 段',
                     {
                         reply_to_message_id: msg.message_id,
                     }
@@ -100,7 +140,7 @@ module.exports = (bot, stats) => {
                 const commandUserStat = statTop(commandStat.user, 2);
                 const commandPairStat = statTop(commandStat.pair, 3);
                 const commandReplyStat = statTop(commandStat.reply, 2);
-                const commandreplyPairStat = statTop(commandStat.replyPair, 3);
+                const commandReplyPairStat = statTop(commandStat.replyPair, 3);
 
                 return bot.sendMessage(
                     msg.chat.id,
