@@ -14,7 +14,7 @@ module.exports = (bot, stats) => {
                     sum += i * data[i];
                 }
 
-                const ave = Math.round(sum / count * 100) * 0.01;
+                const ave = Math.round(sum / count * 100) * 0.01 || 0;
 
                 return {
                     count: count,
@@ -100,9 +100,9 @@ module.exports = (bot, stats) => {
                         + (stats.name[gamePairStat.top3[1]] || '') + '（' + (gamePairStat.top3[0] || 0) + ' 次）\n\n'
 
                         + (stats.name[player.id] || '') + ' 触发过 ' + commandUserStat.count + ' 个 trigger，最多的 trigger 是：\n'
-                        + (stats.name[commandUserStat.top1[1]] || '') + '（' + (commandUserStat.top1[0] || 0) + ' 次），'
-                        + (stats.name[commandUserStat.top2[1]] || '') + '（' + (commandUserStat.top2[0] || 0) + ' 次），'
-                        + (stats.name[commandUserStat.top3[1]] || '') + '（' + (commandUserStat.top3[0] || 0) + ' 次）\n'
+                        + (commandUserStat.top1[1] || '') + '（' + (commandUserStat.top1[0] || 0) + ' 次），'
+                        + (commandUserStat.top2[1] || '') + '（' + (commandUserStat.top2[0] || 0) + ' 次），'
+                        + (commandUserStat.top3[1] || '') + '（' + (commandUserStat.top3[0] || 0) + ' 次）\n'
 
                         + '其中，' + (stats.name[player.id] || '') + ' 经常：\n'
                         + (commandPairStat.top1[2] || '') + ' ' + (stats.name[commandPairStat.top1[1]] || '')
@@ -113,9 +113,9 @@ module.exports = (bot, stats) => {
                         + '（' + (commandPairStat.top3[0] || 0) + ' 次）\n\n'
 
                         + (stats.name[player.id] || '') + ' 接受过 ' + commandReplyStat.count + ' 个 trigger，最多的 trigger 是：\n'
-                        + (stats.name[commandReplyStat.top1[1]] || '') + '（' + (commandReplyStat.top1[0] || 0) + ' 次），'
-                        + (stats.name[commandReplyStat.top2[1]] || '') + '（' + (commandReplyStat.top2[0] || 0) + ' 次），'
-                        + (stats.name[commandReplyStat.top3[1]] || '') + '（' + (commandReplyStat.top3[0] || 0) + ' 次）\n'
+                        + (commandReplyStat.top1[1] || '') + '（' + (commandReplyStat.top1[0] || 0) + ' 次），'
+                        + (commandReplyStat.top2[1] || '') + '（' + (commandReplyStat.top2[0] || 0) + ' 次），'
+                        + (commandReplyStat.top3[1] || '') + '（' + (commandReplyStat.top3[0] || 0) + ' 次）\n'
 
                         + '其中，' + (stats.name[player.id] || '') + ' 经常被：\n'
                         + (stats.name[commandReplyPairStat.top1[1]] || '') + ' ' + (commandReplyPairStat.top1[2] || '')
