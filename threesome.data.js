@@ -115,8 +115,8 @@ module.exports = (pathActions, pathCommands) => {
                         self.stats.command[entry.msg.chat.id] = self.stats.command[entry.msg.chat.id] || {
                             chat: {},
                             user: {},
-                            reply: {},
                             pair: {},
+                            reply: {},
                             replyPair: {},
                         };
 
@@ -144,12 +144,12 @@ module.exports = (pathActions, pathCommands) => {
 
                             genName(entry.msg.reply_to_message.from);
 
-                            commandStat.reply[j] = commandStat.reply[j] || {};
-                            commandStat.reply[j][command] = (commandStat.reply[j][command] || 0) + 1;
-
                             commandStat.pair[i] = commandStat.pair[i] || {};
                             commandStat.pair[i][j] = commandStat.pair[i][j] || {};
                             commandStat.pair[i][j][command] = (commandStat.pair[i][j][command] || 0) + 1;
+
+                            commandStat.reply[j] = commandStat.reply[j] || {};
+                            commandStat.reply[j][command] = (commandStat.reply[j][command] || 0) + 1;
 
                             commandStat.replyPair[j] = commandStat.replyPair[j] || {};
                             commandStat.replyPair[j][i] = commandStat.replyPair[j][i] || {};

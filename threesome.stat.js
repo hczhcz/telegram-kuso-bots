@@ -5,21 +5,21 @@ module.exports = (bot, stats) => {
         stat: (msg, player) => {
             const statSize = (data) => {
                 let count = 0;
-                let sum = 0;
                 let max = 0;
+                let sum = 0;
 
                 for (const i in data) {
                     count += data[i];
-                    sum += i * data[i];
                     max = Math.max(max, i);
+                    sum += i * data[i];
                 }
 
                 const ave = Math.round(sum / count * 100) * 0.01;
 
                 return {
                     count: count,
-                    ave: ave,
                     max: max,
+                    ave: ave,
                 };
             };
 
@@ -72,14 +72,18 @@ module.exports = (bot, stats) => {
                 };
             };
 
+            const gameStat = stats.game[msg.chat.id];
+            const commandStat = stats.command[msg.chat.id];
+            const inlineStat = stats.inline[player.id];
+
             if (player) {
-                const gameUserStat = statSize(stats.game[msg.chat.id].user[player.id]);
-                const gamePairStat = statTop(stats.game[msg.chat.id].pair[player.id], 1);
-                const commandUserStat = statTop(stats.command[msg.chat.id].user[player.id], 1);
-                const commandReplyStat = statTop(stats.command[msg.chat.id].reply[player.id], 1);
-                const commandPairStat = statTop(stats.command[msg.chat.id].pair[player.id], 2);
-                const commandreplyPairStat = statTop(stats.command[msg.chat.id].replyPair[player.id], 2);
-                const inlineUserStat = statSize(stats.inline[player.id]);
+                const gameUserStat = statSize(gameStat.user[player.id]);
+                const gamePairStat = statTop(gameStat.pair[player.id], 1);
+                const commandUserStat = statTop(commandStat.user[player.id], 1);
+                const commandPairStat = statTop(commandStat.pair[player.id], 2);
+                const commandReplyStat = statTop(commandStat.reply[player.id], 1);
+                const commandreplyPairStat = statTop(commandStat.replyPair[player.id], 2);
+                const inlineUserStat = statSize(inlineStat);
 
                 return bot.sendMessage(
                     msg.chat.id,
@@ -89,14 +93,14 @@ module.exports = (bot, stats) => {
                     }
                 );
             } else {
-                const gameChatStat = statSize(stats.game[msg.chat.id].chat);
-                const gameUserTotalStat = statTop(stats.game[msg.chat.id].userTotal, 1);
-                const gamePairStat = statTop(stats.game[msg.chat.id].pair, 2);
-                const commandChatStat = statTop(stats.command[msg.chat.id].chat, 1);
-                const commandUserStat = statTop(stats.command[msg.chat.id].user, 2);
-                const commandReplyStat = statTop(stats.command[msg.chat.id].reply, 2);
-                const commandPairStat = statTop(stats.command[msg.chat.id].pair, 3);
-                const commandreplyPairStat = statTop(stats.command[msg.chat.id].replyPair, 3);
+                const gameChatStat = statSize(gameStat.chat);
+                const gameUserTotalStat = statTop(gameStat.userTotal, 1);
+                const gamePairStat = statTop(gameStat.pair, 2);
+                const commandChatStat = statTop(commandStat.chat, 1);
+                const commandUserStat = statTop(commandStat.user, 2);
+                const commandPairStat = statTop(commandStat.pair, 3);
+                const commandReplyStat = statTop(commandStat.reply, 2);
+                const commandreplyPairStat = statTop(commandStat.replyPair, 3);
 
                 return bot.sendMessage(
                     msg.chat.id,
