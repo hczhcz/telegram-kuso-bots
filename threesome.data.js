@@ -87,6 +87,7 @@ module.exports = (pathActions, pathCommands) => {
                     if (entry.game) {
                         self.stats.game[entry.msg.chat.id] = self.stats.game[entry.msg.chat.id] || {
                             chat: {},
+                            userTotal: {},
                             user: {},
                             pair: {},
                         };
@@ -97,6 +98,8 @@ module.exports = (pathActions, pathCommands) => {
 
                         for (const i in entry.game.users) {
                             genName(entry.game.users[i]);
+
+                            gameStat.userTotal[i] = (gameStat.userTotal[i] || 0) + 1;
 
                             gameStat.user[i] = gameStat.user[i] || {};
                             gameStat.user[i][entry.game.usercount] = (gameStat.user[i][entry.game.usercount] || 0) + 1;
