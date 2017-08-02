@@ -68,6 +68,15 @@ module.exports = (pathActions, pathCommands) => {
             self.stats.game = {};
             self.stats.command = {};
             self.stats.inline = {};
+            self.stats.name = {};
+
+            const genName = (user) => {
+                if (user.id) {
+                    self.stats.name[user.id] = user.first_name
+                        || user.last_name
+                        || self.stats.name[user.id];
+                }
+            };
 
             readline.createInterface({
                 input: fs.createReadStream(pathActions),
@@ -87,6 +96,8 @@ module.exports = (pathActions, pathCommands) => {
                         gameStat.chat[entry.game.usercount] = (gameStat.chat[entry.game.usercount] || 0) + 1;
 
                         for (const i in entry.game.users) {
+                            genName(entry.game.users[i]);
+
                             gameStat.user[i] = gameStat.user[i] || {};
                             gameStat.user[i][entry.game.usercount] = (gameStat.user[i][entry.game.usercount] || 0) + 1;
 
@@ -119,12 +130,16 @@ module.exports = (pathActions, pathCommands) => {
 
                         const i = entry.msg.from.id;
 
+                        genName(entry.msg.from);
+
                         commandStat.user[i] = commandStat.user[i] || {};
                         commandStat.user[i][command] = (commandStat.user[i][command] || 0) + 1;
 
                         // TODO: support @username?
                         if (entry.msg.reply_to_message) {
                             const j = entry.msg.reply_to_message.from.id;
+
+                            genName(entry.msg.reply_to_message.from);
 
                             commandStat.reply[j] = commandStat.reply[j] || {};
                             commandStat.reply[j][command] = (commandStat.reply[j][command] || 0) + 1;
@@ -142,6 +157,8 @@ module.exports = (pathActions, pathCommands) => {
                     self.stats.inline[entry.chosen.from.id] = self.stats.inline[entry.chosen.from.id] || {};
 
                     const inlineStat = self.stats.inline[entry.chosen.from.id];
+
+                    genName(entry.chosen.from);
 
                     if (entry.result_id === 'CONTENT') {
                         // notice: see the implementation of inline query
