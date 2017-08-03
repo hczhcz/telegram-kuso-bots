@@ -70,30 +70,30 @@ const getCST = () => {
 const isWeekend = () => {
     const today = getCST();
 
-    return today.getDay() === 0 || today.getDay() === 6;
+    return today.getUTCDay() === 0 || today.getUTCDay() === 6;
 };
 
 const isSomeday = () => {
     const today = getCST();
 
-    return today.getMonth() === 5 && today.getDate() === 4;
+    return today.getUTCMonth() === 5 && today.getUTCDate() === 4;
 };
 
 const getTodayInt = () => {
     const today = getCST();
 
-    return today.getFullYear() * 10000
-        + (today.getMonth() + 1) * 100
-        + today.getDate();
+    return today.getUTCFullYear() * 10000
+        + (today.getUTCMonth() + 1) * 100
+        + today.getUTCDate();
 };
 
 const getTodayString = () => {
     const today = getCST();
 
-    return '今天是' + today.getFullYear() + '年'
-        + (today.getMonth() + 1) + '月'
-        + today.getDate() + '日'
-        + ' 星期' + weeks[today.getDay()];
+    return '今天是' + today.getUTCFullYear() + '年'
+        + (today.getUTCMonth() + 1) + '月'
+        + today.getUTCDate() + '日'
+        + ' 星期' + weeks[today.getUTCDay()];
 };
 
 const getStarString = (num) => {
@@ -220,7 +220,9 @@ const pickEvents = () => {
 };
 
 const pickLuck = (query) => {
-    const target = seedRandom(crc32.str(query) ^ query.from.id, 42) % lucksRateSum;
+    const target = seedRandom(
+        crc32.str(query.query) ^ query.from.id, 42
+    ) % lucksRateSum;
     let sum = 0;
 
     for (const i in lucks) {
@@ -237,7 +239,7 @@ const pickLuck = (query) => {
 
 bot.on('inline_query', (query) => {
     if (query.query) {
-        const pickedLuck = pickLuck(query.query);
+        const pickedLuck = pickLuck(query);
 
         let luckText = '程序员求签\n' + getTodayString()
             + '\n\n所求事项：' + query.query
