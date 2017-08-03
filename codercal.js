@@ -243,7 +243,7 @@ bot.on('inline_query', (query) => {
 
         let luckText = '程序员求签\n' + getTodayString()
             + '\n\n所求事项：' + query.query
-            + '\n结果：' + pickedLuck.name
+            + '\n结果：' + pickedLuck.name;
 
         if (pickedLuck.description) {
             luckText += ' - ' + pickedLuck.description;
@@ -252,7 +252,11 @@ bot.on('inline_query', (query) => {
         return bot.answerInlineQuery(query.id, [{
             type: 'article',
             id: 'CODERLUCK',
-            title: '程序员求签',
+            title: isSomeday()
+                ? '程序员求签🕯'
+                : query.query === 'hczhcz'
+                ? '程序员求签🌝'
+                : '程序员求签',
             input_message_content: {
                 message_text: luckText,
             },
@@ -284,7 +288,9 @@ bot.on('inline_query', (query) => {
         return bot.answerInlineQuery(query.id, [{
             type: 'article',
             id: 'CODERCAL',
-            title: '程序员老黄历',
+            title: isSomeday()
+                ? '程序员老黄历🕯'
+                : '程序员老黄历',
             input_message_content: {
                 message_text: calText,
             },
