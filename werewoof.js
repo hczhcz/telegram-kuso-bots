@@ -48,7 +48,9 @@ for (const i in messages) {
                     group,
                     message[1].replace('#MSG', msg.text),
                     {
-                        reply_to_message_id: message[3] ? msg.message_id : null,
+                        reply_to_message_id: message[3]
+                            ? msg.message_id
+                            : null,
                         parse_mode: 'HTML',
                     }
                 );
@@ -72,7 +74,7 @@ bot.onText(/./, handler((msg, match) => {
                         parse_mode: 'HTML',
                     }
                 );
-            } if (Math.random() < 0.3) {
+            } else if (Math.random() < 0.3) {
                 bot.sendMessage(
                     group,
                     'cao你妈～',

@@ -95,7 +95,7 @@ const getTodayString = () => {
 const getStarString = (num) => {
     let result = '';
 
-    for (let i = 0; i < 5; ++i) {
+    for (let i = 0; i < 5; i += 1) {
         if (i < num) {
             result += '★';
         } else {
@@ -107,14 +107,14 @@ const getStarString = (num) => {
 };
 
 const seedRandom = (seed, iter) => {
-    let n = seed;
+    let result = seed;
 
-    for (let i = 0; i < 100 + iter; ++i) {
-        n *= n;
-        n %= 11117;
+    for (let i = 0; i < 100 + iter; i += 1) {
+        result *= result;
+        result %= 11117;
     }
 
-    return n;
+    return result;
 };
 
 const random = (iter) => {
@@ -124,7 +124,7 @@ const random = (iter) => {
 const pickRandom = (data, size) => {
     const result = data.slice();
 
-    for (let i = 0; i < data.length - size; ++i) {
+    for (let i = 0; i < data.length - size; i += 1) {
         result.splice(random(i) % result.length, 1);
     }
 
