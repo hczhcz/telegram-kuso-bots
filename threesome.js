@@ -265,7 +265,7 @@ bot.onText(/^\/forceorgasm(@\w+)?$/, event((msg, match) => {
     }
 }));
 
-bot.onText(/^\/stat(@\w+)?$/, event((msg, match) => {
+bot.onText(/^\/stat(@\w+)?(?: @?\w+)?$/, event((msg, match) => {
     playerEvent(msg, (player) => {
         stat.stat(msg, player);
     });
