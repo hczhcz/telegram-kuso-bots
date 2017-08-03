@@ -220,7 +220,7 @@ const pickEvents = () => {
 };
 
 const pickLuck = (query) => {
-    const target = seedRandom(crc32.str(query), 42) % lucksRateSum;
+    const target = seedRandom(crc32.str(query) ^ query.from.id, 42) % lucksRateSum;
     let sum = 0;
 
     for (const i in lucks) {
@@ -283,5 +283,5 @@ bot.on('inline_query', (query) => {
 });
 
 bot.on('chosen_inline_result', (chosen) => {
-    console.log(chosen);
+    console.log(JSON.stringify(chosen));
 });
