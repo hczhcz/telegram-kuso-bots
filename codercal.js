@@ -63,20 +63,24 @@ process.on('uncaughtException', (err) => {
     console.error(err);
 });
 
+const getCST = () => {
+    return new Date(Date.now() + 8 * 3600 * 1000);
+};
+
 const isWeekend = () => {
-    const today = new Date();
+    const today = getCST();
 
     return today.getDay() === 0 || today.getDay() === 6;
 };
 
 const isSomeday = () => {
-    const today = new Date();
+    const today = getCST();
 
     return today.getMonth() === 5 && today.getDate() === 4;
 };
 
 const getTodayInt = () => {
-    const today = new Date();
+    const today = getCST();
 
     return today.getFullYear() * 10000
         + (today.getMonth() + 1) * 100
@@ -84,7 +88,7 @@ const getTodayInt = () => {
 };
 
 const getTodayString = () => {
-    const today = new Date();
+    const today = getCST();
 
     return '今天是' + today.getFullYear() + '年'
         + (today.getMonth() + 1) + '月'
