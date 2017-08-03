@@ -79,11 +79,11 @@ module.exports = () => {
     };
 
     bot.on('login', () => {
-        console.log('login');
+        console.warn('login');
     });
 
     bot.on('logout', () => {
-        console.log('logout');
+        console.warn('logout');
     });
 
     return bot;

@@ -59,6 +59,10 @@ const lucks = [
 ];
 const lucksRateSum = 3120;
 
+process.on('uncaughtException', (err) => {
+    console.error(err);
+});
+
 const isWeekend = () => {
     const today = new Date();
 

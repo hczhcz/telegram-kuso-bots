@@ -4,7 +4,7 @@ const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.blockToken);
 
 process.on('uncaughtException', (err) => {
-    console.err(err);
+    console.error(err);
 });
 
 let enable = true;
