@@ -239,9 +239,13 @@ bot.on('inline_query', (query) => {
     if (query.query) {
         const pickedLuck = pickLuck(query.query);
 
-        const luckText = '程序员求签\n\n' + getTodayString()
-            + '\n\n所求事项：\n' + query.query
-            + '\n\n结果：\n' + pickedLuck.name + '\n' + pickedLuck.description;
+        let luckText = '程序员求签\n' + getTodayString()
+            + '\n\n所求事项：' + query.query
+            + '\n结果：' + pickedLuck.name
+
+        if (pickedLuck.description) {
+            luckText += ' - ' + pickedLuck.description;
+        }
 
         return bot.answerInlineQuery(query.id, [{
             type: 'article',
@@ -257,23 +261,23 @@ bot.on('inline_query', (query) => {
     } else {
         const pickedEvents = pickEvents();
 
-        let calText = '程序员老黄历\n\n' + getTodayString() + '\n\n宜：\n';
+        let calText = '程序员老黄历\n' + getTodayString() + '\n\n宜：';
 
         for (const i in pickedEvents.good) {
-            calText += pickedEvents.good[i].name + ' - '
-                + pickedEvents.good[i].description + '\n';
+            calText += '\n' + pickedEvents.good[i].name + ' - '
+                + pickedEvents.good[i].description;
         }
 
-        calText += '\n不宜：\n';
+        calText += '\n\n不宜：';
 
         for (const i in pickedEvents.bad) {
-            calText += pickedEvents.bad[i].name + ' - '
-                + pickedEvents.bad[i].description + '\n';
+            calText += '\n' + pickedEvents.bad[i].name + ' - '
+                + pickedEvents.bad[i].description;
         }
 
-        calText += '\n座位朝向：面向' + directions[random(2) % directions.length] + '写程序，BUG 最少。\n'
-            + '今日宜饮：' + pickRandom(drinks, 2).join('，') + '\n'
-            + '女神亲近指数：' + getStarString(random(6) % 5 + 1);
+        calText += '\n\n座位朝向：面向' + directions[random(2) % directions.length] + '写程序，BUG 最少。'
+            + '\n今日宜饮：' + pickRandom(drinks, 2).join('，')
+            + '\n女神亲近指数：' + getStarString(random(6) % 5 + 1);
 
         return bot.answerInlineQuery(query.id, [{
             type: 'article',
