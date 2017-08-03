@@ -294,5 +294,5 @@ bot.on('inline_query', (query) => {
 });
 
 bot.on('chosen_inline_result', (chosen) => {
-    console.log(JSON.stringify(chosen));
+    console.log('[' + Date() + '] ' + chosen.from.id + ' ' + chosen.query + ' ' + chosen.result_id);
 });
