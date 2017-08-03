@@ -230,7 +230,7 @@ const pickLuck = (query) => {
 bot.on('inline_query', (query) => {
     const pickedEvents = pickEvents();
 
-    let calText = getTodayString() + '\n\n宜：\n';
+    let calText = '程序员老黄历\n\n' + getTodayString() + '\n\n宜：\n';
 
     for (const i in pickedEvents.good) {
         calText += pickedEvents.good[i].name + ' - '
@@ -250,7 +250,8 @@ bot.on('inline_query', (query) => {
 
     const pickedLuck = pickLuck(query.query);
 
-    const luckText = getTodayString() + '\n\n所求事项：\n' + query.query
+    const luckText = '程序员求签\n\n' + getTodayString()
+        + '\n\n所求事项：\n' + query.query
         + '\n\n结果：\n' + pickedLuck.name + '\n' + pickedLuck.description;
 
     return bot.answerInlineQuery(query.id, [{
