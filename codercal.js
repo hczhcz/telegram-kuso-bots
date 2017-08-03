@@ -236,50 +236,57 @@ const pickLuck = (query) => {
 };
 
 bot.on('inline_query', (query) => {
-    const pickedEvents = pickEvents();
+    if (query.query) {
+        const pickedLuck = pickLuck(query.query);
 
-    let calText = '程序员老黄历\n\n' + getTodayString() + '\n\n宜：\n';
+        const luckText = '程序员求签\n\n' + getTodayString()
+            + '\n\n所求事项：\n' + query.query
+            + '\n\n结果：\n' + pickedLuck.name + '\n' + pickedLuck.description;
 
-    for (const i in pickedEvents.good) {
-        calText += pickedEvents.good[i].name + ' - '
-            + pickedEvents.good[i].description + '\n';
+        return bot.answerInlineQuery(query.id, [{
+            type: 'article',
+            id: 'CODERLUCK',
+            title: '程序员求签',
+            input_message_content: {
+                message_text: luckText,
+            },
+        }], {
+            cache_time: 0,
+            is_personal: true,
+        });
+    } else {
+        const pickedEvents = pickEvents();
+
+        let calText = '程序员老黄历\n\n' + getTodayString() + '\n\n宜：\n';
+
+        for (const i in pickedEvents.good) {
+            calText += pickedEvents.good[i].name + ' - '
+                + pickedEvents.good[i].description + '\n';
+        }
+
+        calText += '\n不宜：\n';
+
+        for (const i in pickedEvents.bad) {
+            calText += pickedEvents.bad[i].name + ' - '
+                + pickedEvents.bad[i].description + '\n';
+        }
+
+        calText += '\n座位朝向：面向' + directions[random(2) % directions.length] + '写程序，BUG 最少。\n'
+            + '今日宜饮：' + pickRandom(drinks, 2).join('，') + '\n'
+            + '女神亲近指数：' + getStarString(random(6) % 5 + 1);
+
+        return bot.answerInlineQuery(query.id, [{
+            type: 'article',
+            id: 'CODERCAL',
+            title: '程序员老黄历',
+            input_message_content: {
+                message_text: calText,
+            },
+        }], {
+            cache_time: 0,
+            is_personal: true,
+        });
     }
-
-    calText += '\n不宜：\n';
-
-    for (const i in pickedEvents.bad) {
-        calText += pickedEvents.bad[i].name + ' - '
-            + pickedEvents.bad[i].description + '\n';
-    }
-
-    calText += '\n座位朝向：面向' + directions[random(2) % directions.length] + '写程序，BUG 最少。\n'
-        + '今日宜饮：' + pickRandom(drinks, 2).join('，') + '\n'
-        + '女神亲近指数：' + getStarString(random(6) % 5 + 1);
-
-    const pickedLuck = pickLuck(query.query);
-
-    const luckText = '程序员求签\n\n' + getTodayString()
-        + '\n\n所求事项：\n' + query.query
-        + '\n\n结果：\n' + pickedLuck.name + '\n' + pickedLuck.description;
-
-    return bot.answerInlineQuery(query.id, [{
-        type: 'article',
-        id: 'CODERCAL',
-        title: '程序员老黄历',
-        input_message_content: {
-            message_text: calText,
-        },
-    }, {
-        type: 'article',
-        id: 'CODERLUCK',
-        title: '程序员求签',
-        input_message_content: {
-            message_text: luckText,
-        },
-    }], {
-        cache_time: 0,
-        is_personal: true,
-    });
 });
 
 bot.on('chosen_inline_result', (chosen) => {
