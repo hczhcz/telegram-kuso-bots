@@ -270,15 +270,21 @@ bot.on('inline_query', (query) => {
         let calText = '程序员老黄历\n' + getTodayString() + '\n\n宜：';
 
         for (const i in pickedEvents.good) {
-            calText += '\n' + pickedEvents.good[i].name + ' - '
-                + pickedEvents.good[i].description;
+            calText += '\n' + pickedEvents.good[i].name;
+
+            if (pickedEvents.good[i].description) {
+                calText += ' - ' + pickedEvents.good[i].description;
+            }
         }
 
         calText += '\n\n不宜：';
 
         for (const i in pickedEvents.bad) {
-            calText += '\n' + pickedEvents.bad[i].name + ' - '
-                + pickedEvents.bad[i].description;
+            calText += '\n' + pickedEvents.bad[i].name;
+
+            if (pickedEvents.bad[i].description) {
+                calText += ' - ' + pickedEvents.bad[i].description;
+            }
         }
 
         calText += '\n\n座位朝向：面向' + directions[random(2) % directions.length] + '写程序，BUG 最少。'
