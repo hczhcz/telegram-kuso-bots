@@ -27,8 +27,8 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             let text = '';
 
-            for (const i in command['@' + key]) {
-                const entry = command['@' + key][i];
+            for (const i in command['/' + key]) {
+                const entry = command['/' + key][i];
 
                 text += entry.text + '\n';
             }
@@ -47,10 +47,10 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             const command = commands[msg.chat.id];
 
-            command['@' + key] = command['@' + key] || [];
+            command['/' + key] = command['/' + key] || [];
 
-            for (const i in command['@' + key]) {
-                if (command['@' + key][i].text === value) {
+            for (const i in command['/' + key]) {
+                if (command['/' + key][i].text === value) {
                     return bot.sendMessage(
                         msg.chat.id,
                         '已经加过了啦！',
@@ -61,7 +61,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                 }
             }
 
-            command['@' + key].push({
+            command['/' + key].push({
                 text: value,
             });
 
@@ -88,8 +88,8 @@ module.exports = (bot, games, commands, writeCommand) => {
             let tot = [];
             let level = 0;
 
-            for (const i in command['@' + key]) {
-                const entry = command['@' + key][i];
+            for (const i in command['/' + key]) {
+                const entry = command['/' + key][i];
 
                 let text = '';
                 let match = {};
