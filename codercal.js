@@ -57,7 +57,6 @@ const lucks = [
     {name: '大凶', rate: 100, description: ''},
     {name: '超大凶', rate: 10, description: ''},
 ];
-const lucksRateSum = 3120;
 
 process.on('uncaughtException', (err) => {
     console.error(err);
@@ -220,9 +219,15 @@ const pickEvents = () => {
 };
 
 const pickLuck = (query) => {
+    let range = 0;
+
+    for (const i in lucks) {
+        range += lucks[i].rate;
+    }
+
     const target = seedRandom(
         crc32.str(query.query) ^ query.from.id, 42
-    ) % lucksRateSum;
+    ) % range;
     let sum = 0;
 
     for (const i in lucks) {
