@@ -31,7 +31,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                 if (entry.text) {
                     text += entry.text + '\n';
                 } else if (entry.forward) {
-                    text += '<转发消息>';
+                    text += '<转发消息>\n';
                 } else {
                     // never reach
                     throw Error(JSON.stringify(entry));
@@ -202,10 +202,12 @@ module.exports = (bot, games, commands, writeCommand) => {
                             }
                         }
                     } else if (entry.forward) {
-                        tot.push({
-                            entry: entry,
-                            forward: entry.forward,
-                        });
+                        if (level === 0) {
+                            tot.push({
+                                entry: entry,
+                                forward: entry.forward,
+                            });
+                        }
                     } else {
                         // never reach
                         throw Error(JSON.stringify(entry));
