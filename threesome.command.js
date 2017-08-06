@@ -28,7 +28,14 @@ module.exports = (bot, games, commands, writeCommand) => {
             for (const i in command['/' + key]) {
                 const entry = command['/' + key][i];
 
-                text += entry.text + '\n';
+                if (entry.text) {
+                    text += entry.text + '\n';
+                } else if (entry.forward) {
+                    text += '<转发消息>';
+                } else {
+                    // never reach
+                    throw Error(JSON.stringify(entry));
+                }
             }
 
             return bot.sendMessage(
