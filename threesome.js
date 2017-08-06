@@ -149,11 +149,10 @@ bot.onText(/^\/start100kills(@\w+)?$/, event((msg, match) => {
 bot.onText(/^\/extend(@\w+)?(?: ([+\-]?\d+)\w*)?$/, event((msg, match) => {
     let time = parseInt(match[2] || '30', 10);
 
-    if (time > 300) {
-        time = 300;
-    }
     if (time < -300) {
         time = -300;
+    } else if (time > 300) {
+        time = 300;
     }
 
     if (data.games[msg.chat.id]) {

@@ -173,11 +173,11 @@ module.exports = (pathActions, pathCommands) => {
                         // notice: ignore because of too many duplication records
                     } else {
                         // never reach
-                        console.error(entry);
+                        throw Error(JSON.stringify(entry));
                     }
                 } else {
                     // never reach
-                    console.error(entry);
+                    throw Error(JSON.stringify(entry));
                 }
             });
         },

@@ -11,15 +11,13 @@ module.exports = (bot, games, commands, writeCommand) => {
                 text += (i.slice(1) || '<bot自言自语>') + '\n';
             }
 
-            if (text) {
-                return bot.sendMessage(
-                    msg.chat.id,
-                    text,
-                    {
-                        reply_to_message_id: msg.message_id,
-                    }
-                );
-            }
+            return bot.sendMessage(
+                msg.chat.id,
+                text || '<什么都没有呢>',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
         },
 
         list: (msg, key) => {

@@ -106,8 +106,7 @@ module.exports = (bot, games, writeGame) => {
 
             if (game.time < -600) {
                 game.time = -600;
-            }
-            if (game.time > 0) {
+            } else if (game.time > 0) {
                 game.time = 0;
             }
 

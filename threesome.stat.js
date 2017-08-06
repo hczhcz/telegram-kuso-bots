@@ -60,10 +60,13 @@ module.exports = (bot, stats) => {
                             }
                         }
                     }
-                } else {
+                } else if (level === 1) {
                     for (const i in data) {
                         stat([data[i], i]);
                     }
+                } else {
+                    // never reach
+                    throw Error();
                 }
 
                 return {
