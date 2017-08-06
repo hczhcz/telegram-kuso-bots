@@ -278,7 +278,7 @@ bot.onText(/^\/list(@\w+)?(?: ((?!_)\w*))?$/, event((msg, match) => {
     command.list(msg, match[2] || '');
 }));
 
-bot.onText(/^\/add(@\w+)? ((?!_)\w*)@([^\r\n]+)$/, event((msg, match) => {
+bot.onText(/^\/add(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
     command.add(msg, match[2], match[3]);
 }));
 

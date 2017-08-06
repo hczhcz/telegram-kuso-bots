@@ -37,11 +37,11 @@ module.exports = (pathActions, pathCommands) => {
             });
         },
 
-        writeCommand: (chat, key, value) => {
+        writeCommand: (chat, key, entry) => {
             fs.write(fdCommands, JSON.stringify({
                 chat: chat,
                 key: key,
-                value: value,
+                entry: entry,
             }) + '\n', () => {
                 // nothing
             });
@@ -58,9 +58,7 @@ module.exports = (pathActions, pathCommands) => {
                 const command = self.commands[entry.chat.id];
 
                 command['/' + entry.key] = command['/' + entry.key] || [];
-                command['/' + entry.key].push({
-                    text: entry.value,
-                });
+                command['/' + entry.key].push(entry.entry);
             });
         },
 
