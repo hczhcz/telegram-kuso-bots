@@ -72,8 +72,8 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             for (const i in command['/' + key]) {
                 if (
-                    command['/' + key][i].text === entry.text
-                    || command['/' + key][i].forward === entry.forward
+                    entry.text && command['/' + key][i].text === entry.text
+                    || entry.forward && command['/' + key][i].forward === entry.forward
                 ) {
                     return bot.sendMessage(
                         msg.chat.id,
