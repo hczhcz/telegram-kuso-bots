@@ -52,8 +52,6 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             const command = commands[msg.chat.id];
 
-            command['/' + key] = command['/' + key] || [];
-
             const entry = {};
 
             if (value) {
@@ -84,8 +82,6 @@ module.exports = (bot, games, commands, writeCommand) => {
                     );
                 }
             }
-
-            command['/' + key].push(entry);
 
             writeCommand(
                 msg.chat,

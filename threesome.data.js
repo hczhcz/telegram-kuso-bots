@@ -12,7 +12,11 @@ module.exports = (pathActions, pathCommands) => {
         commands: {},
         stats: {},
 
+        loadMessage: (msg) => {},
+
         writeMessage: (msg) => {
+            self.loadMessage(msg);
+
             fs.write(fdActions, JSON.stringify({
                 msg: msg,
             }) + '\n', () => {
@@ -20,7 +24,11 @@ module.exports = (pathActions, pathCommands) => {
             });
         },
 
+        loadQuery: (chosen) => {},
+
         writeQuery: (chosen) => {
+            self.loadQuery(chosen);
+
             fs.write(fdActions, JSON.stringify({
                 chosen: chosen,
             }) + '\n', () => {
@@ -28,7 +36,11 @@ module.exports = (pathActions, pathCommands) => {
             });
         },
 
+        loadGame: (msg, game) => {},
+
         writeGame: (msg, game) => {
+            self.loadGame(msg, game);
+
             fs.write(fdActions, JSON.stringify({
                 msg: msg,
                 game: game,
@@ -37,7 +49,18 @@ module.exports = (pathActions, pathCommands) => {
             });
         },
 
+        loadCommand: (chat, key, entry) => {
+            self.commands[chat.id] = self.commands[chat.id] || {};
+
+            const command = self.commands[chat.id];
+
+            command['/' + key] = command['/' + key] || [];
+            command['/' + key].push(entry);
+        },
+
         writeCommand: (chat, key, entry) => {
+            self.loadCommand(chat, key, entry);
+
             fs.write(fdCommands, JSON.stringify({
                 chat: chat,
                 key: key,
@@ -51,14 +74,9 @@ module.exports = (pathActions, pathCommands) => {
             readline.createInterface({
                 input: fs.createReadStream(pathCommands),
             }).on('line', (line) => {
-                const entry = JSON.parse(line);
+                const obj = JSON.parse(line);
 
-                self.commands[entry.chat.id] = self.commands[entry.chat.id] || {};
-
-                const command = self.commands[entry.chat.id];
-
-                command['/' + entry.key] = command['/' + entry.key] || [];
-                command['/' + entry.key].push(entry.entry);
+                self.loadCommand(obj.chat, obj.key, obj.entry);
             });
         },
 
