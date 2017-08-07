@@ -12,6 +12,14 @@ module.exports = (pathActions, pathCommands) => {
         commands: {},
         stats: {},
 
+        genName: (user) => {
+            if (user.id) {
+                self.stats.name[user.id] = user.first_name
+                    || user.last_name
+                    || self.stats.name[user.id];
+            }
+        },
+
         loadMessage: (msg) => {
             self.stats.command[msg.chat.id] = self.stats.command[msg.chat.id] || {
                 chat: {},
@@ -29,7 +37,7 @@ module.exports = (pathActions, pathCommands) => {
 
             const i = msg.from.id;
 
-            genName(msg.from);
+            self.genName(msg.from);
 
             commandStat.user[i] = commandStat.user[i] || {};
             commandStat.user[i][command] = (commandStat.user[i][command] || 0) + 1;
@@ -38,7 +46,7 @@ module.exports = (pathActions, pathCommands) => {
             if (msg.reply_to_message) {
                 const j = msg.reply_to_message.from.id;
 
-                genName(msg.reply_to_message.from);
+                self.genName(msg.reply_to_message.from);
 
                 commandStat.pair[i] = commandStat.pair[i] || {};
                 commandStat.pair[i][j] = commandStat.pair[i][j] || {};
@@ -68,7 +76,7 @@ module.exports = (pathActions, pathCommands) => {
 
             const inlineStat = self.stats.inline[chosen.from.id];
 
-            genName(chosen.from);
+            self.genName(chosen.from);
 
             if (chosen.result_id === 'CONTENT') {
                 // notice: see the implementation of inline query
@@ -112,7 +120,7 @@ module.exports = (pathActions, pathCommands) => {
             gameStat.chat[game.usercount] = (gameStat.chat[game.usercount] || 0) + 1;
 
             for (const i in game.users) {
-                genName(game.users[i]);
+                self.genName(game.users[i]);
 
                 gameStat.userTotal[i] = (gameStat.userTotal[i] || 0) + 1;
 
@@ -175,14 +183,6 @@ module.exports = (pathActions, pathCommands) => {
             self.stats.command = {};
             self.stats.inline = {};
             self.stats.name = {};
-
-            const genName = (user) => {
-                if (user.id) {
-                    self.stats.name[user.id] = user.first_name
-                        || user.last_name
-                        || self.stats.name[user.id];
-                }
-            };
 
             readline.createInterface({
                 input: fs.createReadStream(pathActions),
