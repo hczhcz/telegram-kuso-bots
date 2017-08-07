@@ -302,15 +302,8 @@ bot.on('chosen_inline_result', (chosen) => {
     data.writeQuery(chosen);
 });
 
-const updateStats = () => {
-    data.loadStats();
-
-    // TODO: config?
-    setTimeout(updateStats, 600 * 1000);
-};
-
 data.loadCommands();
-updateStats();
+data.loadStats();
 
 setInterval(() => {
     for (const i in data.games) {
