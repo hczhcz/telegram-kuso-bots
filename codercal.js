@@ -39,7 +39,7 @@ const activities = [
     {name: '玩FlappyBird', good: '今天破纪录的几率很高', bad: '除非你想玩到把手机砸了', weekend: true},
 ];
 const specials = [
-    {date: 20140214, name: '待在男（女）友身边', bad: '脱团火葬场，入团保平安。'},
+    {date: 214, name: '待在男（女）友身边', bad: '脱团火葬场，入团保平安。'},
 ];
 const components = [
     {name: 'vars', random: 12, list: ['jieguo', 'huodong', 'pay', 'expire', 'zhangdan', 'every', 'free', 'i1', 'a', 'virtual', 'ad', 'spider', 'mima', 'pass', 'ui']},
@@ -162,7 +162,7 @@ const pickActivities = (size) => {
 const pickSpecials = () => {
     const todaySpecials = [];
 
-    const date = getTodayInt();
+    const date = getTodayInt() % 10000; // month and day
 
     for (const i in specials) {
         if (specials[i].date === date) {
