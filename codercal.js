@@ -114,10 +114,10 @@ const random = (iter) => {
     return seedRandom(getTodayInt() % 11117, iter);
 };
 
-const pickRandom = (data, size) => {
-    const result = data.slice();
+const pickRandom = (list, size) => {
+    const result = list.slice();
 
-    for (let i = 0; i < data.length - size; i += 1) {
+    for (let i = 0; i < list.length - size; i += 1) {
         result.splice(random(i) % result.length, 1);
     }
 
@@ -173,23 +173,20 @@ const pickSpecials = () => {
     return todaySpecials;
 };
 
-const parse = (event, key) => {
-    const sections = event[key].split('%');
+const parse = (text) => {
+    const sections = text.split('%');
 
-    let description = '';
+    let result = '';
 
     for (const i in sections) {
         if (i % 2) {
-            description += pickComponent(sections[i]);
+            result += pickComponent(sections[i]);
         } else {
-            description += sections[i];
+            result += sections[i];
         }
     }
 
-    return {
-        name: event.name,
-        description: description,
-    };
+    return result;
 };
 
 const pickEvents = () => {
@@ -203,9 +200,15 @@ const pickEvents = () => {
 
     for (const i in pickedActivities) {
         if (i < numGood) {
-            good.push(parse(pickedActivities[i], 'good'));
+            good.push({
+                name: parse(pickedActivities[i].name),
+                description: parse(pickedActivities[i].good),
+            });
         } else {
-            bad.push(parse(pickedActivities[i], 'bad'));
+            bad.push({
+                name: parse(pickedActivities[i].name),
+                description: parse(pickedActivities[i].bad),
+            });
         }
     }
 
@@ -213,9 +216,15 @@ const pickEvents = () => {
 
     for (const i in pickedSpecials) {
         if (pickedSpecials[i].good) {
-            good.push(parse(pickedSpecials[i], 'good'));
+            good.push({
+                name: parse(pickedSpecials[i].name),
+                description: parse(pickedSpecials[i].good),
+            });
         } else {
-            bad.push(parse(pickedSpecials[i], 'bad'));
+            bad.push({
+                name: parse(pickedSpecials[i].name),
+                description: parse(pickedSpecials[i].bad),
+            });
         }
     }
 
