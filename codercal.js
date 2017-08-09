@@ -373,5 +373,5 @@ bot.on('inline_query', (query) => {
 });
 
 bot.on('chosen_inline_result', (chosen) => {
-    console.log('[' + Date() + '] ' + chosen.from.id + ' ' + chosen.query + ' ' + chosen.result_id);
+    console.log('[' + Date() + '] ' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.query + ' ' + chosen.result_id);
 });
