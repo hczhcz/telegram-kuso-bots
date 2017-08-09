@@ -65,6 +65,7 @@ const lucks = [
     {
         name: '程序员求签',
         id: 'CODERLUCK',
+        random: 42,
         list: [
             {name: '超大吉', rate: 10, description: ''},
             {name: '大吉', rate: 100, description: ''},
@@ -262,7 +263,7 @@ const pickHints = (components, hints) => {
     return todayHints;
 };
 
-const pickLuck = (list, query) => {
+const pickLuck = (list, iter, query) => {
     let range = 0;
 
     for (const i in list) {
@@ -270,7 +271,7 @@ const pickLuck = (list, query) => {
     }
 
     const target = seedRandom(
-        crc32.str(query.query) ^ query.from.id, 42
+        crc32.str(query.query) ^ query.from.id, iter
     ) % range;
     let sum = 0;
 
@@ -339,7 +340,7 @@ bot.on('inline_query', (query) => {
 
     if (query.query) {
         for (const i in lucks) {
-            const pickedLuck = pickLuck(lucks[i].list, query);
+            const pickedLuck = pickLuck(lucks[i].list, lucks[i].random, query);
 
             let luckText = lucks[i].name + '\n' + getTodayString()
                 + '\n\n所求事项：' + query.query
