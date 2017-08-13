@@ -299,6 +299,8 @@ bot.on('inline_query', (query) => {
 
 bot.on('chosen_inline_result', (chosen) => {
     console.log('[' + Date() + '] inline:' + chosen.from.id + ' ' + chosen.query);
+
+    chosen.date = Date.now();
     data.writeQuery(chosen);
 });
 
