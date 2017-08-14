@@ -90,6 +90,20 @@ process.on('uncaughtException', (err) => {
 });
 
 bot.on('inline_query', (query) => {
+    if (config.ban[query.from.id]) {
+        return bot.answerInlineQuery(query.id, [{
+            type: 'article',
+            id: 'BANNED',
+            title: calenders[0].name + (suffix[core.getTodayInt() % 10000] || ''),
+            input_message_content: {
+                message_text: '该用户因存在恶意使用 Bot 的报告，已被列入黑名单',
+            },
+        }], {
+            cache_time: 0,
+            is_personal: true,
+        });
+    }
+
     const answers = [];
 
     for (const i in calenders) {

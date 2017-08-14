@@ -14,7 +14,7 @@ const handler = (func) => {
     return (msg, match) => {
         console.log(JSON.stringify(msg));
 
-        if (msg.date >= Date.now() / 1000 - 10) {
+        if (msg.date >= Date.now() / 1000 - 10 && !config.ban[msg.from.id]) {
             if (msg.text) {
                 func(msg, match);
 
