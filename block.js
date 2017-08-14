@@ -10,7 +10,7 @@ process.on('uncaughtException', (err) => {
 let enable = true;
 
 bot.on('message', (msg) => {
-    if (enable && config.blockBan[msg.from.id]) {
+    if (enable && config.block[msg.from.id]) {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + msg.text);
 
         bot.deleteMessage(msg.chat.id, msg.message_id);

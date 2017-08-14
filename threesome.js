@@ -28,7 +28,7 @@ const event = (handler, atIndex) => {
             }
 
             // notice: take care of the inline query event
-            if (config.threesomeBan[msg.from.id]) {
+            if (config.ban[msg.from.id]) {
                 info.banned(msg);
             } else {
                 handler(msg, match);
@@ -300,7 +300,7 @@ bot.on('inline_query', (query) => {
     // console.log('[' + Date() + '] inline:' + query.from.id + ' ' + query.query);
     // data.writeQuery(query);
 
-    if (config.threesomeBan[query.from.id]) {
+    if (config.ban[query.from.id]) {
         inline.banned(query);
     } else {
         inline.answer(query);
