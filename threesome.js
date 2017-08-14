@@ -282,8 +282,18 @@ bot.onText(/^\/add(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
     command.add(msg, match[2], match[3]);
 }));
 
-bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n ]+))?(?: ([^\r\n ]+))?(?: ([^\r\n ]+))?$/, event((msg, match) => {
-    command.get(msg, match[1], [match[3], match[4], match[5]]);
+bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
+    let args = [];
+
+    if (match[3]) {
+        if (match[3].match('@')) {
+            args = match[3].split('@');
+        } else {
+            args = match[3].split(' ');
+        }
+    }
+
+    command.get(msg, match[1], args);
 }, 2));
 
 bot.on('inline_query', (query) => {
