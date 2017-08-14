@@ -12,12 +12,6 @@ const isWeekend = () => {
     return today.getUTCDay() === 0 || today.getUTCDay() === 6;
 };
 
-const isSomeday = () => {
-    const today = getCST();
-
-    return today.getUTCMonth() === 5 && today.getUTCDate() === 4;
-};
-
 const getTodayInt = () => {
     const today = getCST();
 
@@ -99,7 +93,7 @@ const pickActivities = (activities, size) => {
 const pickSpecials = (specials) => {
     const todaySpecials = [];
 
-    const date = getTodayInt() % 10000; // month and day
+    const date = getTodayInt() % 10000;
 
     for (const i in specials) {
         if (specials[i].date === date) {
@@ -206,7 +200,7 @@ const pickLuck = (list, iter, query) => {
 };
 
 module.exports = {
-    isSomeday: isSomeday,
+    getTodayInt: getTodayInt,
     getTodayString: getTodayString,
     pickEvents: pickEvents,
     pickHints: pickHints,

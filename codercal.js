@@ -78,6 +78,13 @@ const lucks = [
     },
 ];
 
+const suffix = {
+    214: '❤',
+    604: '🕯',
+    817: '🐸🎂',
+    1024: '🖥',
+};
+
 process.on('uncaughtException', (err) => {
     console.error(err);
 });
@@ -121,11 +128,7 @@ bot.on('inline_query', (query) => {
             answers.push({
                 type: 'article',
                 id: calenders[i].id,
-                title: calenders[i].name + (
-                    core.isSomeday()
-                        ? '🕯'
-                        : ''
-                ),
+                title: calenders[i].name + (suffix[core.getTodayInt() % 10000] || ''),
                 input_message_content: {
                     message_text: calText,
                 },
@@ -148,13 +151,7 @@ bot.on('inline_query', (query) => {
             answers.push({
                 type: 'article',
                 id: lucks[i].id,
-                title: lucks[i].name + (
-                    core.isSomeday()
-                        ? '🕯'
-                        : query.query === 'hczhcz'
-                        ? '🌝'
-                        : ''
-                ),
+                title: lucks[i].name + (suffix[core.getTodayInt() % 10000] || ''),
                 input_message_content: {
                     message_text: luckText,
                 },
