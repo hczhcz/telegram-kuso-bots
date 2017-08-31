@@ -57,11 +57,11 @@ const pickRandom = (list, size) => {
 const pickDictionary = (dictionaries, id) => {
     for (const i in dictionaries) {
         if (dictionaries[i].id === id) {
-            if (dictionaries[i].random) {
+            if ('random' in dictionaries[i]) {
                 return dictionaries[i].items[
                     random(dictionaries[i].random) % dictionaries[i].items.length
                 ];
-            } else if (dictionaries[i].pick) {
+            } else if ('pick' in dictionaries[i]) {
                 return pickRandom(dictionaries[i].items, dictionaries[i].pick).join('，');
             } else {
                 // never reach
@@ -78,14 +78,12 @@ const pickActivities = (activities, size) => {
     const todayActivities = [];
 
     for (const i in activities) {
-        if (isWeekend()) {
-            if (activities[i].weekend) {
-                todayActivities.push(activities[i]);
-            }
-        } else {
-            if (activities[i].weekday) {
-                todayActivities.push(activities[i]);
-            }
+        if (
+            isWeekend()
+                ? activities[i].weekend
+                : activities[i].weekday
+        ) {
+            todayActivities.push(activities[i]);
         }
     }
 
@@ -148,16 +146,18 @@ const pickEvents = (dictionaries, activities, specials) => {
     const pickedSpecials = pickSpecials(specials);
 
     for (const i in pickedSpecials) {
-        if (pickedSpecials[i].good) {
+        if ('good' in pickedSpecials[i]) {
             good.push({
                 name: parse(dictionaries, pickedSpecials[i].name),
                 description: parse(dictionaries, pickedSpecials[i].good),
             });
-        } else {
+        } else if ('bad' in pickedSpecials[i]) {
             bad.push({
                 name: parse(dictionaries, pickedSpecials[i].name),
                 description: parse(dictionaries, pickedSpecials[i].bad),
             });
+        } else {
+            throw Error();
         }
     }
 

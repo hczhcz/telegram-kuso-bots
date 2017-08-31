@@ -11,6 +11,10 @@ process.on('uncaughtException', (err) => {
     console.error(err);
 });
 
+const handleAction = (msg, match) => {
+    // TODO
+};
+
 // /calender <cal id> <title>
 bot.onText(/^\/(calender|c) (\w+cal) ([^@\r\n]+)/, handleAction);
 // /delete calender <cal id>
