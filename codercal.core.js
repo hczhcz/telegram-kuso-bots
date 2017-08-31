@@ -75,19 +75,21 @@ const pickComponent = (components, name) => {
 };
 
 const pickActivities = (activities, size) => {
-    if (isWeekend()) {
-        const todayActivities = [];
+    const todayActivities = [];
 
-        for (const i in activities) {
+    for (const i in activities) {
+        if (isWeekend()) {
             if (activities[i].weekend) {
                 todayActivities.push(activities[i]);
             }
+        } else {
+            if (activities[i].weekday) {
+                todayActivities.push(activities[i]);
+            }
         }
-
-        return pickRandom(todayActivities, size);
-    } else {
-        return pickRandom(activities, size);
     }
+
+    return pickRandom(todayActivities, size);
 };
 
 const pickSpecials = (specials) => {
