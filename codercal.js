@@ -29,9 +29,9 @@ bot.on('inline_query', (query) => {
     const answers = [];
 
     for (const i in data.calenders) {
-        if (data.calenders[i].name !== 'off' && data.calenders[i].name.match(query.query)) {
+        if (data.calenders[i].name && data.calenders[i].name.match(query.query)) {
             const pickedEvents = core.pickEvents(
-                data.calenders[i].components,
+                data.calenders[i].dictionaries,
                 data.calenders[i].activities,
                 data.calenders[i].specials
             );
@@ -57,7 +57,7 @@ bot.on('inline_query', (query) => {
             }
 
             calText += '\n\n' + core.pickHints(
-                data.calenders[i].components,
+                data.calenders[i].dictionaries,
                 data.calenders[i].hints
             ).join('\n');
 
@@ -74,8 +74,8 @@ bot.on('inline_query', (query) => {
 
     if (query.query) {
         for (const i in data.lucks) {
-            if (data.lucks[i].name !== 'off') {
-                const pickedLuck = core.pickLuck(data.lucks[i].list, data.lucks[i].random, query);
+            if (data.lucks[i].name) {
+                const pickedLuck = core.pickLuck(data.lucks[i].rates, data.lucks[i].random, query);
 
                 let luckText = data.lucks[i].name + '\n' + core.getTodayString()
                     + '\n\n所求事项：' + query.query

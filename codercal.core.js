@@ -54,15 +54,15 @@ const pickRandom = (list, size) => {
     return result;
 };
 
-const pickComponent = (components, id) => {
-    for (const i in components) {
-        if (components[i].id === id) {
-            if (components[i].random) {
-                return components[i].list[
-                    random(components[i].random) % components[i].list.length
+const pickDictionary = (dictionaries, id) => {
+    for (const i in dictionaries) {
+        if (dictionaries[i].id === id) {
+            if (dictionaries[i].random) {
+                return dictionaries[i].items[
+                    random(dictionaries[i].random) % dictionaries[i].items.length
                 ];
-            } else if (components[i].pick) {
-                return pickRandom(components[i].list, components[i].pick).join('，');
+            } else if (dictionaries[i].pick) {
+                return pickRandom(dictionaries[i].items, dictionaries[i].pick).join('，');
             } else {
                 // never reach
                 throw Error();
@@ -70,7 +70,7 @@ const pickComponent = (components, id) => {
         }
     }
 
-    // notice: allow empty component
+    // notice: allow empty lists
     return '';
 };
 
@@ -106,14 +106,14 @@ const pickSpecials = (specials) => {
     return todaySpecials;
 };
 
-const parse = (components, text) => {
+const parse = (dictionaries, text) => {
     const sections = text.split('%');
 
     let result = '';
 
     for (const i in sections) {
         if (i % 2) {
-            result += pickComponent(components, sections[i]);
+            result += pickDictionary(dictionaries, sections[i]);
         } else {
             result += sections[i];
         }
@@ -122,7 +122,7 @@ const parse = (components, text) => {
     return result;
 };
 
-const pickEvents = (components, activities, specials) => {
+const pickEvents = (dictionaries, activities, specials) => {
     const good = [];
     const bad = [];
 
@@ -134,13 +134,13 @@ const pickEvents = (components, activities, specials) => {
     for (const i in pickedActivities) {
         if (i < numGood) {
             good.push({
-                name: parse(components, pickedActivities[i].name),
-                description: parse(components, pickedActivities[i].good),
+                name: parse(dictionaries, pickedActivities[i].name),
+                description: parse(dictionaries, pickedActivities[i].good),
             });
         } else {
             bad.push({
-                name: parse(components, pickedActivities[i].name),
-                description: parse(components, pickedActivities[i].bad),
+                name: parse(dictionaries, pickedActivities[i].name),
+                description: parse(dictionaries, pickedActivities[i].bad),
             });
         }
     }
@@ -150,13 +150,13 @@ const pickEvents = (components, activities, specials) => {
     for (const i in pickedSpecials) {
         if (pickedSpecials[i].good) {
             good.push({
-                name: parse(components, pickedSpecials[i].name),
-                description: parse(components, pickedSpecials[i].good),
+                name: parse(dictionaries, pickedSpecials[i].name),
+                description: parse(dictionaries, pickedSpecials[i].good),
             });
         } else {
             bad.push({
-                name: parse(components, pickedSpecials[i].name),
-                description: parse(components, pickedSpecials[i].bad),
+                name: parse(dictionaries, pickedSpecials[i].name),
+                description: parse(dictionaries, pickedSpecials[i].bad),
             });
         }
     }
@@ -167,21 +167,21 @@ const pickEvents = (components, activities, specials) => {
     };
 };
 
-const pickHints = (components, hints) => {
+const pickHints = (dictionaries, hints) => {
     const todayHints = [];
 
     for (const i in hints) {
-        todayHints.push(parse(components, hints[i]));
+        todayHints.push(parse(dictionaries, hints[i]));
     }
 
     return todayHints;
 };
 
-const pickLuck = (slots, iter, query) => {
+const pickLuck = (rates, iter, query) => {
     let range = 0;
 
-    for (const i in slots) {
-        range += slots[i].rate;
+    for (const i in rates) {
+        range += rates[i].rate;
     }
 
     const target = seedRandom(
@@ -189,11 +189,11 @@ const pickLuck = (slots, iter, query) => {
     ) % range;
     let sum = 0;
 
-    for (const i in slots) {
-        sum += slots[i].rate;
+    for (const i in rates) {
+        sum += rates[i].rate;
 
         if (sum > target) {
-            return slots[i];
+            return rates[i];
         }
     }
 
