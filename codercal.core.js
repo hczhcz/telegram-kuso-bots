@@ -54,9 +54,9 @@ const pickRandom = (list, size) => {
     return result;
 };
 
-const pickComponent = (components, name) => {
+const pickComponent = (components, id) => {
     for (const i in components) {
-        if (components[i].name === name) {
+        if (components[i].id === id) {
             if (components[i].random) {
                 return components[i].list[
                     random(components[i].random) % components[i].list.length
@@ -177,11 +177,11 @@ const pickHints = (components, hints) => {
     return todayHints;
 };
 
-const pickLuck = (list, iter, query) => {
+const pickLuck = (slots, iter, query) => {
     let range = 0;
 
-    for (const i in list) {
-        range += list[i].rate;
+    for (const i in slots) {
+        range += slots[i].rate;
     }
 
     const target = seedRandom(
@@ -189,11 +189,11 @@ const pickLuck = (list, iter, query) => {
     ) % range;
     let sum = 0;
 
-    for (const i in list) {
-        sum += list[i].rate;
+    for (const i in slots) {
+        sum += slots[i].rate;
 
         if (sum > target) {
-            return list[i];
+            return slots[i];
         }
     }
 
