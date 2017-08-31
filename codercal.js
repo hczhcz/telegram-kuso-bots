@@ -29,7 +29,7 @@ bot.on('inline_query', (query) => {
     const answers = [];
 
     for (const i in data.calenders) {
-        if (data.calenders[i].name.match(query.query)) {
+        if (data.calenders[i].name !== 'off' && data.calenders[i].name.match(query.query)) {
             const pickedEvents = core.pickEvents(
                 data.calenders[i].components,
                 data.calenders[i].activities,
@@ -74,24 +74,26 @@ bot.on('inline_query', (query) => {
 
     if (query.query) {
         for (const i in data.lucks) {
-            const pickedLuck = core.pickLuck(data.lucks[i].list, data.lucks[i].random, query);
+            if (data.lucks[i].name !== 'off') {
+                const pickedLuck = core.pickLuck(data.lucks[i].list, data.lucks[i].random, query);
 
-            let luckText = data.lucks[i].name + '\n' + core.getTodayString()
-                + '\n\n所求事项：' + query.query
-                + '\n结果：' + pickedLuck.name;
+                let luckText = data.lucks[i].name + '\n' + core.getTodayString()
+                    + '\n\n所求事项：' + query.query
+                    + '\n结果：' + pickedLuck.name;
 
-            if (pickedLuck.description) {
-                luckText += ' - ' + pickedLuck.description;
+                if (pickedLuck.description) {
+                    luckText += ' - ' + pickedLuck.description;
+                }
+
+                answers.push({
+                    type: 'article',
+                    id: data.lucks[i].id,
+                    title: data.lucks[i].name + (data.suffix[core.getTodayInt() % 10000] || ''),
+                    input_message_content: {
+                        message_text: luckText,
+                    },
+                });
             }
-
-            answers.push({
-                type: 'article',
-                id: data.lucks[i].id,
-                title: data.lucks[i].name + (data.suffix[core.getTodayInt() % 10000] || ''),
-                input_message_content: {
-                    message_text: luckText,
-                },
-            });
         }
     }
 

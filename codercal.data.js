@@ -9,9 +9,10 @@ module.exports = (pathCals) => {
     const self = {
         calenders: [
             {
+                creator: 0,
                 owner: 0,
-                name: '程序员老黄历',
                 id: 'CODERCAL',
+                name: '程序员老黄历',
                 components: [
                     {
                         name: 'vars',
@@ -218,9 +219,10 @@ module.exports = (pathCals) => {
         ],
         lucks: [
             {
+                creator: 0,
                 owner: 0,
-                name: '程序员求签',
                 id: 'CODERLUCK',
+                name: '程序员求签',
                 random: 42,
                 list: [
                     {
