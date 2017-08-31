@@ -11,7 +11,7 @@ module.exports = (pathCals) => {
             {
                 creator: 0,
                 owner: 0,
-                id: 'CODERCAL',
+                id: 'codercal',
                 name: '程序员老黄历',
                 dictionaries: [
                     {
@@ -250,7 +250,7 @@ module.exports = (pathCals) => {
             {
                 creator: 0,
                 owner: 0,
-                id: 'CODERLUCK',
+                id: 'coderluck',
                 name: '程序员求签',
                 random: 42,
                 rates: [

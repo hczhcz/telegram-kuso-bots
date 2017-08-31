@@ -15,7 +15,7 @@ bot.on('inline_query', (query) => {
     if (config.ban[query.from.id]) {
         return bot.answerInlineQuery(query.id, [{
             type: 'article',
-            id: 'BANNED',
+            id: 'banned',
             title: data.calenders[0].name + (data.suffix[core.getTodayInt() % 10000] || ''),
             input_message_content: {
                 message_text: '该用户因存在恶意使用 Bot 的报告，已被列入黑名单',
@@ -104,5 +104,5 @@ bot.on('inline_query', (query) => {
 });
 
 bot.on('chosen_inline_result', (chosen) => {
-    console.log('[' + Date() + '] ' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.query + ' ' + chosen.result_id);
+    console.log('[' + Date() + '] ' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.result_id + ' ' + chosen.query);
 });
