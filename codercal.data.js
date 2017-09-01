@@ -308,6 +308,66 @@ module.exports = (pathCals) => {
             817: '🐸🎂',
             1024: '🖥',
         },
+
+        actionCalender: () => {},
+
+        actionDeleteCalender: () => {},
+
+        actionDictionaryPick: () => {},
+
+        actionDictionaryRandom: () => {},
+
+        actionItem: () => {},
+
+        actionDeleteItem: () => {},
+
+        actionActivityWeekday: () => {},
+
+        actionActivityWeekend: () => {},
+
+        actionActivity: () => {},
+
+        actionDeleteActivity: () => {},
+
+        actionSpecialGood: () => {},
+
+        actionSpecialBad: () => {},
+
+        actionDeleteSpecial: () => {},
+
+        actionHint: () => {},
+
+        actionDeleteHint: () => {},
+
+        actionLuck: () => {},
+
+        actionDeleteLuck: () => {},
+
+        actionRate: () => {},
+
+        actionDeleteRate: () => {},
+
+        writeCalAction: (action, msg, args) => {
+            self['action' + action].apply(msg, args);
+
+            fs.write(fdCals, JSON.stringify({
+                action: action,
+                msg: msg,
+                args: args,
+            }) + '\n', () => {
+                // nothing
+            });
+        },
+
+        loadCalActions: () => {
+            readline.createInterface({
+                input: fs.createReadStream(pathCals),
+            }).on('line', (line) => {
+                const obj = JSON.parse(line);
+
+                self['action' + obj.action].apply(obj.msg, obj.args);
+            });
+        },
     };
 
     return self;
