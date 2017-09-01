@@ -11,51 +11,98 @@ process.on('uncaughtException', (err) => {
     console.error(err);
 });
 
-const handleAction = (msg, match) => {
-    // TODO
+const limitNum = (num, min, max) => {
+    return Math.min(Math.max(num | 0, min), max);
 };
 
 // /calender <cal id> <title>
-bot.onText(/^\/(calender|c) (\w+cal) ([^@\r\n]+)/, handleAction);
+bot.onText(/^\/(calender|c) (\w+cal) ([^@\r\n]+)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'calender', [match[2], match[3]]);
+});
 // /delete calender <cal id>
-bot.onText(/^\/(delete calender|dc) (\w+cal)/, handleAction);
+bot.onText(/^\/(delete calender|dc) (\w+cal)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'deleteCalender', [match[2]]);
+});
 
 // /dictionary <cal id> <comp id> <random>
 // /dictionary <cal id> <comp id> x<pick>
-bot.onText(/^\/(dictionary|d) (\w+cal) (\w+) (x?)(\d+)/, handleAction);
+bot.onText(/^\/(dictionary|d) (\w+cal) (\w+) (x)?(\d+)/, (msg, match) => {
+    if (match[4] === 'x') {
+        data.writeCalAction(msg.from.id, msg.chat.id, 'dictionaryPick', [match[2], match[3], limitNum(match[4], 1, 5)]);
+    } else {
+        data.writeCalAction(msg.from.id, msg.chat.id, 'dictionaryRandom', [match[2], match[3], limitNum(match[4], 1, 100)]);
+    }
+});
 
 // /item <cal id> <comp id> <text>
-bot.onText(/^\/(item|i) (\w+cal) (\w+) ([^@\r\n]+)/, handleAction);
+bot.onText(/^\/(item|i) (\w+cal) (\w+) ([^@\r\n]+)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'item', [match[2], match[3], match[4]]);
+});
 // /delete item <cal id> <comp id> <text>
-bot.onText(/^\/(delete item|di) (\w+cal) (\w+) ([^@\r\n]+)/, handleAction);
+bot.onText(/^\/(delete item|di) (\w+cal) (\w+) ([^@\r\n]+)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'deleteItem', [match[2], match[3], match[4]]);
+});
 
 // /activity <cal id> <name>@<good>@<bad>
 // /activity <cal id> <name>@<good>@<bad>@weekday
 // /activity <cal id> <name>@<good>@<bad>@weekend
-bot.onText(/^\/(activity|a) (\w+cal) ([^@\r\n]+)@([^@\r\n]*)@([^@\r\n]*)(@weekday|@weekend)?/, handleAction);
+bot.onText(/^\/(activity|a) (\w+cal) ([^@\r\n]+)@([^@\r\n]*)@([^@\r\n]*)(@weekday|@weekend)?/, (msg, match) => {
+    if (match[6] === '@weekday') {
+        data.writeCalAction(msg.from.id, msg.chat.id, 'activityWeekday', [match[2], match[3], match[4], match[5]]);
+    } else if (match[6] === '@weekend') {
+        data.writeCalAction(msg.from.id, msg.chat.id, 'activityWeekend', [match[2], match[3], match[4], match[5]]);
+    } else {
+        data.writeCalAction(msg.from.id, msg.chat.id, 'activity', [match[2], match[3], match[4], match[5]]);
+    }
+});
 // /delete activity <cal id> <name>
-bot.onText(/^\/(delete activity|da) (\w+cal) ([^@\r\n]+)/, handleAction);
+bot.onText(/^\/(delete activity|da) (\w+cal) ([^@\r\n]+)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'deleteActivity', [match[2], match[3]]);
+});
 
-// /special <cal id> <name>@good@<good>@<date>
-// /special <cal id> <name>@bad@<bad>@<date>
-bot.onText(/^\/(special|s) (\w+cal) ([^@\r\n]+)@(good|bad)@([^@\r\n]*)@(\d+)/, handleAction);
+// /special <cal id> <name>@good@<good>@<month>/<day>
+// /special <cal id> <name>@bad@<bad>@<month>/<day>
+bot.onText(/^\/(special|s) (\w+cal) ([^@\r\n]+)@(good|bad)@([^@\r\n]*)@(\d+)\/(\d+)/, (msg, match) => {
+    if (match[4] === 'good') {
+        data.writeCalAction(msg.from.id, msg.chat.id, 'specialGood', [match[2], match[3], match[5], limitNum(match[6], 1, 12) * 100 + limitNum(match[7], 1, 31)]);
+    } else if (match[4] === 'bad') {
+        data.writeCalAction(msg.from.id, msg.chat.id, 'specialBad', [match[2], match[3], match[5], limitNum(match[6], 1, 12) * 100 + limitNum(match[7], 1, 31)]);
+    } else {
+        // never reach
+        throw Error();
+    }
+});
 // /delete special <cal id> <name>
-bot.onText(/^\/(delete special|ds) (\w+cal) ([^@\r\n]+)/, handleAction);
+bot.onText(/^\/(delete special|ds) (\w+cal) ([^@\r\n]+)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'deleteSpecial', [match[2], match[3]]);
+});
 
 // /hint <cal id> <text>
-bot.onText(/^\/(hint|h) (\w+cal) ([^@\r\n]+)/, handleAction);
+bot.onText(/^\/(hint|h) (\w+cal) ([^@\r\n]+)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'hint', [match[2], match[3]]);
+});
 // /delete hint <cal id> <text>
-bot.onText(/^\/(delete hint|dh) (\w+cal) ([^@\r\n]+)/, handleAction);
+bot.onText(/^\/(delete hint|dh) (\w+cal) ([^@\r\n]+)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'deleteHint', [match[2], match[3]]);
+});
 
 // /luck <luck id> <title>@<random>
-bot.onText(/^\/(luck|l) (\w+luck) ([^@\r\n]+)@(\d+)/, handleAction);
+bot.onText(/^\/(luck|l) (\w+luck) ([^@\r\n]+)@(\d+)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'luck', [match[2], match[3], limitNum(match[4], 1, 100)]);
+});
 // /delete luck <luck id>
-bot.onText(/^\/(delete luck|dl) (\w+luck)/, handleAction);
+bot.onText(/^\/(delete luck|dl) (\w+luck)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'deleteLuck', [match[2]]);
+});
 
 // /rate <luck id> <name>@<rate>@<descrpiton>
-bot.onText(/^\/(rate|r) (\w+luck) ([^@\r\n]+)@(\d+)@([^@\r\n]*)/, handleAction);
+bot.onText(/^\/(rate|r) (\w+luck) ([^@\r\n]+)@(\d+)@([^@\r\n]*)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'rate', [match[2], match[3], limitNum(match[4], 1, 10000), match[5]]);
+});
 // /delete rate <luck id> <name>
-bot.onText(/^\/(delete rate|dr) (\w+luck) ([^@\r\n]+)/, handleAction);
+bot.onText(/^\/(delete rate|dr) (\w+luck) ([^@\r\n]+)/, (msg, match) => {
+    data.writeCalAction(msg.from.id, msg.chat.id, 'deleteRate', [match[2], match[3]]);
+});
 
 bot.on('inline_query', (query) => {
     if (config.ban[query.from.id]) {
