@@ -309,43 +309,81 @@ module.exports = (pathCals) => {
             1024: '🖥',
         },
 
-        actionCalender: () => {},
+        actionCalender: () => {
+            // TODO
+        },
 
-        actionDeleteCalender: () => {},
+        actionDeleteCalender: () => {
+            // TODO
+        },
 
-        actionDictionaryPick: () => {},
+        actionDictionaryPick: () => {
+            // TODO
+        },
 
-        actionDictionaryRandom: () => {},
+        actionDictionaryRandom: () => {
+            // TODO
+        },
 
-        actionItem: () => {},
+        actionItem: () => {
+            // TODO
+        },
 
-        actionDeleteItem: () => {},
+        actionDeleteItem: () => {
+            // TODO
+        },
 
-        actionActivityWeekday: () => {},
+        actionActivityWeekday: () => {
+            // TODO
+        },
 
-        actionActivityWeekend: () => {},
+        actionActivityWeekend: () => {
+            // TODO
+        },
 
-        actionActivity: () => {},
+        actionActivity: () => {
+            // TODO
+        },
 
-        actionDeleteActivity: () => {},
+        actionDeleteActivity: () => {
+            // TODO
+        },
 
-        actionSpecialGood: () => {},
+        actionSpecialGood: () => {
+            // TODO
+        },
 
-        actionSpecialBad: () => {},
+        actionSpecialBad: () => {
+            // TODO
+        },
 
-        actionDeleteSpecial: () => {},
+        actionDeleteSpecial: () => {
+            // TODO
+        },
 
-        actionHint: () => {},
+        actionHint: () => {
+            // TODO
+        },
 
-        actionDeleteHint: () => {},
+        actionDeleteHint: () => {
+            // TODO
+        },
 
-        actionLuck: () => {},
+        actionLuck: () => {
+            // TODO
+        },
 
-        actionDeleteLuck: () => {},
+        actionDeleteLuck: () => {
+            // TODO
+        },
 
-        actionRate: () => {},
+        actionRate: () => {
+            // TODO
+        },
 
-        actionDeleteRate: () => {},
+        actionDeleteRate: () => {
+            // TODO
+        },
 
         writeCalAction: (action, msg, args) => {
             self['action' + action].apply(msg, args);
