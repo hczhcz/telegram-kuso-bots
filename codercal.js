@@ -26,6 +26,38 @@ const limitNum = (num, min, max) => {
     return Math.min(Math.max(num | 0, min), max);
 };
 
+bot.onText(/^\/help(?!\w)/, event((msg, match) => {
+    bot.sendMessage(
+        msg.from.id,
+        '命令列表：\n'
+            + '/help\n'
+            + '/calender <cal id> <title>\n'
+            + '/delete calender <cal id>\n'
+            + '/dictionary <cal id> <dict id> <random>\n'
+            + '/dictionary <cal id> <dict id> x<pick>\n'
+            + '/item <cal id> <dict id> <item>\n'
+            + '/delete item <cal id> <dict id> <item>\n'
+            + '/activity <cal id> <name>@<good>@<bad>\n'
+            + '/activity <cal id> <name>@<good>@<bad>@weekday\n'
+            + '/activity <cal id> <name>@<good>@<bad>@weekend\n'
+            + '/delete activity <cal id> <name>\n'
+            + '/special <cal id> <name>@good@<good>@<month>/<day>\n'
+            + '/special <cal id> <name>@bad@<bad>@<month>/<day>\n'
+            + '/delete special <cal id> <name>\n'
+            + '/hint <cal id> <hint>\n'
+            + '/delete hint <cal id> <hint>\n'
+            + '/luck <luck id> <title>@<random>\n'
+            + '/delete luck <luck id>\n'
+            + '/rate <luck id> <name>@<rate>@<descrpiton>\n'
+            + '/delete rate <luck id> <name>\n'
+            + '备注：\n'
+            + '<cal id> 必须以 cal 结尾\n'
+            + '<luck id> 必须以 luck 结尾\n'
+            + '除 /help 外，命令可以用首字母缩写\n'
+            + '例如 /c (/calender)，/dc (/delete calender)'
+    );
+}));
+
 // /calender <cal id> <title>
 bot.onText(/^\/(calender|c) (\w+cal) ([^@\r\n]+)$/, event((msg, match) => {
     data.writeCalAction('Calender', msg, [match[2], match[3]]);
