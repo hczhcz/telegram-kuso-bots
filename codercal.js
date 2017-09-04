@@ -35,8 +35,8 @@ bot.onText(/^\/(delete calender|dc) (\w+cal)$/, event((msg, match) => {
     data.writeCalAction('DeleteCalender', msg, [match[2]]);
 }));
 
-// /dictionary <cal id> <comp id> <random>
-// /dictionary <cal id> <comp id> x<pick>
+// /dictionary <cal id> <dict id> <random>
+// /dictionary <cal id> <dict id> x<pick>
 bot.onText(/^\/(dictionary|d) (\w+cal) (\w+) (x)?(\d+)$/, event((msg, match) => {
     if (match[4] === 'x') {
         data.writeCalAction('DictionaryPick', msg, [match[2], match[3], limitNum(match[4], 1, 5)]);
@@ -45,11 +45,11 @@ bot.onText(/^\/(dictionary|d) (\w+cal) (\w+) (x)?(\d+)$/, event((msg, match) => 
     }
 }));
 
-// /item <cal id> <comp id> <text>
+// /item <cal id> <dict id> <item>
 bot.onText(/^\/(item|i) (\w+cal) (\w+) ([^@\r\n]+)$/, event((msg, match) => {
     data.writeCalAction('Item', msg, [match[2], match[3], match[4]]);
 }));
-// /delete item <cal id> <comp id> <text>
+// /delete item <cal id> <dict id> <item>
 bot.onText(/^\/(delete item|di) (\w+cal) (\w+) ([^@\r\n]+)$/, event((msg, match) => {
     data.writeCalAction('DeleteItem', msg, [match[2], match[3], match[4]]);
 }));
@@ -88,11 +88,11 @@ bot.onText(/^\/(delete special|ds) (\w+cal) ([^@\r\n]+)$/, event((msg, match) =>
     data.writeCalAction('DeleteSpecial', msg, [match[2], match[3]]);
 }));
 
-// /hint <cal id> <text>
+// /hint <cal id> <hint>
 bot.onText(/^\/(hint|h) (\w+cal) ([^@\r\n]+)$/, event((msg, match) => {
     data.writeCalAction('Hint', msg, [match[2], match[3]]);
 }));
-// /delete hint <cal id> <text>
+// /delete hint <cal id> <hint>
 bot.onText(/^\/(delete hint|dh) (\w+cal) ([^@\r\n]+)$/, event((msg, match) => {
     data.writeCalAction('DeleteHint', msg, [match[2], match[3]]);
 }));

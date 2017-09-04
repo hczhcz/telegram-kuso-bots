@@ -309,79 +309,79 @@ module.exports = (pathCals) => {
             1024: '🖥',
         },
 
-        actionCalender: () => {
+        actionCalender: (cal, title) => {
             // TODO
         },
 
-        actionDeleteCalender: () => {
+        actionDeleteCalender: (cal) => {
             // TODO
         },
 
-        actionDictionaryPick: () => {
+        actionDictionaryPick: (cal, dict, pick) => {
             // TODO
         },
 
-        actionDictionaryRandom: () => {
+        actionDictionaryRandom: (cal, dict, random) => {
             // TODO
         },
 
-        actionItem: () => {
+        actionItem: (cal, dict, item) => {
             // TODO
         },
 
-        actionDeleteItem: () => {
+        actionDeleteItem: (cal, dict, item) => {
             // TODO
         },
 
-        actionActivityWeekday: () => {
+        actionActivityWeekday: (cal, name, good, bad) => {
             // TODO
         },
 
-        actionActivityWeekend: () => {
+        actionActivityWeekend: (cal, name, good, bad) => {
             // TODO
         },
 
-        actionActivity: () => {
+        actionActivity: (cal, name, good, bad) => {
             // TODO
         },
 
-        actionDeleteActivity: () => {
+        actionDeleteActivity: (cal, name) => {
             // TODO
         },
 
-        actionSpecialGood: () => {
+        actionSpecialGood: (cal, name, good, date) => {
             // TODO
         },
 
-        actionSpecialBad: () => {
+        actionSpecialBad: (cal, name, bad, date) => {
             // TODO
         },
 
-        actionDeleteSpecial: () => {
+        actionDeleteSpecial: (cal, name) => {
             // TODO
         },
 
-        actionHint: () => {
+        actionHint: (cal, hint) => {
             // TODO
         },
 
-        actionDeleteHint: () => {
+        actionDeleteHint: (cal, hint) => {
             // TODO
         },
 
-        actionLuck: () => {
+        actionLuck: (luck, title, random) => {
             // TODO
         },
 
-        actionDeleteLuck: () => {
+        actionDeleteLuck: (luck) => {
             // TODO
         },
 
-        actionRate: () => {
+        actionRate: (luck, name, rate, description) => {
             // TODO
         },
 
-        actionDeleteRate: () => {
+        actionDeleteRate: (luck, name) => {
             // TODO
         },
 
