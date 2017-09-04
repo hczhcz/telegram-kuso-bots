@@ -12,7 +12,7 @@ module.exports = (pathCals) => {
                 creator: 0,
                 owner: 0,
                 id: 'codercal',
-                name: '程序员老黄历',
+                title: '程序员老黄历',
                 dictionaries: [
                     {
                         id: 'vars',
@@ -251,7 +251,7 @@ module.exports = (pathCals) => {
                 creator: 0,
                 owner: 0,
                 id: 'coderluck',
-                name: '程序员求签',
+                title: '程序员求签',
                 random: 42,
                 rates: [
                     {

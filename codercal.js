@@ -120,7 +120,7 @@ bot.on('inline_query', (query) => {
         return bot.answerInlineQuery(query.id, [{
             type: 'article',
             id: 'banned',
-            title: data.calenders[0].name + (data.suffix[core.getTodayInt() % 10000] || ''),
+            title: data.calenders[0].title + (data.suffix[core.getTodayInt() % 10000] || ''),
             input_message_content: {
                 message_text: '该用户因存在恶意使用 Bot 的报告，已被列入黑名单',
             },
@@ -133,14 +133,14 @@ bot.on('inline_query', (query) => {
     const answers = [];
 
     for (const i in data.calenders) {
-        if (data.calenders[i].name && data.calenders[i].name.match(query.query)) {
+        if (data.calenders[i].title && data.calenders[i].title.match(query.query)) {
             const pickedEvents = core.pickEvents(
                 data.calenders[i].dictionaries,
                 data.calenders[i].activities,
                 data.calenders[i].specials
             );
 
-            let calText = data.calenders[i].name + '\n' + core.getTodayString() + '\n\n宜：';
+            let calText = data.calenders[i].title + '\n' + core.getTodayString() + '\n\n宜：';
 
             for (const j in pickedEvents.good) {
                 calText += '\n' + pickedEvents.good[j].name;
@@ -168,7 +168,7 @@ bot.on('inline_query', (query) => {
             answers.push({
                 type: 'article',
                 id: data.calenders[i].id,
-                title: data.calenders[i].name + (data.suffix[core.getTodayInt() % 10000] || ''),
+                title: data.calenders[i].title + (data.suffix[core.getTodayInt() % 10000] || ''),
                 input_message_content: {
                     message_text: calText,
                 },
@@ -178,10 +178,10 @@ bot.on('inline_query', (query) => {
 
     if (query.query) {
         for (const i in data.lucks) {
-            if (data.lucks[i].name) {
+            if (data.lucks[i].title) {
                 const pickedLuck = core.pickLuck(data.lucks[i].rates, data.lucks[i].random, query);
 
-                let luckText = data.lucks[i].name + '\n' + core.getTodayString()
+                let luckText = data.lucks[i].title + '\n' + core.getTodayString()
                     + '\n\n所求事项：' + query.query
                     + '\n结果：' + pickedLuck.name;
 
@@ -192,7 +192,7 @@ bot.on('inline_query', (query) => {
                 answers.push({
                     type: 'article',
                     id: data.lucks[i].id,
-                    title: data.lucks[i].name + (data.suffix[core.getTodayInt() % 10000] || ''),
+                    title: data.lucks[i].title + (data.suffix[core.getTodayInt() % 10000] || ''),
                     input_message_content: {
                         message_text: luckText,
                     },
