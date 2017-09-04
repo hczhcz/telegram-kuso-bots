@@ -22,7 +22,7 @@ module.exports = (pathCals) => {
                     {
                         id: 'tools',
                         random: 11,
-                        items: ['Eclipse写程序', 'MSOffice写文档', '记事本写程序', 'Windows8', 'Linux', 'MacOS', 'IE', 'Android设备', 'iOS设备'],
+                        items: ['Eclipse 写程序', 'MSOffice 写文档', '记事本 写程序', 'Windows8', 'Linux', 'MacOS', 'IE', 'Android 设备', 'iOS 设备'],
                     },
                     {
                         id: 'lengths',
@@ -86,7 +86,7 @@ module.exports = (pathCals) => {
                         weekday: true,
                     },
                     {
-                        name: '使用%tools%',
+                        name: '使用 %tools%',
                         good: '你看起来更有品位',
                         bad: '别人会觉得你在装逼',
                         weekday: true,
@@ -150,13 +150,13 @@ module.exports = (pathCals) => {
                         weekend: true,
                     },
                     {
-                        name: '命名变量\'%vars%\'',
+                        name: '命名变量 \'%vars%\'',
                         good: '',
                         bad: '',
                         weekday: true,
                     },
                     {
-                        name: '写超过%lengths%行的方法',
+                        name: '写超过 %lengths% 行的方法',
                         good: '你的代码组织的很好，长一点没关系',
                         bad: '你的代码将混乱不堪，你自己都看不懂',
                         weekday: true,
@@ -180,7 +180,7 @@ module.exports = (pathCals) => {
                         weekday: true,
                     },
                     {
-                        name: '打DOTA',
+                        name: '打 DOTA',
                         good: '你将有如神助',
                         bad: '你会被虐的很惨',
                         weekday: true,
@@ -193,9 +193,9 @@ module.exports = (pathCals) => {
                         weekday: true,
                     },
                     {
-                        name: '修复BUG',
-                        good: '你今天对BUG的嗅觉大大提高',
-                        bad: '新产生的BUG将比修复的更多',
+                        name: '修复 BUG',
+                        good: '你今天对 BUG 的嗅觉大大提高',
+                        bad: '新产生的 BUG 将比修复的更多',
                         weekday: true,
                     },
                     {
@@ -218,14 +218,14 @@ module.exports = (pathCals) => {
                         weekend: true,
                     },
                     {
-                        name: '上AB站',
+                        name: '上 AB站',
                         good: '还需要理由吗？',
                         bad: '满屏兄贵亮瞎你的眼',
                         weekday: true,
                         weekend: true,
                     },
                     {
-                        name: '玩FlappyBird',
+                        name: '玩 FlappyBird',
                         good: '今天破纪录的几率很高',
                         bad: '除非你想玩到把手机砸了',
                         weekday: true,

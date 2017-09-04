@@ -23,7 +23,7 @@ const getTodayInt = () => {
 const getTodayString = () => {
     const today = getCST();
 
-    return '今天是' + today.getUTCFullYear() + '年'
+    return '今天是 ' + today.getUTCFullYear() + '年'
         + (today.getUTCMonth() + 1) + '月'
         + today.getUTCDate() + '日'
         + ' 星期' + '日一二三四五六'[today.getUTCDay()];
