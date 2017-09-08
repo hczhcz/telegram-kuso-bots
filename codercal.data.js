@@ -324,10 +324,10 @@ module.exports = (pathCals) => {
         },
 
         getCalender: (msg, calId) => {
-            self.find(self.calenders, 'id', calId, (i, calender) => {
+            return self.find(self.calenders, 'id', calId, (i, calender) => {
                 if (
-                    calender.creator === this.from.id
-                    || calender.owner === this.chat.id
+                    calender.creator === msg.from.id
+                    || calender.owner === msg.chat.id
                 ) {
                     return calender;
                 } else {
@@ -339,7 +339,7 @@ module.exports = (pathCals) => {
         },
 
         getDictionary: (calender, dictId) => {
-            self.find(calender.dictionaries, 'id', dictId, (i, dictionary) => {
+            return self.find(calender.dictionaries, 'id', dictId, (i, dictionary) => {
                 return dictionary;
             }, () => {
                 // create new entry if not exist
@@ -354,10 +354,10 @@ module.exports = (pathCals) => {
         },
 
         getLuck: (msg, luckId) => {
-            self.find(self.lucks, 'id', luckId, (i, luck) => {
+            return self.find(self.lucks, 'id', luckId, (i, luck) => {
                 if (
-                    luck.creator === this.from.id
-                    || luck.owner === this.chat.id
+                    luck.creator === msg.from.id
+                    || luck.owner === msg.chat.id
                 ) {
                     return luck;
                 } else {
@@ -368,7 +368,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionCalender: (calId, title) => {
+        actionCalender: function (calId, title) {
             self.find(self.calenders, 'id', calId, (i, calender) => {
                 if (calender.creator === this.from.id) {
                     // set title
@@ -404,7 +404,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionDisableCalender: (calId) => {
+        actionDisableCalender: function (calId) {
             const calender = self.getCalender(this, calId);
 
             if (calender.creator === this.from.id) {
@@ -414,7 +414,7 @@ module.exports = (pathCals) => {
             }
         },
 
-        actionDictionaryPick: (calId, dictId, pick) => {
+        actionDictionaryPick: function (calId, dictId, pick) {
             const calender = self.getCalender(this, calId);
             const dictionary = self.getDictionary(calender, dictId);
 
@@ -422,7 +422,7 @@ module.exports = (pathCals) => {
             dictionary.pick = pick;
         },
 
-        actionDictionaryRandom: (calId, dictId, random) => {
+        actionDictionaryRandom: function (calId, dictId, random) {
             const calender = self.getCalender(this, calId);
             const dictionary = self.getDictionary(calender, dictId);
 
@@ -430,7 +430,7 @@ module.exports = (pathCals) => {
             delete dictionary.pick;
         },
 
-        actionItem: (calId, dictId, item) => {
+        actionItem: function (calId, dictId, item) {
             const calender = self.getCalender(this, calId);
             const dictionary = self.getDictionary(calender, dictId);
 
@@ -441,7 +441,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionDeleteItem: (calId, dictId, item) => {
+        actionDeleteItem: function (calId, dictId, item) {
             const calender = self.getCalender(this, calId);
             const dictionary = self.getDictionary(calender, dictId);
 
@@ -452,7 +452,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionActivityWeekday: (calId, name, good, bad) => {
+        actionActivityWeekday: function (calId, name, good, bad) {
             const calender = self.getCalender(this, calId);
 
             self.find(calender.activities, 'name', name, (i, activity) => {
@@ -470,7 +470,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionActivityWeekend: (calId, name, good, bad) => {
+        actionActivityWeekend: function (calId, name, good, bad) {
             const calender = self.getCalender(this, calId);
 
             self.find(calender.activities, 'name', name, (i, activity) => {
@@ -488,7 +488,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionActivity: (calId, name, good, bad) => {
+        actionActivity: function (calId, name, good, bad) {
             const calender = self.getCalender(this, calId);
 
             self.find(calender.activities, 'name', name, (i, activity) => {
@@ -507,7 +507,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionDeleteActivity: (calId, name) => {
+        actionDeleteActivity: function (calId, name) {
             const calender = self.getCalender(this, calId);
 
             self.find(calender.activities, 'name', name, (i, activity) => {
@@ -517,7 +517,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionSpecialGood: (calId, name, good, date) => {
+        actionSpecialGood: function (calId, name, good, date) {
             const calender = self.getCalender(this, calId);
 
             self.find(calender.specials, 'name', name, (i, special) => {
@@ -533,7 +533,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionSpecialBad: (calId, name, bad, date) => {
+        actionSpecialBad: function (calId, name, bad, date) {
             const calender = self.getCalender(this, calId);
 
             self.find(calender.specials, 'name', name, (i, special) => {
@@ -549,7 +549,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionDeleteSpecial: (calId, name) => {
+        actionDeleteSpecial: function (calId, name) {
             const calender = self.getCalender(this, calId);
 
             self.find(calender.specials, 'name', name, (i, special) => {
@@ -559,7 +559,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionHint: (calId, hint) => {
+        actionHint: function (calId, hint) {
             const calender = self.getCalender(this, calId);
 
             self.find(calender.hints, null, hint, (i, text) => {
@@ -569,7 +569,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionDeleteHint: (calId, hint) => {
+        actionDeleteHint: function (calId, hint) {
             const calender = self.getCalender(this, calId);
 
             self.find(calender.hints, null, hint, (i, text) => {
@@ -579,7 +579,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionLuck: (luckId, title, random) => {
+        actionLuck: function (luckId, title, random) {
             self.find(self.lucks, 'id', luckId, (i, luck) => {
                 if (luck.creator === this.from.id) {
                     // set title
@@ -613,7 +613,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionDisableLuck: (luckId) => {
+        actionDisableLuck: function (luckId) {
             const luck = self.getLuck(this, luckId);
 
             if (luck.creator === this.from.id) {
@@ -623,7 +623,7 @@ module.exports = (pathCals) => {
             }
         },
 
-        actionRate: (luckId, name, weight, description) => {
+        actionRate: function (luckId, name, weight, description) {
             const luck = self.getLuck(this, luckId);
 
             self.find(luck.rates, 'name', name, (i, rate) => {
@@ -638,7 +638,7 @@ module.exports = (pathCals) => {
             });
         },
 
-        actionDeleteRate: (luckId, name) => {
+        actionDeleteRate: function (luckId, name) {
             const luck = self.getLuck(this, luckId);
 
             self.find(luck.rates, 'name', name, (i, rate) => {

@@ -28,7 +28,7 @@ const limitNum = (num, min, max) => {
 
 bot.onText(/^\/help(?!\w)/, event((msg, match) => {
     bot.sendMessage(
-        msg.from.id,
+        msg.chat.id,
         '命令列表：\n'
             + '/help\n'
             + '/calender <cal id> <title>\n'
@@ -242,3 +242,5 @@ bot.on('inline_query', (query) => {
 bot.on('chosen_inline_result', (chosen) => {
     console.log('[' + Date() + '] ' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.result_id + ' ' + chosen.query);
 });
+
+data.loadCalActions();
