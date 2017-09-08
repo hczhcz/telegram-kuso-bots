@@ -32,7 +32,7 @@ bot.onText(/^\/help(?!\w)/, event((msg, match) => {
         '命令列表：\n'
             + '/help\n'
             + '/calender <cal id> <title>\n'
-            + '/delete calender <cal id>\n'
+            + '/disable calender <cal id>\n'
             + '/dictionary <cal id> <dict id> <random>\n'
             + '/dictionary <cal id> <dict id> x<pick>\n'
             + '/item <cal id> <dict id> <item>\n'
@@ -47,14 +47,14 @@ bot.onText(/^\/help(?!\w)/, event((msg, match) => {
             + '/hint <cal id> <hint>\n'
             + '/delete hint <cal id> <hint>\n'
             + '/luck <luck id> <title>@<random>\n'
-            + '/delete luck <luck id>\n'
+            + '/disable luck <luck id>\n'
             + '/rate <luck id> <name>@<rate>@<descrpiton>\n'
             + '/delete rate <luck id> <name>\n'
             + '备注：\n'
             + '<cal id> 必须以 cal 结尾\n'
             + '<luck id> 必须以 luck 结尾\n'
             + '除 /help 外，命令可以用首字母缩写\n'
-            + '例如 /c (/calender)，/dc (/delete calender)'
+            + '例如 /c (/calender)，/dc (/disable calender)'
     );
 }));
 
@@ -62,9 +62,9 @@ bot.onText(/^\/help(?!\w)/, event((msg, match) => {
 bot.onText(/^\/(calender|c) (\w+cal) ([^@\r\n]+)$/, event((msg, match) => {
     data.writeCalAction('Calender', msg, [match[2], match[3]]);
 }));
-// /delete calender <cal id>
-bot.onText(/^\/(delete calender|dc) (\w+cal)$/, event((msg, match) => {
-    data.writeCalAction('DeleteCalender', msg, [match[2]]);
+// /disable calender <cal id>
+bot.onText(/^\/(disable calender|dc) (\w+cal)$/, event((msg, match) => {
+    data.writeCalAction('DisableCalender', msg, [match[2]]);
 }));
 
 // /dictionary <cal id> <dict id> <random>
@@ -133,9 +133,9 @@ bot.onText(/^\/(delete hint|dh) (\w+cal) ([^@\r\n]+)$/, event((msg, match) => {
 bot.onText(/^\/(luck|l) (\w+luck) ([^@\r\n]+)@(\d+)$/, event((msg, match) => {
     data.writeCalAction('Luck', msg, [match[2], match[3], limitNum(match[4], 1, 100)]);
 }));
-// /delete luck <luck id>
-bot.onText(/^\/(delete luck|dl) (\w+luck)$/, event((msg, match) => {
-    data.writeCalAction('DeleteLuck', msg, [match[2]]);
+// /disable luck <luck id>
+bot.onText(/^\/(disable luck|dl) (\w+luck)$/, event((msg, match) => {
+    data.writeCalAction('DisableLuck', msg, [match[2]]);
 }));
 
 // /rate <luck id> <name>@<rate>@<descrpiton>

@@ -157,6 +157,7 @@ const pickEvents = (dictionaries, activities, specials) => {
                 description: parse(dictionaries, pickedSpecials[i].bad),
             });
         } else {
+            // never reach
             throw Error();
         }
     }
