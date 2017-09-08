@@ -309,80 +309,344 @@ module.exports = (pathCals) => {
             1024: '🖥',
         },
 
-        actionCalender: (cal, title) => {
-            // TODO
+        find: (list, key, value, found, notFound) => {
+            for (const i in list) {
+                if (typeof key === 'string') {
+                    if (list[i][key] === value) {
+                        return found(i, list[i]);
+                    }
+                } else if (list[i] === value) {
+                    return found(i, list[i]);
+                }
+            }
+
+            return notFound();
         },
 
-        actionDeleteCalender: (cal) => {
-            // TODO
+        getCalender: (msg, calId) => {
+            self.find(self.calenders, 'id', calId, (i, calender) => {
+                if (
+                    calender.creator === this.from.id
+                    || calender.owner === this.chat.id
+                ) {
+                    return calender;
+                } else {
+                    throw Error(); // TODO: no permission
+                }
+            }, () => {
+                throw Error(); // TODO: not found
+            });
         },
 
-        actionDictionaryPick: (cal, dict, pick) => {
-            // TODO
+        getDictionary: (calender, dictId) => {
+            self.find(calender.dictionaries, 'id', dictId, (i, dictionary) => {
+                return dictionary;
+            }, () => {
+                // create new entry if not exist
+                calender.dictionaries.push({
+                    id: dictId,
+                    random: Math.floor(Math.random() * 100) + 1,
+                    items: [],
+                });
+
+                return calender.dictionaries[calender.dictionaries.length - 1];
+            });
         },
 
-        actionDictionaryRandom: (cal, dict, random) => {
-            // TODO
+        getLuck: (msg, luckId) => {
+            self.find(self.lucks, 'id', luckId, (i, luck) => {
+                if (
+                    luck.creator === this.from.id
+                    || luck.owner === this.chat.id
+                ) {
+                    return luck;
+                } else {
+                    throw Error(); // TODO: no permission
+                }
+            }, () => {
+                throw Error(); // TODO: not found
+            });
         },
 
-        actionItem: (cal, dict, item) => {
-            // TODO
+        actionCalender: (calId, title) => {
+            self.find(self.calenders, 'id', calId, (i, calender) => {
+                if (calender.creator === this.from.id) {
+                    // set title
+                    calender.title = title;
+
+                    return;
+                } else {
+                    throw Error(); // TODO: no permission
+                }
+            }, () => {
+                let count = 0;
+
+                for (const i in self.calenders) {
+                    if (self.calenders[i].title && self.calenders[i].creator === this.from.id) {
+                        count += 1;
+                    }
+                }
+
+                if (count >= 3) {
+                    throw Error(); // TODO: too many
+                }
+
+                self.calenders.push({
+                    creator: this.from.id,
+                    owner: this.chat.id,
+                    id: calId,
+                    title: title,
+                    dictionaries: [],
+                    activities: [],
+                    specials: [],
+                    hints: [],
+                });
+            });
         },
 
-        actionDeleteItem: (cal, dict, item) => {
-            // TODO
+        actionDisableCalender: (calId) => {
+            const calender = self.getCalender(this, calId);
+
+            if (calender.creator === this.from.id) {
+                calender.title = '';
+            } else {
+                throw Error(); // TODO: no permission
+            }
         },
 
-        actionActivityWeekday: (cal, name, good, bad) => {
-            // TODO
+        actionDictionaryPick: (calId, dictId, pick) => {
+            const calender = self.getCalender(this, calId);
+            const dictionary = self.getDictionary(calender, dictId);
+
+            delete dictionary.random;
+            dictionary.pick = pick;
         },
 
-        actionActivityWeekend: (cal, name, good, bad) => {
-            // TODO
+        actionDictionaryRandom: (calId, dictId, random) => {
+            const calender = self.getCalender(this, calId);
+            const dictionary = self.getDictionary(calender, dictId);
+
+            dictionary.random = random;
+            delete dictionary.pick;
         },
 
-        actionActivity: (cal, name, good, bad) => {
-            // TODO
+        actionItem: (calId, dictId, item) => {
+            const calender = self.getCalender(this, calId);
+            const dictionary = self.getDictionary(calender, dictId);
+
+            self.find(dictionary.items, null, item, (i, text) => {
+                // nothing
+            }, () => {
+                dictionary.items.push(item);
+            });
         },
 
-        actionDeleteActivity: (cal, name) => {
-            // TODO
+        actionDeleteItem: (calId, dictId, item) => {
+            const calender = self.getCalender(this, calId);
+            const dictionary = self.getDictionary(calender, dictId);
+
+            self.find(dictionary.items, null, item, (i, text) => {
+                dictionary.items.splice(i, 1);
+            }, () => {
+                // nothing
+            });
         },
 
-        actionSpecialGood: (cal, name, good, date) => {
-            // TODO
+        actionActivityWeekday: (calId, name, good, bad) => {
+            const calender = self.getCalender(this, calId);
+
+            self.find(calender.activities, 'name', name, (i, activity) => {
+                activity.good = good;
+                activity.bad = bad;
+                activity.weekday = true;
+                delete activity.weekend;
+            }, () => {
+                calender.activities.push({
+                    name: name,
+                    good: good,
+                    bad: bad,
+                    weekday: true,
+                });
+            });
         },
 
-        actionSpecialBad: (cal, name, bad, date) => {
-            // TODO
+        actionActivityWeekend: (calId, name, good, bad) => {
+            const calender = self.getCalender(this, calId);
+
+            self.find(calender.activities, 'name', name, (i, activity) => {
+                activity.good = good;
+                activity.bad = bad;
+                delete activity.weekday;
+                activity.weekend = true;
+            }, () => {
+                calender.activities.push({
+                    name: name,
+                    good: good,
+                    bad: bad,
+                    weekend: true,
+                });
+            });
         },
 
-        actionDeleteSpecial: (cal, name) => {
-            // TODO
+        actionActivity: (calId, name, good, bad) => {
+            const calender = self.getCalender(this, calId);
+
+            self.find(calender.activities, 'name', name, (i, activity) => {
+                activity.good = good;
+                activity.bad = bad;
+                activity.weekday = true;
+                activity.weekend = true;
+            }, () => {
+                calender.activities.push({
+                    name: name,
+                    good: good,
+                    bad: bad,
+                    weekday: true,
+                    weekend: true,
+                });
+            });
         },
 
-        actionHint: (cal, hint) => {
-            // TODO
+        actionDeleteActivity: (calId, name) => {
+            const calender = self.getCalender(this, calId);
+
+            self.find(calender.activities, 'name', name, (i, activity) => {
+                calender.activities.splice(i, 1);
+            }, () => {
+                // nothing
+            });
         },
 
-        actionDeleteHint: (cal, hint) => {
-            // TODO
+        actionSpecialGood: (calId, name, good, date) => {
+            const calender = self.getCalender(this, calId);
+
+            self.find(calender.specials, 'name', name, (i, special) => {
+                special.good = good;
+                delete special.bad;
+                special.date = date;
+            }, () => {
+                calender.specials.push({
+                    name: name,
+                    good: good,
+                    date: date,
+                });
+            });
         },
 
-        actionLuck: (luck, title, random) => {
-            // TODO
+        actionSpecialBad: (calId, name, bad, date) => {
+            const calender = self.getCalender(this, calId);
+
+            self.find(calender.specials, 'name', name, (i, special) => {
+                delete special.good;
+                special.bad = bad;
+                special.date = date;
+            }, () => {
+                calender.specials.push({
+                    name: name,
+                    bad: bad,
+                    date: date,
+                });
+            });
         },
 
-        actionDeleteLuck: (luck) => {
-            // TODO
+        actionDeleteSpecial: (calId, name) => {
+            const calender = self.getCalender(this, calId);
+
+            self.find(calender.specials, 'name', name, (i, special) => {
+                calender.specials.splice(i, 1);
+            }, () => {
+                // nothing
+            });
         },
 
-        actionRate: (luck, name, rate, description) => {
-            // TODO
+        actionHint: (calId, hint) => {
+            const calender = self.getCalender(this, calId);
+
+            self.find(calender.hints, null, hint, (i, text) => {
+                // nothing
+            }, () => {
+                calender.hints.push(hint);
+            });
         },
 
-        actionDeleteRate: (luck, name) => {
-            // TODO
+        actionDeleteHint: (calId, hint) => {
+            const calender = self.getCalender(this, calId);
+
+            self.find(calender.hints, null, hint, (i, text) => {
+                calender.hints.splice(i, 1);
+            }, () => {
+                // nothing
+            });
+        },
+
+        actionLuck: (luckId, title, random) => {
+            self.find(self.lucks, 'id', luckId, (i, luck) => {
+                if (luck.creator === this.from.id) {
+                    // set title
+                    luck.title = title;
+
+                    return;
+                } else {
+                    throw Error(); // TODO: no permission
+                }
+            }, () => {
+                let count = 0;
+
+                for (const i in self.lucks) {
+                    if (self.lucks[i].title && self.lucks[i].creator === this.from.id) {
+                        count += 1;
+                    }
+                }
+
+                if (count >= 3) {
+                    throw Error(); // TODO: too many
+                }
+
+                self.lucks.push({
+                    creator: this.from.id,
+                    owner: this.chat.id,
+                    id: luckId,
+                    title: title,
+                    random: random,
+                    rates: [],
+                });
+            });
+        },
+
+        actionDisableLuck: (luckId) => {
+            const luck = self.getLuck(this, luckId);
+
+            if (luck.creator === this.from.id) {
+                luck.title = '';
+            } else {
+                throw Error(); // TODO: no permission
+            }
+        },
+
+        actionRate: (luckId, name, rate, description) => {
+            const luck = self.getLuck(this, luckId);
+
+            self.find(luck.rates, 'name', name, (i, rate) => {
+                // TODO: name shadowing
+                rate.rate = rate;
+                rate.description = description;
+            }, () => {
+                luck.rates.push({
+                    name: name,
+                    rate: rate,
+                    description: description,
+                });
+            });
+        },
+
+        actionDeleteRate: (luckId, name) => {
+            const luck = self.getLuck(this, luckId);
+
+            self.find(luck.rates, 'name', name, (i, rate) => {
+                luck.rates.splice(i, 1);
+            }, () => {
+                // nothing
+            });
         },
 
         writeCalAction: (action, msg, args) => {
