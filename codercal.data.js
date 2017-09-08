@@ -256,47 +256,47 @@ module.exports = (pathCals) => {
                 rates: [
                     {
                         name: '超大吉',
-                        rate: 10,
+                        weight: 10,
                         description: '',
                     },
                     {
                         name: '大吉',
-                        rate: 100,
+                        weight: 100,
                         description: '',
                     },
                     {
                         name: '吉',
-                        rate: 500,
+                        weight: 500,
                         description: '',
                     },
                     {
                         name: '小吉',
-                        rate: 800,
+                        weight: 800,
                         description: '',
                     },
                     {
                         name: '???',
-                        ate: 300,
+                        weight: 300,
                         description: '',
                     },
                     {
                         name: '小凶',
-                        rate: 800,
+                        weight: 800,
                         description: '',
                     },
                     {
                         name: '凶',
-                        rate: 500,
+                        weight: 500,
                         description: '',
                     },
                     {
                         name: '大凶',
-                        rate: 100,
+                        weight: 100,
                         description: '',
                     },
                     {
                         name: '超大凶',
-                        rate: 10,
+                        weight: 10,
                         description: '',
                     },
                 ],
@@ -623,17 +623,16 @@ module.exports = (pathCals) => {
             }
         },
 
-        actionRate: (luckId, name, rate, description) => {
+        actionRate: (luckId, name, weight, description) => {
             const luck = self.getLuck(this, luckId);
 
             self.find(luck.rates, 'name', name, (i, rate) => {
-                // TODO: name shadowing
-                rate.rate = rate;
+                rate.weight = weight;
                 rate.description = description;
             }, () => {
                 luck.rates.push({
                     name: name,
-                    rate: rate,
+                    weight: weight,
                     description: description,
                 });
             });

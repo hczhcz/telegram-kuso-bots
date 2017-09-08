@@ -48,7 +48,7 @@ bot.onText(/^\/help(?!\w)/, event((msg, match) => {
             + '/delete hint <cal id> <hint>\n'
             + '/luck <luck id> <title>@<random>\n'
             + '/disable luck <luck id>\n'
-            + '/rate <luck id> <name>@<rate>@<descrpiton>\n'
+            + '/rate <luck id> <name>@<weight>@<descrpiton>\n'
             + '/delete rate <luck id> <name>\n'
             + '备注：\n'
             + '<cal id> 必须以 cal 结尾\n'
@@ -138,7 +138,7 @@ bot.onText(/^\/(disable luck|dl) (\w+luck)$/, event((msg, match) => {
     data.writeCalAction('DisableLuck', msg, [match[2]]);
 }));
 
-// /rate <luck id> <name>@<rate>@<descrpiton>
+// /rate <luck id> <name>@<weight>@<descrpiton>
 bot.onText(/^\/(rate|r) (\w+luck) ([^@\r\n]+)@(\d+)@([^@\r\n]*)$/, event((msg, match) => {
     data.writeCalAction('Rate', msg, [match[2], match[3], limitNum(match[4], 1, 10000), match[5]]);
 }));

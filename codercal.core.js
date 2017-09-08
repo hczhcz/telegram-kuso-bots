@@ -182,7 +182,7 @@ const pickLuck = (rates, iter, query) => {
     let range = 0;
 
     for (const i in rates) {
-        range += rates[i].rate;
+        range += rates[i].weight;
     }
 
     const target = seedRandom(
@@ -191,7 +191,7 @@ const pickLuck = (rates, iter, query) => {
     let sum = 0;
 
     for (const i in rates) {
-        sum += rates[i].rate;
+        sum += rates[i].weight;
 
         if (sum > target) {
             return rates[i];
