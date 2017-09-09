@@ -60,30 +60,48 @@ bot.onText(/^\/help(?!\w)/, event((msg, match) => {
 
 // /calender <cal id> <title>
 bot.onText(/^\/(calender|c) (\w+cal) ([^@\r\n]+)$/, event((msg, match) => {
-    data.writeCalAction('Calender', msg, [match[2], match[3]]);
+    bot.sendMessage(
+        msg.chat.id,
+        data.writeCalAction('Calender', msg, [match[2], match[3]])
+    );
 }));
 // /disable calender <cal id>
 bot.onText(/^\/(disable calender|dc) (\w+cal)$/, event((msg, match) => {
-    data.writeCalAction('DisableCalender', msg, [match[2]]);
+    bot.sendMessage(
+        msg.chat.id,
+        data.writeCalAction('DisableCalender', msg, [match[2]])
+    );
 }));
 
 // /dictionary <cal id> <dict id> <random>
 // /dictionary <cal id> <dict id> x<pick>
 bot.onText(/^\/(dictionary|d) (\w+cal) (\w+) (x)?(\d+)$/, event((msg, match) => {
     if (match[4] === 'x') {
-        data.writeCalAction('DictionaryPick', msg, [match[2], match[3], limitNum(match[4], 1, 5)]);
+        bot.sendMessage(
+            msg.chat.id,
+            data.writeCalAction('DictionaryPick', msg, [match[2], match[3], limitNum(match[4], 1, 5)])
+        );
     } else {
-        data.writeCalAction('DictionaryRandom', msg, [match[2], match[3], limitNum(match[4], 1, 100)]);
+        bot.sendMessage(
+            msg.chat.id,
+            data.writeCalAction('DictionaryRandom', msg, [match[2], match[3], limitNum(match[4], 1, 100)])
+        );
     }
 }));
 
 // /item <cal id> <dict id> <item>
 bot.onText(/^\/(item|i) (\w+cal) (\w+) ([^@\r\n]+)$/, event((msg, match) => {
-    data.writeCalAction('Item', msg, [match[2], match[3], match[4]]);
+    bot.sendMessage(
+        msg.chat.id,
+        data.writeCalAction('Item', msg, [match[2], match[3], match[4]])
+    );
 }));
 // /delete item <cal id> <dict id> <item>
 bot.onText(/^\/(delete item|di) (\w+cal) (\w+) ([^@\r\n]+)$/, event((msg, match) => {
-    data.writeCalAction('DeleteItem', msg, [match[2], match[3], match[4]]);
+    bot.sendMessage(
+        msg.chat.id,
+        data.writeCalAction('DeleteItem', msg, [match[2], match[3], match[4]])
+    );
 }));
 
 // /activity <cal id> <name>@<good>@<bad>
@@ -91,25 +109,43 @@ bot.onText(/^\/(delete item|di) (\w+cal) (\w+) ([^@\r\n]+)$/, event((msg, match)
 // /activity <cal id> <name>@<good>@<bad>@weekend
 bot.onText(/^\/(activity|a) (\w+cal) ([^@\r\n]+)@([^@\r\n]*)@([^@\r\n]*)(@weekday|@weekend)?$/, event((msg, match) => {
     if (match[6] === '@weekday') {
-        data.writeCalAction('ActivityWeekday', msg, [match[2], match[3], match[4], match[5]]);
+        bot.sendMessage(
+            msg.chat.id,
+            data.writeCalAction('ActivityWeekday', msg, [match[2], match[3], match[4], match[5]])
+        );
     } else if (match[6] === '@weekend') {
-        data.writeCalAction('ActivityWeekend', msg, [match[2], match[3], match[4], match[5]]);
+        bot.sendMessage(
+            msg.chat.id,
+            data.writeCalAction('ActivityWeekend', msg, [match[2], match[3], match[4], match[5]])
+        );
     } else {
-        data.writeCalAction('Activity', msg, [match[2], match[3], match[4], match[5]]);
+        bot.sendMessage(
+            msg.chat.id,
+            data.writeCalAction('Activity', msg, [match[2], match[3], match[4], match[5]])
+        );
     }
 }));
 // /delete activity <cal id> <name>
 bot.onText(/^\/(delete activity|da) (\w+cal) ([^@\r\n]+)$/, event((msg, match) => {
-    data.writeCalAction('DeleteActivity', msg, [match[2], match[3]]);
+    bot.sendMessage(
+        msg.chat.id,
+        data.writeCalAction('DeleteActivity', msg, [match[2], match[3]])
+    );
 }));
 
 // /special <cal id> <name>@good@<good>@<month>/<day>
 // /special <cal id> <name>@bad@<bad>@<month>/<day>
 bot.onText(/^\/(special|s) (\w+cal) ([^@\r\n]+)@(good|bad)@([^@\r\n]*)@(\d+)\/(\d+)$/, event((msg, match) => {
     if (match[4] === 'good') {
-        data.writeCalAction('SpecialGood', msg, [match[2], match[3], match[5], limitNum(match[6], 1, 12) * 100 + limitNum(match[7], 1, 31)]);
+        bot.sendMessage(
+            msg.chat.id,
+            data.writeCalAction('SpecialGood', msg, [match[2], match[3], match[5], limitNum(match[6], 1, 12) * 100 + limitNum(match[7], 1, 31)])
+        );
     } else if (match[4] === 'bad') {
-        data.writeCalAction('SpecialBad', msg, [match[2], match[3], match[5], limitNum(match[6], 1, 12) * 100 + limitNum(match[7], 1, 31)]);
+        bot.sendMessage(
+            msg.chat.id,
+            data.writeCalAction('SpecialBad', msg, [match[2], match[3], match[5], limitNum(match[6], 1, 12) * 100 + limitNum(match[7], 1, 31)])
+        );
     } else {
         // never reach
         throw Error();
@@ -117,34 +153,55 @@ bot.onText(/^\/(special|s) (\w+cal) ([^@\r\n]+)@(good|bad)@([^@\r\n]*)@(\d+)\/(\
 }));
 // /delete special <cal id> <name>
 bot.onText(/^\/(delete special|ds) (\w+cal) ([^@\r\n]+)$/, event((msg, match) => {
-    data.writeCalAction('DeleteSpecial', msg, [match[2], match[3]]);
+    bot.sendMessage(
+        msg.chat.id,
+        data.writeCalAction('DeleteSpecial', msg, [match[2], match[3]])
+    );
 }));
 
 // /hint <cal id> <hint>
 bot.onText(/^\/(hint|h) (\w+cal) ([^@\r\n]+)$/, event((msg, match) => {
-    data.writeCalAction('Hint', msg, [match[2], match[3]]);
+    bot.sendMessage(
+        msg.chat.id,
+        data.writeCalAction('Hint', msg, [match[2], match[3]])
+    );
 }));
 // /delete hint <cal id> <hint>
 bot.onText(/^\/(delete hint|dh) (\w+cal) ([^@\r\n]+)$/, event((msg, match) => {
-    data.writeCalAction('DeleteHint', msg, [match[2], match[3]]);
+    bot.sendMessage(
+        msg.chat.id,
+        data.writeCalAction('DeleteHint', msg, [match[2], match[3]])
+    );
 }));
 
 // /luck <luck id> <title>@<random>
 bot.onText(/^\/(luck|l) (\w+luck) ([^@\r\n]+)@(\d+)$/, event((msg, match) => {
-    data.writeCalAction('Luck', msg, [match[2], match[3], limitNum(match[4], 1, 100)]);
+    bot.sendMessage(
+        msg.chat.id,
+        data.writeCalAction('Luck', msg, [match[2], match[3], limitNum(match[4], 1, 100)])
+    );
 }));
 // /disable luck <luck id>
 bot.onText(/^\/(disable luck|dl) (\w+luck)$/, event((msg, match) => {
-    data.writeCalAction('DisableLuck', msg, [match[2]]);
+    bot.sendMessage(
+    msg.chat.id,
+        data.writeCalAction('DisableLuck', msg, [match[2]])
+    );
 }));
 
 // /rate <luck id> <name>@<weight>@<descrpiton>
 bot.onText(/^\/(rate|r) (\w+luck) ([^@\r\n]+)@(\d+)@([^@\r\n]*)$/, event((msg, match) => {
-    data.writeCalAction('Rate', msg, [match[2], match[3], limitNum(match[4], 1, 10000), match[5]]);
+    bot.sendMessage(
+    msg.chat.id,
+        data.writeCalAction('Rate', msg, [match[2], match[3], limitNum(match[4], 1, 10000), match[5]])
+    );
 }));
 // /delete rate <luck id> <name>
 bot.onText(/^\/(delete rate|dr) (\w+luck) ([^@\r\n]+)$/, event((msg, match) => {
-    data.writeCalAction('DeleteRate', msg, [match[2], match[3]]);
+    bot.sendMessage(
+    msg.chat.id,
+        data.writeCalAction('DeleteRate', msg, [match[2], match[3]])
+    );
 }));
 
 bot.on('inline_query', (query) => {

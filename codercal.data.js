@@ -659,8 +659,10 @@ module.exports = (pathCals) => {
                 }) + '\n', () => {
                     // nothing
                 });
-            } catch (e) {
-                console.error(e);
+
+                return '操作成功';
+            } catch (err) {
+                console.error(err);
             }
         },
 
@@ -672,8 +674,8 @@ module.exports = (pathCals) => {
                     const obj = JSON.parse(line);
 
                     self['action' + obj.action].apply(obj.msg, obj.args);
-                } catch (e) {
-                    console.error(e);
+                } catch (err) {
+                    console.error(err);
                 }
             });
         },
