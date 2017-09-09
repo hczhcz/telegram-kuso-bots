@@ -6,6 +6,16 @@ const readline = require('readline');
 module.exports = (pathCals) => {
     const fdCals = fs.openSync(pathCals, 'a');
 
+    const ActionError = function (info) {
+        if (this) {
+            this.info = info;
+        } else {
+            return new ActionError(info);
+        }
+    };
+
+    ActionError.prototype = new Error();
+
     const self = {
         calenders: [
             {
@@ -331,10 +341,10 @@ module.exports = (pathCals) => {
                 ) {
                     return calender;
                 } else {
-                    throw Error(); // TODO: no permission
+                    throw ActionError('请在创建 ' + calId + ' 的群内进行操作');
                 }
             }, () => {
-                throw Error(); // TODO: not found
+                throw ActionError('找不到 ' + calId);
             });
         },
 
@@ -361,10 +371,10 @@ module.exports = (pathCals) => {
                 ) {
                     return luck;
                 } else {
-                    throw Error(); // TODO: no permission
+                    throw ActionError('请在创建 ' + luckId + ' 的群内进行操作');
                 }
             }, () => {
-                throw Error(); // TODO: not found
+                throw ActionError('找不到 ' + luckId);
             });
         },
 
@@ -376,7 +386,7 @@ module.exports = (pathCals) => {
 
                     return;
                 } else {
-                    throw Error(); // TODO: no permission
+                    throw ActionError(calId + ' 已被其它用户创建');
                 }
             }, () => {
                 let count = 0;
@@ -388,7 +398,7 @@ module.exports = (pathCals) => {
                 }
 
                 if (count >= 3) {
-                    throw Error(); // TODO: too many
+                    throw ActionError('你创建了太多的黄历');
                 }
 
                 self.calenders.push({
@@ -410,7 +420,7 @@ module.exports = (pathCals) => {
             if (calender.creator === this.from.id) {
                 calender.title = '';
             } else {
-                throw Error(); // TODO: no permission
+                throw ActionError('只有 ' + calId + ' 的创建者可以进行此操作');
             }
         },
 
@@ -587,7 +597,7 @@ module.exports = (pathCals) => {
 
                     return;
                 } else {
-                    throw Error(); // TODO: no permission
+                    throw ActionError(luckId + ' 已被其它用户创建');
                 }
             }, () => {
                 let count = 0;
@@ -599,7 +609,7 @@ module.exports = (pathCals) => {
                 }
 
                 if (count >= 3) {
-                    throw Error(); // TODO: too many
+                    throw ActionError('你创建了太多的求签');
                 }
 
                 self.lucks.push({
@@ -619,7 +629,7 @@ module.exports = (pathCals) => {
             if (luck.creator === this.from.id) {
                 luck.title = '';
             } else {
-                throw Error(); // TODO: no permission
+                throw ActionError('只有 ' + luckId + ' 的创建者可以进行此操作');
             }
         },
 
@@ -662,7 +672,9 @@ module.exports = (pathCals) => {
 
                 return '操作成功';
             } catch (err) {
-                console.error(err);
+                if (err instanceof ActionError) {
+                    return err.info;
+                }
             }
         },
 
