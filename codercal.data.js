@@ -649,24 +649,32 @@ module.exports = (pathCals) => {
         },
 
         writeCalAction: (action, msg, args) => {
-            self['action' + action].apply(msg, args);
+            try {
+                self['action' + action].apply(msg, args);
 
-            fs.write(fdCals, JSON.stringify({
-                action: action,
-                msg: msg,
-                args: args,
-            }) + '\n', () => {
-                // nothing
-            });
+                fs.write(fdCals, JSON.stringify({
+                    action: action,
+                    msg: msg,
+                    args: args,
+                }) + '\n', () => {
+                    // nothing
+                });
+            } catch (e) {
+                console.error(e);
+            }
         },
 
         loadCalActions: () => {
             readline.createInterface({
                 input: fs.createReadStream(pathCals),
             }).on('line', (line) => {
-                const obj = JSON.parse(line);
+                try {
+                    const obj = JSON.parse(line);
 
-                self['action' + obj.action].apply(obj.msg, obj.args);
+                    self['action' + obj.action].apply(obj.msg, obj.args);
+                } catch (e) {
+                    console.error(e);
+                }
             });
         },
     };
