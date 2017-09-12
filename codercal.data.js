@@ -608,7 +608,7 @@ module.exports = (pathCals) => {
                     }
                 }
 
-                if (count >= 3) {
+                if (count >= 1) {
                     throw ActionError('你创建了太多的求签');
                 }
 

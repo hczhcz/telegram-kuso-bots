@@ -50,11 +50,13 @@ bot.onText(/^\/help(?!\w)/, event((msg, match) => {
             + '/disable luck <luck id>\n'
             + '/rate <luck id> <name>@<weight>@<descrpiton>\n'
             + '/delete rate <luck id> <name>\n'
+            + '\n'
             + '备注：\n'
             + '<cal id> 必须以 cal 结尾\n'
             + '<luck id> 必须以 luck 结尾\n'
             + '除 /help 外，命令可以用首字母缩写\n'
-            + '例如 /c (/calender)，/dc (/disable calender)'
+            + '例如 /c 等同 /calender\n'
+            + '/dc 等同 /disable calender'
     );
 }));
 
