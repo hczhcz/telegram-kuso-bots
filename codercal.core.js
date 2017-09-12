@@ -186,7 +186,7 @@ const pickLuck = (rates, iter, query) => {
     }
 
     const target = seedRandom(
-        crc32.str(query.query) ^ query.from.id, iter
+        (crc32.str(query.query) ^ query.from.id ^ getTodayInt()) % 23333, iter
     ) % range;
     let sum = 0;
 
@@ -198,8 +198,12 @@ const pickLuck = (rates, iter, query) => {
         }
     }
 
-    // never reach
-    throw Error();
+    // happen only if the list is empty
+    return {
+        name: '什么都没有算出来呢',
+        weight: 1,
+        description: '',
+    };
 };
 
 module.exports = {
