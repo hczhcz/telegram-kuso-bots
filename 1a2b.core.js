@@ -25,11 +25,11 @@ const removeChar = (str, str2) => {
     return str;
 };
 
-const getA = (str, test) => {
+const getA = (str, str2) => {
     let result = 0;
 
-    for (const i in test) {
-        if (test[i] === str[i]) {
+    for (let i = 0; i < str2.length; ++i) {
+        if (str2[i] === str[i]) {
             result += 1;
         }
     }
@@ -37,28 +37,13 @@ const getA = (str, test) => {
     return result;
 };
 
-const getAnB = (str, test) => {
-    let result = 0;
-
-    const set1 = {};
-    const set2 = {};
-
-    for (const i in test) {
-        set1['#' + test[i]] = (set1['#' + test[i]] || 0) + 1;
-        set2['#' + str[i]] = (set2['#' + str[i]] || 0) + 1;
-    }
-
-    for (const i in set1) {
-        if (i in set2) {
-            result += Math.min(set1[i], set2[i]);
-        }
-    }
-
-    return result;
+const getAnB = (str, str2) => {
+    return str.length - removeChar(str, str2).length;
 };
 
 module.exports = {
     shuffle: shuffle,
+    removeChar: removeChar,
     getA: getA,
     getAnB: getAnB,
 };
