@@ -98,8 +98,18 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
             }
         );
     } else {
+        let charset = match[2];
+
+        if (!charset && msg.reply_to_message && msg.reply_to_message.text.match(/^[^\n\r\t ]+$/)) {
+            charset = msg.reply_to_message.text;
+        }
+
+        if (!charset) {
+            charset = '1234567890';
+        }
+
         const game = games[msg.chat.id] = {
-            charset: match[2] || '1234567890',
+            charset: charset,
             answer: null,
             guess: {},
         }
