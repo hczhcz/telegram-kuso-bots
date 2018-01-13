@@ -42,6 +42,7 @@ const gameEvent = event((msg, match) => {
         }
 
         if (game.guess['#' + match[0]][0] === game.answer.length) {
+            console.log(JSON.stringify(games[msg.chat.id]));
             delete games[msg.chat.id];
 
             return bot.sendMessage(
@@ -119,6 +120,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
+        console.log(JSON.stringify(games[msg.chat.id]));
         delete games[msg.chat.id];
 
         if (game.answer) {
