@@ -22,20 +22,59 @@ const event = (handler) => {
 };
 
 const gameEvent = event((msg, match) => {
-    // TODO
+    const game = games[msg.chat.id];
+
+    if (game.guess['#' + match[0]]) {
+        return bot.sendMessage(
+            msg.chat.id,
+            '已经猜过啦',
+            {
+                reply_to_message_id: msg.message_id,
+            }
+        );
+    } else {
+        game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
+
+        let list = '当前猜测：';
+
+        for (const text in guess) {
+            list += '\n' + text.slice(1) + ' ' + guess[text][0] + 'A' + guess[text][1] + 'B';
+        }
+
+        if (game.guess['#' + match[0]][0] === game.answer.length) {
+            delete games[msg.chat.id];
+
+            return bot.sendMessage(
+                msg.chat.id,
+                '猜对啦！答案是：\n'
+                    + game.answer,
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        } else {
+            return bot.sendMessage(
+                msg.chat.id,
+                list,
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        }
+    }
 });
 
-bot.onText(/^(\w+)$/, (msg, match) => {
+bot.onText(/^\w+$/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
         if (game.answer) {
-            if (game.answer.length === msg.text.length && core.removeChar(msg.text, game.charset) === '') {
+            if (match[0].length === game.answer.length && core.removeChar(match[0], game.charset) === '') {
                 gameEvent(msg, match);
             }
         } else {
-            if (core.removeChar(msg.text, game.charset) === '') {
-                game.answer = core.shuffle(game.charset, msg.text.length);
+            if (match[0].length <= config.abMaxLength && core.removeChar(match[0], game.charset) === '') {
+                game.answer = core.shuffle(game.charset, match[0].length);
                 gameEvent(msg, match);
             }
         }
@@ -59,7 +98,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: (\w+))?$/, event((msg, match) => {
         games[msg.chat.id] = {
             charset: match[2],
             answer: null,
-            guess: [],
+            guess: {},
         }
 
         return bot.sendMessage(

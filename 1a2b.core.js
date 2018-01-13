@@ -37,13 +37,15 @@ const getA = (str, str2) => {
     return result;
 };
 
-const getAnB = (str, str2) => {
-    return str.length - removeChar(str, str2).length;
+const getAB = (str, str2) => {
+    const a = getA(str, str2);
+
+    return [a, str.length - removeChar(str, str2).length - a];
 };
 
 module.exports = {
     shuffle: shuffle,
     removeChar: removeChar,
-    getA: getA,
-    getAnB: getAnB,
+    // getA: getA,
+    getAB: getAB,
 };
