@@ -37,8 +37,8 @@ const gameEvent = event((msg, match) => {
 
         let list = '当前猜测：';
 
-        for (const text in guess) {
-            list += '\n' + text.slice(1) + ' ' + guess[text][0] + 'A' + guess[text][1] + 'B';
+        for (const text in game.guess) {
+            list += '\n' + text.slice(1) + ' ' + game.guess[text][0] + 'A' + game.guess[text][1] + 'B';
         }
 
         if (game.guess['#' + match[0]][0] === game.answer.length) {

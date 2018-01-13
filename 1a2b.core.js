@@ -4,7 +4,7 @@ const shuffle = (str, length) => {
     let result = '';
 
     for (let i = 0; i < length; ++i) {
-        const j = Math.floor(Marh.random() * str.length);
+        const j = Math.floor(Math.random() * str.length);
 
         result += str[j];
         str = str.slice(0, j) + str.slice(j + 1);
