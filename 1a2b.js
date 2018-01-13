@@ -47,10 +47,10 @@ const gameEvent = event((msg, match) => {
             return bot.sendMessage(
                 msg.chat.id,
                 '猜测历史：\n'
-                    + list
-                    + '\n'
+                    + list + '\n'
                     + '猜对啦！答案是：\n'
-                    + game.answer,
+                    + game.answer + '\n\n'
+                    + '/1a2b 开始新游戏',
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -59,8 +59,7 @@ const gameEvent = event((msg, match) => {
             return bot.sendMessage(
                 msg.chat.id,
                 '猜测历史：\n'
-                    + list
-                    + '\n'
+                    + list + '\n'
                     + '目标字符集：\n'
                     + game.charset,
                 {
