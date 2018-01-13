@@ -70,7 +70,7 @@ const gameEvent = event((msg, match) => {
     }
 });
 
-bot.onText(/^\w+$/, (msg, match) => {
+bot.onText(/^[^\n\r\t ]+$/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -87,7 +87,7 @@ bot.onText(/^\w+$/, (msg, match) => {
     }
 });
 
-bot.onText(/^\/1a2b(@\w+)?(?: (\w+))?$/, event((msg, match) => {
+bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         return bot.sendMessage(
             msg.chat.id,
