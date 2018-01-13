@@ -35,10 +35,10 @@ const gameEvent = event((msg, match) => {
     } else {
         game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
 
-        let list = '当前猜测：';
+        let list = '';
 
         for (const text in game.guess) {
-            list += '\n' + text.slice(1) + ' ' + game.guess[text][0] + 'A' + game.guess[text][1] + 'B';
+            list += text.slice(1) + ' ' + game.guess[text][0] + 'A' + game.guess[text][1] + 'B\n';
         }
 
         if (game.guess['#' + match[0]][0] === game.answer.length) {
@@ -46,7 +46,10 @@ const gameEvent = event((msg, match) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '猜对啦！答案是：\n'
+                '猜测历史：\n'
+                    + list
+                    + '\n'
+                    + '猜对啦！答案是：\n'
                     + game.answer,
                 {
                     reply_to_message_id: msg.message_id,
@@ -55,7 +58,11 @@ const gameEvent = event((msg, match) => {
         } else {
             return bot.sendMessage(
                 msg.chat.id,
-                list,
+                '猜测历史：\n'
+                    + list
+                    + '\n'
+                    + '目标字符集：\n'
+                    + game.charset,
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -91,12 +98,8 @@ bot.onText(/^\/1a2b(@\w+)?(?: (\w+))?$/, event((msg, match) => {
             }
         );
     } else {
-        if (!match[2]) {
-            match[2] = '1234567890';
-        }
-
-        games[msg.chat.id] = {
-            charset: match[2],
+        const game = games[msg.chat.id] = {
+            charset: match[2] || '1234567890',
             answer: null,
             guess: {},
         }
@@ -104,7 +107,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: (\w+))?$/, event((msg, match) => {
         return bot.sendMessage(
             msg.chat.id,
             '游戏开始啦，目标字符集：\n'
-                + match[2] + '\n'
+                + game.charset + '\n'
                 + '将根据第一次猜测决定答案长度',
             {
                 reply_to_message_id: msg.message_id,
