@@ -34,13 +34,16 @@ const gameEvent = event((msg, match) => {
         );
     } else {
         game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
-        game.total += 1;
 
-        let info = '猜测历史（总共' + game.total + '次）：\n';
+        let info = '猜测历史：\n';
+        let total = 0;
         for (const text in game.guess) {
             info += text.slice(1) + ' ' + game.guess[text][0] + 'A' + game.guess[text][1] + 'B\n';
+            total += 1;
         }
-        info += '\n猜测目标：\n' + game.charset;
+        info += '（总共' + total + '次）\n\n'
+            + '猜测目标：\n'
+            + game.charset;
 
         if (game.guess['#' + match[0]][0] === core.length(game.answer)) {
             for (const sentmsg of game.msglist) {
@@ -120,7 +123,6 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
             charset: charset,
             answer: null,
             guess: {},
-            total: 0,
             msglist: [],
         }
 
