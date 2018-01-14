@@ -42,7 +42,7 @@ const gameEvent = event((msg, match) => {
         }
         info += '\n猜测目标：\n' + game.charset;
 
-        if (game.guess['#' + match[0]][0] === game.answer.length) {
+        if (game.guess['#' + match[0]][0] === core.length(game.answer)) {
             for (const sentmsg of game.msglist) {
                 bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
             }
@@ -84,12 +84,12 @@ bot.onText(/^[^\n\r\t ]+$/, (msg, match) => {
         const game = games[msg.chat.id];
 
         if (game.answer) {
-            if (match[0].length === game.answer.length && core.removeChar(match[0], game.charset) === '') {
+            if (core.length(match[0]) === core.length(game.answer) && !core.extraChar(match[0], game.charset)) {
                 gameEvent(msg, match);
             }
         } else {
-            if (match[0].length <= config.abMaxLength && core.removeChar(match[0], game.charset) === '') {
-                game.answer = core.shuffle(game.charset, match[0].length);
+            if (core.length(match[0]) <= config.abMaxLength && !core.extraChar(match[0], game.charset)) {
+                game.answer = core.shuffle(game.charset, core.length(match[0]));
                 gameEvent(msg, match);
             }
         }

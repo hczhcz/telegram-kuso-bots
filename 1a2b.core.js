@@ -1,35 +1,51 @@
 'use strict';
 
+const length = (str) => {
+    const arr = Array.from(str);
+
+    return arr.length;
+}
+
 const shuffle = (str, length) => {
+    const arr = Array.from(str);
+
     let result = '';
 
     for (let i = 0; i < length; ++i) {
-        const j = Math.floor(Math.random() * str.length);
+        const j = Math.floor(Math.random() * arr.length);
 
-        result += str[j];
-        str = str.slice(0, j) + str.slice(j + 1);
+        result += arr[j];
+        arr[j] = arr[arr.length - 1];
+        arr.pop();
     }
 
     return result;
 };
 
-const removeChar = (str, str2) => {
-    for (let i = 0; i < str2.length; ++i) {
-        const j = str.indexOf(str2[i]);
+const extraChar = (str, str2) => {
+    const arr = Array.from(str);
+    const arr2 = Array.from(str2);
+
+    for (let i = 0; i < arr2.length; ++i) {
+        const j = arr.indexOf(arr2[i]);
 
         if (j >= 0) {
-            str = str.slice(0, j) + str.slice(j + 1);
+            arr[j] = arr[arr.length - 1];
+            arr.pop();
         }
     }
 
-    return str;
+    return arr.length;
 };
 
 const getA = (str, str2) => {
+    const arr = Array.from(str);
+    const arr2 = Array.from(str2);
+
     let result = 0;
 
-    for (let i = 0; i < str2.length; ++i) {
-        if (str2[i] === str[i]) {
+    for (let i = 0; i < arr2.length; ++i) {
+        if (arr2[i] === arr[i]) {
             result += 1;
         }
     }
@@ -40,12 +56,12 @@ const getA = (str, str2) => {
 const getAB = (str, str2) => {
     const a = getA(str, str2);
 
-    return [a, str.length - removeChar(str, str2).length - a];
+    return [a, length(str) - extraChar(str, str2) - a];
 };
 
 module.exports = {
+    length: length,
     shuffle: shuffle,
-    removeChar: removeChar,
-    // getA: getA,
+    extraChar: extraChar,
     getAB: getAB,
 };
