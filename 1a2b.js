@@ -21,6 +21,22 @@ const event = (handler) => {
     };
 };
 
+const gameInfo = (game) => {
+    let info = '猜测历史：\n';
+    let total = 0;
+
+    for (const text in game.guess) {
+        info += text.slice(1) + ' ' + game.guess[text][0] + 'A' + game.guess[text][1] + 'B\n';
+        total += 1;
+    }
+
+    info += '（总共' + total + '次）\n\n'
+        + '猜测目标：\n'
+        + game.charset;
+
+    return info;
+};
+
 const gameEvent = event((msg, match) => {
     const game = games[msg.chat.id];
 
@@ -35,16 +51,6 @@ const gameEvent = event((msg, match) => {
     } else {
         game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
 
-        let info = '猜测历史：\n';
-        let total = 0;
-        for (const text in game.guess) {
-            info += text.slice(1) + ' ' + game.guess[text][0] + 'A' + game.guess[text][1] + 'B\n';
-            total += 1;
-        }
-        info += '（总共' + total + '次）\n\n'
-            + '猜测目标：\n'
-            + game.charset;
-
         if (game.guess['#' + match[0]][0] === core.length(game.answer)) {
             for (const sentmsg of game.msglist) {
                 bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
@@ -56,7 +62,7 @@ const gameEvent = event((msg, match) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                info + '\n\n'
+                gameInfo(game) + '\n\n'
                     + '猜对啦！答案是：\n'
                     + game.answer + '\n\n'
                     + '/1a2b 开始新游戏',
@@ -67,7 +73,7 @@ const gameEvent = event((msg, match) => {
         } else {
             return bot.sendMessage(
                 msg.chat.id,
-                info,
+                gameInfo(game),
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -142,13 +148,19 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
+        for (const sentmsg of game.msglist) {
+            bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
+        }
+        delete game.msglist;
+
         console.log(JSON.stringify(games[msg.chat.id]));
         delete games[msg.chat.id];
 
         if (game.answer) {
             return bot.sendMessage(
                 msg.chat.id,
-                '游戏结束啦，答案是：\n'
+                gameInfo(game) + '\n\n'
+                    + '游戏结束啦，答案是：\n'
                     + game.answer,
                 {
                     reply_to_message_id: msg.message_id,
