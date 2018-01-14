@@ -34,6 +34,7 @@ const gameEvent = event((msg, match) => {
         );
     } else {
         game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
+        game.total += 1;
 
         let list = '';
 
@@ -47,8 +48,10 @@ const gameEvent = event((msg, match) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '猜测历史：\n'
+                '猜测历史（总共' + game.total + '次）：\n'
                     + list + '\n'
+                    + '猜测目标：\n'
+                    + game.charset
                     + '猜对啦！答案是：\n'
                     + game.answer + '\n\n'
                     + '/1a2b 开始新游戏',
@@ -59,9 +62,9 @@ const gameEvent = event((msg, match) => {
         } else {
             return bot.sendMessage(
                 msg.chat.id,
-                '猜测历史：\n'
+                '猜测历史（总共' + game.total + '次）：\n'
                     + list + '\n'
-                    + '目标字符集：\n'
+                    + '猜测目标：\n'
                     + game.charset,
                 {
                     reply_to_message_id: msg.message_id,
@@ -112,11 +115,12 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
             charset: charset,
             answer: null,
             guess: {},
+            total: 0,
         }
 
         return bot.sendMessage(
             msg.chat.id,
-            '游戏开始啦，目标字符集：\n'
+            '游戏开始啦，猜测目标：\n'
                 + game.charset + '\n'
                 + '将根据第一次猜测决定答案长度',
             {
