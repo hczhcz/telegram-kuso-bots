@@ -4,14 +4,14 @@ const length = (str) => {
     const arr = Array.from(str);
 
     return arr.length;
-}
+};
 
-const shuffle = (str, length) => {
+const shuffle = (str, total) => {
     const arr = Array.from(str);
 
     let result = '';
 
-    for (let i = 0; i < length; ++i) {
+    for (let i = 0; i < total; i += 1) {
         const j = Math.floor(Math.random() * arr.length);
 
         result += arr[j];
@@ -26,7 +26,7 @@ const extraChar = (str, str2) => {
     const arr = Array.from(str);
     const arr2 = Array.from(str2);
 
-    for (let i = 0; i < arr2.length; ++i) {
+    for (let i = 0; i < arr2.length; i += 1) {
         const j = arr.indexOf(arr2[i]);
 
         if (j >= 0) {
@@ -44,7 +44,7 @@ const getA = (str, str2) => {
 
     let result = 0;
 
-    for (let i = 0; i < arr2.length; ++i) {
+    for (let i = 0; i < arr2.length; i += 1) {
         if (arr2[i] === arr[i]) {
             result += 1;
         }
@@ -54,9 +54,10 @@ const getA = (str, str2) => {
 };
 
 const getAB = (str, str2) => {
-    const a = getA(str, str2);
+    const valA = getA(str, str2);
+    const valB = length(str) - extraChar(str, str2) - valA;
 
-    return [a, length(str) - extraChar(str, str2) - a];
+    return [valA, valB];
 };
 
 module.exports = {

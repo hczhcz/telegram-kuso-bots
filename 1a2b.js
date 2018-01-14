@@ -130,7 +130,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
             answer: null,
             guess: {},
             msglist: [],
-        }
+        };
 
         return bot.sendMessage(
             msg.chat.id,
