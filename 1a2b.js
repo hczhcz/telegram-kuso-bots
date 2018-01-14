@@ -43,6 +43,11 @@ const gameEvent = event((msg, match) => {
         }
 
         if (game.guess['#' + match[0]][0] === game.answer.length) {
+            for (const sentmsg of game.msglist) {
+                bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
+            }
+            delete game.msglist;
+
             console.log(JSON.stringify(games[msg.chat.id]));
             delete games[msg.chat.id];
 
@@ -69,7 +74,13 @@ const gameEvent = event((msg, match) => {
                 {
                     reply_to_message_id: msg.message_id,
                 }
-            );
+            ).then((sentmsg) => {
+                if (game.msglist) {
+                    game.msglist.push(sentmsg);
+                } else {
+                    bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
+                }
+            });
         }
     }
 });
@@ -116,6 +127,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
             answer: null,
             guess: {},
             total: 0,
+            msglist: [],
         }
 
         return bot.sendMessage(
