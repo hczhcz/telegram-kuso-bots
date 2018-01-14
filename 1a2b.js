@@ -56,7 +56,7 @@ const gameEvent = event((msg, match) => {
                 '猜测历史（总共' + game.total + '次）：\n'
                     + list + '\n'
                     + '猜测目标：\n'
-                    + game.charset
+                    + game.charset + '\n\n'
                     + '猜对啦！答案是：\n'
                     + game.answer + '\n\n'
                     + '/1a2b 开始新游戏',
