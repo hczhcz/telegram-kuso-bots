@@ -36,11 +36,11 @@ const gameEvent = event((msg, match) => {
         game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
         game.total += 1;
 
-        let list = '';
-
+        let info = '猜测历史（总共' + game.total + '次）：\n';
         for (const text in game.guess) {
-            list += text.slice(1) + ' ' + game.guess[text][0] + 'A' + game.guess[text][1] + 'B\n';
+            info += text.slice(1) + ' ' + game.guess[text][0] + 'A' + game.guess[text][1] + 'B\n';
         }
+        info += '\n猜测目标：\n' + game.charset;
 
         if (game.guess['#' + match[0]][0] === game.answer.length) {
             for (const sentmsg of game.msglist) {
@@ -53,10 +53,7 @@ const gameEvent = event((msg, match) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '猜测历史（总共' + game.total + '次）：\n'
-                    + list + '\n'
-                    + '猜测目标：\n'
-                    + game.charset + '\n\n'
+                info + '\n\n'
                     + '猜对啦！答案是：\n'
                     + game.answer + '\n\n'
                     + '/1a2b 开始新游戏',
@@ -67,10 +64,7 @@ const gameEvent = event((msg, match) => {
         } else {
             return bot.sendMessage(
                 msg.chat.id,
-                '猜测历史（总共' + game.total + '次）：\n'
-                    + list + '\n'
-                    + '猜测目标：\n'
-                    + game.charset,
+                info,
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -133,7 +127,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
         return bot.sendMessage(
             msg.chat.id,
             '游戏开始啦，猜测目标：\n'
-                + game.charset + '\n'
+                + game.charset + '\n\n'
                 + '将根据第一次猜测决定答案长度',
             {
                 reply_to_message_id: msg.message_id,
