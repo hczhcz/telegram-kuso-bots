@@ -10,11 +10,13 @@ process.on('uncaughtException', (err) => {
 });
 
 const games = {};
+const meow = {};
 
 const event = (handler) => {
     return (msg, match) => {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || '') + ' ' + match[0]);
 
+        // notice: take care of the inline query event
         if (!config.ban[msg.from.id]) {
             handler(msg, match);
         }
@@ -32,12 +34,14 @@ const gameInfo = (game) => {
 
     info += '（总共' + total + '次）\n\n'
         + '猜测目标：\n'
-        + game.charset;
+        + game.hint;
 
     return info;
 };
 
 const gameEnd = (game) => {
+    delete game.hint;
+
     for (const sentmsg of game.msglist) {
         bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
     }
@@ -119,27 +123,39 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
             }
         );
     } else {
+        // charset selection order: argument -> reply -> meow -> default
+
         let charset = match[2];
+        let hint = match[2];
 
         if (!charset && msg.reply_to_message && msg.reply_to_message.text.match(/^[^\n\r\t ]+$/)) {
             charset = msg.reply_to_message.text;
+            hint = msg.reply_to_message.text;
+        }
+
+        if (!charset && meow[msg.from.id]) {
+            charset = meow[msg.from.id];
+            hint = '喵喵喵？';
+            delete meow[msg.from.id];
         }
 
         if (!charset) {
             charset = '1234567890';
+            hint = '1234567890';
         }
 
         const game = games[msg.chat.id] = {
             charset: charset,
             answer: null,
             guess: {},
+            hint: hint,
             msglist: [],
         };
 
         return bot.sendMessage(
             msg.chat.id,
             '游戏开始啦，猜测目标：\n'
-                + game.charset + '\n\n'
+                + game.hint + '\n\n'
                 + '将根据第一次猜测决定答案长度',
             {
                 reply_to_message_id: msg.message_id,
@@ -183,3 +199,40 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
         );
     }
 }));
+
+bot.on('inline_query', (query) => {
+    if (config.ban[query.from.id]) {
+        return bot.answerInlineQuery(query.id, [{
+            type: 'article',
+            id: 'banned',
+            title: '喵a喵b',
+            input_message_content: {
+                message_text: '该用户因存在恶意使用 bot 的报告，已被列入黑名单',
+            },
+        }], {
+            cache_time: 0,
+            is_personal: true,
+        });
+    }
+
+    return bot.answerInlineQuery(query.id, {
+        type: 'article',
+        id: 'playmeow',
+        title: '喵a喵b',
+        input_message_content: {
+            message_text: '喵喵模式已装载！'
+                + '/1a2b 开始新游戏',
+        },
+    }, {
+        cache_time: 0,
+        is_personal: true,
+    });
+});
+
+bot.on('chosen_inline_result', (chosen) => {
+    console.log('[' + Date() + '] ' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.result_id + ' ' + chosen.query);
+
+    if (chosen.result_id === 'playmeow') {
+        meow[chosen.from.id] = chosen.query;
+    }
+});
