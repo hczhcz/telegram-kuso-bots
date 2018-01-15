@@ -32,9 +32,7 @@ const gameInfo = (game) => {
         total += 1;
     }
 
-    info += '（总共' + total + '次）\n\n'
-        + '猜测目标：\n'
-        + game.hint;
+    info += '（总共' + total + '次）';
 
     return info;
 };
@@ -47,8 +45,7 @@ const gameEnd = (game) => {
     }
     delete game.msglist;
 
-    console.log(JSON.stringify(games[msg.chat.id]));
-    delete games[msg.chat.id];
+    console.log(JSON.stringify(game));
 };
 
 const gameEvent = event((msg, match) => {
@@ -67,6 +64,7 @@ const gameEvent = event((msg, match) => {
 
         if (game.guess['#' + match[0]][0] === core.length(game.answer)) {
             gameEnd(game);
+            delete games[msg.chat.id];
 
             return bot.sendMessage(
                 msg.chat.id,
@@ -81,7 +79,9 @@ const gameEvent = event((msg, match) => {
         } else {
             return bot.sendMessage(
                 msg.chat.id,
-                gameInfo(game),
+                gameInfo(game) + '\n\n'
+                    + '猜测目标：\n'
+                    + game.hint,
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -169,6 +169,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
         const game = games[msg.chat.id];
 
         gameEnd(game);
+        delete games[msg.chat.id];
 
         if (game.answer) {
             return bot.sendMessage(
