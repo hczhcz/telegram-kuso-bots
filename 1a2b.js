@@ -202,7 +202,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
 }));
 
 bot.on('inline_query', (query) => {
-    if (query.query) {
+    if (query.query.match(/^[^\n\r\t ]+$/)) {
         if (config.ban[query.from.id]) {
             return bot.answerInlineQuery(query.id, [{
                 type: 'article',
