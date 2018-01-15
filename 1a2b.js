@@ -37,6 +37,16 @@ const gameInfo = (game) => {
     return info;
 };
 
+const gameEnd = (game) => {
+    for (const sentmsg of game.msglist) {
+        bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
+    }
+    delete game.msglist;
+
+    console.log(JSON.stringify(games[msg.chat.id]));
+    delete games[msg.chat.id];
+};
+
 const gameEvent = event((msg, match) => {
     const game = games[msg.chat.id];
 
@@ -52,13 +62,7 @@ const gameEvent = event((msg, match) => {
         game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
 
         if (game.guess['#' + match[0]][0] === core.length(game.answer)) {
-            for (const sentmsg of game.msglist) {
-                bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
-            }
-            delete game.msglist;
-
-            console.log(JSON.stringify(games[msg.chat.id]));
-            delete games[msg.chat.id];
+            gameEnd(game);
 
             return bot.sendMessage(
                 msg.chat.id,
@@ -148,13 +152,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
-        for (const sentmsg of game.msglist) {
-            bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
-        }
-        delete game.msglist;
-
-        console.log(JSON.stringify(games[msg.chat.id]));
-        delete games[msg.chat.id];
+        gameEnd(game);
 
         if (game.answer) {
             return bot.sendMessage(
