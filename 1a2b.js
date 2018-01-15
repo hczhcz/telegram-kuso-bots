@@ -32,7 +32,9 @@ const gameInfo = (game) => {
         total += 1;
     }
 
-    info += '（总共' + total + '次）';
+    info += '（总共' + total + '次）\n\n'
+        + '猜测目标：\n'
+        + (game.hint || game.charset);
 
     return info;
 };
@@ -80,9 +82,7 @@ const gameEvent = event((msg, match) => {
         } else {
             return bot.sendMessage(
                 msg.chat.id,
-                gameInfo(game) + '\n\n'
-                    + '猜测目标：\n'
-                    + game.hint,
+                gameInfo(game),
                 {
                     reply_to_message_id: msg.message_id,
                 }
