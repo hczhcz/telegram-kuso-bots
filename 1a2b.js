@@ -61,6 +61,7 @@ const gameEvent = event((msg, match) => {
         );
     } else {
         game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
+        game.hint = core.reveal(match[0], game.hint, game.charset);
 
         if (game.guess['#' + match[0]][0] === core.length(game.answer)) {
             gameEnd(game);
@@ -135,7 +136,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
 
         if (!charset && meow[msg.from.id]) {
             charset = meow[msg.from.id];
-            hint = '喵喵喵？';
+            hint = '喵'.repeat(meow[msg.from.id].length);
             delete meow[msg.from.id];
         }
 

@@ -38,6 +38,24 @@ const extraChar = (str, str2) => {
     return arr.length;
 };
 
+const reveal = (str, strH, strC) => {
+    const arr = Array.from(str);
+    const arrH = Array.from(strH);
+    const arrC = Array.from(strC);
+
+    for (let i = 0; i < arrC.length; i += 1) {
+        const j = arr.indexOf(arrC[i]);
+
+        if (j >= 0) {
+            arrH[i] = arrC[i];
+            arr[j] = arr[arr.length - 1];
+            arr.pop();
+        }
+    }
+
+    return arrH.join('');
+};
+
 const getA = (str, str2) => {
     const arr = Array.from(str);
     const arr2 = Array.from(str2);
@@ -64,5 +82,6 @@ module.exports = {
     length: length,
     shuffle: shuffle,
     extraChar: extraChar,
+    reveal: reveal,
     getAB: getAB,
 };
