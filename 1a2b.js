@@ -201,32 +201,39 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
 }));
 
 bot.on('inline_query', (query) => {
-    if (config.ban[query.from.id]) {
+    if (query.query) {
+        if (config.ban[query.from.id]) {
+            return bot.answerInlineQuery(query.id, [{
+                type: 'article',
+                id: 'banned',
+                title: '喵a喵b',
+                input_message_content: {
+                    message_text: '该用户因存在恶意使用 bot 的报告，已被列入黑名单',
+                },
+            }], {
+                cache_time: 0,
+                is_personal: true,
+            });
+        }
+
         return bot.answerInlineQuery(query.id, [{
             type: 'article',
-            id: 'banned',
+            id: 'playmeow',
             title: '喵a喵b',
             input_message_content: {
-                message_text: '该用户因存在恶意使用 bot 的报告，已被列入黑名单',
+                message_text: '喵喵模式已装载！'
+                    + '/1a2b 开始新游戏',
             },
         }], {
             cache_time: 0,
             is_personal: true,
         });
+    } else {
+        return bot.answerInlineQuery(query.id, [], {
+            cache_time: 0,
+            is_personal: true,
+        });
     }
-
-    return bot.answerInlineQuery(query.id, {
-        type: 'article',
-        id: 'playmeow',
-        title: '喵a喵b',
-        input_message_content: {
-            message_text: '喵喵模式已装载！'
-                + '/1a2b 开始新游戏',
-        },
-    }, {
-        cache_time: 0,
-        is_personal: true,
-    });
 });
 
 bot.on('chosen_inline_result', (chosen) => {
