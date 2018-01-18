@@ -1,13 +1,17 @@
 'use strict';
 
+const GraphemeSplitter = require('grapheme-splitter');
+
+const splitter = new GraphemeSplitter()
+
 const length = (str) => {
-    const arr = Array.from(str);
+    const arr = splitter.splitGraphemes(str);
 
     return arr.length;
 };
 
 const shuffle = (str, total) => {
-    const arr = Array.from(str);
+    const arr = splitter.splitGraphemes(str);
 
     let result = '';
 
@@ -23,8 +27,8 @@ const shuffle = (str, total) => {
 };
 
 const extraChar = (str, str2) => {
-    const arr = Array.from(str);
-    const arr2 = Array.from(str2);
+    const arr = splitter.splitGraphemes(str);
+    const arr2 = splitter.splitGraphemes(str2);
 
     for (let i = 0; i < arr2.length; i += 1) {
         const j = arr.indexOf(arr2[i]);
@@ -39,9 +43,9 @@ const extraChar = (str, str2) => {
 };
 
 const reveal = (str, strH, strC) => {
-    const arr = Array.from(str);
-    const arrH = Array.from(strH);
-    const arrC = Array.from(strC);
+    const arr = splitter.splitGraphemes(str);
+    const arrH = splitter.splitGraphemes(strH);
+    const arrC = splitter.splitGraphemes(strC);
 
     for (let i = 0; i < arrC.length; i += 1) {
         const j = arr.indexOf(arrC[i]);
@@ -57,8 +61,8 @@ const reveal = (str, strH, strC) => {
 };
 
 const getA = (str, str2) => {
-    const arr = Array.from(str);
-    const arr2 = Array.from(str2);
+    const arr = splitter.splitGraphemes(str);
+    const arr2 = splitter.splitGraphemes(str2);
 
     let result = 0;
 
