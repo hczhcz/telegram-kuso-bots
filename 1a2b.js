@@ -134,9 +134,22 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r]+))?$/, event((msg, match) => {
             hint = charset;
         }
 
-        if (!charset && msg.reply_to_message && msg.reply_to_message.text.match(/^[^\n\r]+$/)) {
-            charset = msg.reply_to_message.text.replace(/\s+/, '');
-            hint = charset;
+        if (!charset && msg.reply_to_message && msg.reply_to_message.text) {
+            const arr = msg.reply_to_message.text.split(/[\n\r]+/);
+
+            arr.filter((str, i) => {
+                return str && arr.indexOf(str) === i;
+            });
+
+            if (arr.length) {
+                if (arr.length > 1) {
+                    charset = arr[Math.floor(Math.random() * arr.length)].replace(/\s+/, '');
+                    hint = '喵'.repeat(charset.length);
+                } else {
+                    charset = arr[Math.floor(Math.random() * arr.length)].replace(/\s+/, '');
+                    hint = charset;
+                }
+            }
         }
 
         if (!charset && meow[msg.from.id]) {

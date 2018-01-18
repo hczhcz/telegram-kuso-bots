@@ -2,7 +2,7 @@
 
 const GraphemeSplitter = require('grapheme-splitter');
 
-const splitter = new GraphemeSplitter()
+const splitter = new GraphemeSplitter();
 
 const length = (str) => {
     const arr = splitter.splitGraphemes(str);
