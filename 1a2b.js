@@ -126,8 +126,13 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r]+))?$/, event((msg, match) => {
     } else {
         // charset selection order: argument -> reply -> meow -> default
 
-        let charset = match[2].replace(/\s+/, '');
-        let hint = charset;
+        let charset = null;
+        let hint = null;
+
+        if (match[2]) {
+            charset = match[2].replace(/\s+/, '');
+            hint = charset;
+        }
 
         if (!charset && msg.reply_to_message && msg.reply_to_message.text.match(/^[^\n\r]+$/)) {
             charset = msg.reply_to_message.text.replace(/\s+/, '');
