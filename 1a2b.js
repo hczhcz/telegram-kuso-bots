@@ -97,7 +97,7 @@ const gameEvent = event((msg, match) => {
     }
 });
 
-bot.onText(/^[^\n\r\t ]+$/, (msg, match) => {
+bot.onText(/^[^\n\r\s]+$/, (msg, match) => {
     if (games[msg.chat.id]) {
         const game = games[msg.chat.id];
 
@@ -114,7 +114,7 @@ bot.onText(/^[^\n\r\t ]+$/, (msg, match) => {
     }
 });
 
-bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
+bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r]+))?$/, event((msg, match) => {
     if (games[msg.chat.id]) {
         return bot.sendMessage(
             msg.chat.id,
@@ -126,23 +126,23 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r\t ]+))?$/, event((msg, match) => {
     } else {
         // charset selection order: argument -> reply -> meow -> default
 
-        let charset = match[2];
-        let hint = match[2];
+        let charset = match[2].replace(/\s+/, '');
+        let hint = charset;
 
-        if (!charset && msg.reply_to_message && msg.reply_to_message.text.match(/^[^\n\r\t ]+$/)) {
-            charset = msg.reply_to_message.text;
-            hint = msg.reply_to_message.text;
+        if (!charset && msg.reply_to_message && msg.reply_to_message.text.match(/^[^\n\r]+$/)) {
+            charset = msg.reply_to_message.text.replace(/\s+/, '');
+            hint = charset;
         }
 
         if (!charset && meow[msg.from.id]) {
             charset = meow[msg.from.id];
-            hint = '喵'.repeat(meow[msg.from.id].length);
+            hint = '喵'.repeat(charset.length);
             delete meow[msg.from.id];
         }
 
         if (!charset) {
             charset = '1234567890';
-            hint = '1234567890';
+            hint = charset;
         }
 
         const game = games[msg.chat.id] = {
@@ -203,7 +203,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
 }));
 
 bot.on('inline_query', (query) => {
-    if (query.query.match(/^[^\n\r\t ]+$/)) {
+    if (query.query.match(/^[^\n\r]+$/)) {
         if (config.ban[query.from.id]) {
             return bot.answerInlineQuery(query.id, [{
                 type: 'article',
@@ -243,6 +243,6 @@ bot.on('chosen_inline_result', (chosen) => {
     console.log('[' + Date() + '] ' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.result_id + ' ' + chosen.query);
 
     if (chosen.result_id === 'playmeow') {
-        meow[chosen.from.id] = chosen.query;
+        meow[chosen.from.id] = chosen.query.replace(/\s+/, '');
     }
 });
