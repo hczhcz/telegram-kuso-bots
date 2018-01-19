@@ -130,23 +130,23 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r]+))?$/, event((msg, match) => {
         let hint = null;
 
         if (match[2]) {
-            charset = match[2].replace(/\s+/, '');
+            charset = match[2].split(/\s+/).join('');
             hint = charset;
         }
 
         if (!charset && msg.reply_to_message && msg.reply_to_message.text) {
             const arr = msg.reply_to_message.text.split(/[\n\r]+/);
 
-            arr.filter((str, i) => {
-                return str && arr.indexOf(str) === i;
+            arr.filter((str, i, self) => {
+                return str && self.indexOf(str) === i;
             });
 
             if (arr.length) {
                 if (arr.length > 1) {
-                    charset = arr[Math.floor(Math.random() * arr.length)].replace(/\s+/, '');
+                    charset = arr[Math.floor(Math.random() * arr.length)].split(/\s+/).join('');
                     hint = '喵'.repeat(charset.length);
                 } else {
-                    charset = arr[Math.floor(Math.random() * arr.length)].replace(/\s+/, '');
+                    charset = arr[Math.floor(Math.random() * arr.length)].split(/\s+/).join('');
                     hint = charset;
                 }
             }
@@ -261,6 +261,6 @@ bot.on('chosen_inline_result', (chosen) => {
     console.log('[' + Date() + '] ' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.result_id + ' ' + chosen.query);
 
     if (chosen.result_id === 'playmeow') {
-        meow[chosen.from.id] = chosen.query.replace(/\s+/, '');
+        meow[chosen.from.id] = chosen.query.split(/\s+/).join('');
     }
 });
