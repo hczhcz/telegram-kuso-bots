@@ -129,12 +129,16 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r]+))?$/, event((msg, match) => {
         let charset = null;
         let hint = null;
 
+        const ok = () => {
+            return charset && core.length(charset) <= config.abMaxCharsetLength;
+        };
+
         if (match[2]) {
             charset = match[2].split(/\s+/).join('');
             hint = charset;
         }
 
-        if (!charset && msg.reply_to_message && msg.reply_to_message.text) {
+        if (!ok() && msg.reply_to_message && msg.reply_to_message.text) {
             const arr = msg.reply_to_message.text.split(/[\n\r]+/);
 
             arr.filter((str, i, self) => {
@@ -152,13 +156,13 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r]+))?$/, event((msg, match) => {
             }
         }
 
-        if (!charset && meow[msg.from.id]) {
+        if (!ok() && meow[msg.from.id]) {
             charset = meow[msg.from.id];
             hint = '喵'.repeat(charset.length);
             delete meow[msg.from.id];
         }
 
-        if (!charset) {
+        if (!ok()) {
             charset = '1234567890';
             hint = charset;
         }
