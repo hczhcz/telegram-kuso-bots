@@ -27,8 +27,8 @@ const gameInfo = (game) => {
     let info = '猜测历史：\n';
     let total = 0;
 
-    for (const text in game.guess) {
-        info += text.slice(1) + ' ' + game.guess[text][0] + 'A' + game.guess[text][1] + 'B\n';
+    for (const i in game.guess) {
+        info += i.slice(1) + ' ' + game.guess[i][0] + 'A' + game.guess[i][1] + 'B\n';
         total += 1;
     }
 
@@ -42,10 +42,13 @@ const gameInfo = (game) => {
 const gameEnd = (game) => {
     delete game.hint;
 
-    for (const sentmsg of game.msglist) {
-        bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
+    for (const i in game.guess) {
+        const sentmsg = game.guess[i].msg;
+
+        if (sentmsg) {
+            bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
+        }
     }
-    delete game.msglist;
 
     console.log(JSON.stringify(game));
 };
@@ -62,8 +65,16 @@ const gameEvent = event((msg, match) => {
             }
         );
     } else {
-        game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
         game.hint = core.reveal(match[0], game.hint, game.charset);
+        game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
+
+        if (Object.keys(game.guess).length > config.abMaxGuessLength) {
+            for (const i in game.guess) {
+                delete game.guess[i]; // delete the first
+
+                break;
+            }
+        }
 
         if (game.guess['#' + match[0]][0] === core.length(game.answer)) {
             gameEnd(game);
@@ -87,8 +98,8 @@ const gameEvent = event((msg, match) => {
                     reply_to_message_id: msg.message_id,
                 }
             ).then((sentmsg) => {
-                if (game.msglist) {
-                    game.msglist.push(sentmsg);
+                if (games[msg.chat.id] === game) {
+                    game.guess['#' + match[0]].msg = sentmsg;
                 } else {
                     bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
                 }
@@ -170,9 +181,8 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r]+))?$/, event((msg, match) => {
         const game = games[msg.chat.id] = {
             charset: charset,
             answer: null,
-            guess: {},
             hint: hint,
-            msglist: [],
+            guess: {},
         };
 
         return bot.sendMessage(
