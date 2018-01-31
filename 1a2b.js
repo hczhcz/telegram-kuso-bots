@@ -3,14 +3,11 @@
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.abToken);
 
-const core = require('./1a2b.core');
+const gameplay = require('./1a2b.gameplay');
 
 process.on('uncaughtException', (err) => {
     console.error(err);
 });
-
-const games = {};
-const meow = {};
 
 const event = (handler) => {
     return (msg, match) => {
@@ -109,92 +106,45 @@ const gameEvent = event((msg, match) => {
 });
 
 bot.onText(/^[^\n\r\s]+$/, (msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
-
-        if (game.answer) {
-            if (core.length(match[0]) === core.length(game.answer) && !core.extraChar(match[0], game.charset)) {
-                gameEvent(msg, match);
-            }
-        } else {
-            if (core.length(match[0]) <= config.abMaxLength && !core.extraChar(match[0], game.charset)) {
-                game.answer = core.shuffle(game.charset, core.length(match[0]));
-                gameEvent(msg, match);
-            }
-        }
-    }
+    gameplay.verify(msg.chat.id, match[0], () => {
+        // valid
+        gameEvent(msg, match);
+    }, () => {
+        // not valid
+    }, () => {
+        // game not exist
+    });
 });
 
-bot.onText(/^\/1a2b(@\w+)?(?: ([^\n\r]+))?$/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        return bot.sendMessage(
-            msg.chat.id,
-            '已经开始啦',
-            {
-                reply_to_message_id: msg.message_id,
-            }
-        );
-    } else {
-        // charset selection order: argument -> reply -> meow -> default
-
-        let charset = null;
-        let hint = null;
-
-        const ok = () => {
-            return charset && core.length(charset) <= config.abMaxCharsetLength;
-        };
-
-        if (match[2]) {
-            charset = match[2].split(/\s+/).join('');
-            hint = charset;
-        }
-
-        if (!ok() && msg.reply_to_message && msg.reply_to_message.text) {
-            const arr = msg.reply_to_message.text.split(/[\n\r]+/);
-
-            arr.filter((str, i, self) => {
-                return str && self.indexOf(str) === i;
-            });
-
-            if (arr.length) {
-                if (arr.length > 1) {
-                    charset = arr[Math.floor(Math.random() * arr.length)].split(/\s+/).join('');
-                    hint = '喵'.repeat(charset.length);
-                } else {
-                    charset = arr[Math.floor(Math.random() * arr.length)].split(/\s+/).join('');
-                    hint = charset;
+bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
+    gameplay.init(
+        msg.chat.id,
+        match[2] || msg.reply_to_message && msg.reply_to_message.text || '',
+        msg.from.id,
+        config.abMaxCharsetLength,
+        () => {
+            // new game
+            return bot.sendMessage(
+                msg.chat.id,
+                '游戏开始啦，猜测目标：\n'
+                    + game.hint + '\n\n'
+                    + '将根据第一次猜测决定答案长度',
+                {
+                    reply_to_message_id: msg.message_id,
                 }
-            }
+            );
+        },
+        () => {
+            // game already exists
+            return bot.sendMessage(
+                msg.chat.id,
+                '已经开始啦',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
         }
-
-        if (!ok() && meow[msg.from.id]) {
-            charset = meow[msg.from.id];
-            hint = '喵'.repeat(charset.length);
-            delete meow[msg.from.id];
-        }
-
-        if (!ok()) {
-            charset = '1234567890';
-            hint = charset;
-        }
-
-        const game = games[msg.chat.id] = {
-            charset: charset,
-            answer: null,
-            hint: hint,
-            guess: {},
-        };
-
-        return bot.sendMessage(
-            msg.chat.id,
-            '游戏开始啦，猜测目标：\n'
-                + game.hint + '\n\n'
-                + '将根据第一次猜测决定答案长度',
-            {
-                reply_to_message_id: msg.message_id,
-            }
-        );
-    }
+    );
 }));
 
 bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
@@ -235,46 +185,39 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
 }));
 
 bot.on('inline_query', (query) => {
-    if (query.query.match(/^[^\n\r]+$/)) {
-        if (config.ban[query.from.id]) {
-            return bot.answerInlineQuery(query.id, [{
-                type: 'article',
-                id: 'banned',
-                title: '喵a喵b',
-                input_message_content: {
-                    message_text: '该用户因存在恶意使用 bot 的报告，已被列入黑名单',
-                },
-            }], {
-                cache_time: 0,
-                is_personal: true,
-            });
-        }
-
+    if (config.ban[query.from.id]) {
         return bot.answerInlineQuery(query.id, [{
             type: 'article',
-            id: 'playmeow',
+            id: 'banned',
             title: '喵a喵b',
             input_message_content: {
-                message_text: '喵喵模式已装载！\n\n'
-                    + '@' + (query.from.username || query.first_name) + '\n'
-                    + '/1a2b 开始新游戏',
+                message_text: '该用户因存在恶意使用 bot 的报告，已被列入黑名单',
             },
         }], {
             cache_time: 0,
             is_personal: true,
         });
-    } else {
-        return bot.answerInlineQuery(query.id, [], {
-            cache_time: 0,
-            is_personal: true,
-        });
     }
+
+    return bot.answerInlineQuery(query.id, [{
+        type: 'article',
+        id: 'playmeow',
+        title: '喵a喵b',
+        input_message_content: {
+            message_text: '喵喵模式已装载！\n\n'
+                + '@' + (query.from.username || query.first_name) + '\n'
+                + '/1a2b 开始新游戏',
+        },
+    }], {
+        cache_time: 0,
+        is_personal: true,
+    });
 });
 
 bot.on('chosen_inline_result', (chosen) => {
     console.log('[' + Date() + '] ' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.result_id + ' ' + chosen.query);
 
     if (chosen.result_id === 'playmeow') {
-        meow[chosen.from.id] = chosen.query.split(/\s+/).join('');
+        gameplay.meowInit(chosen.from.id, chosen.query);
     }
 });
