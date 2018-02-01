@@ -1,5 +1,7 @@
 'use strict';
 
+const config = require('./config');
+
 const core = require('./1a2b.core');
 
 const games = {};
@@ -43,73 +45,116 @@ const meowHint = (charset) => {
     return '喵'.repeat(core.length(charset));
 };
 
-const init = (id, text, meowId, limit, onDone, onGameExist) => {
+const init = (id, text, meowId, limit, onGameInit, onGameExist) => {
     // charset selection order: argument -> reply -> meow -> default
 
     if (games[id]) {
         return onGameExist();
-    } else {
-        const game = games[id] = {
-            charset: null,
-            answer: null,
-            hint: null,
-            guess: {},
-        };
-
-        const ok = () => {
-            return game.charset && core.length(game.charset) <= limit;
-        };
-
-        const list = normalInit(text);
-
-        if (list.length > 1) {
-            game.charset = normalGet(list);
-            game.hint = meowHint(game.charset);
-        } else if (list.length > 0) {
-            game.charset = normalGet(list);
-            game.hint = normalHint(game.charset);
-        }
-
-        if (!ok() && meows[meowId]) {
-            game.charset = meowGet(meowId);
-            game.hint = meowHint(game.charset);
-        }
-
-        if (!ok()) {
-            game.charset = '1234567890';
-            game.hint = '1234567890';
-        }
-
-        return onDone();
     }
+
+    const game = games[id] = {
+        charset: null,
+        answer: null,
+        hint: null,
+        guess: {},
+    };
+
+    const ok = () => {
+        return game.charset && core.length(game.charset) <= limit;
+    };
+
+    const list = normalInit(text);
+
+    if (list.length > 1) {
+        game.charset = normalGet(list);
+        game.hint = meowHint(game.charset);
+    } else if (list.length > 0) {
+        game.charset = normalGet(list);
+        game.hint = normalHint(game.charset);
+    }
+
+    if (!ok() && meows[meowId]) {
+        game.charset = meowGet(meowId);
+        game.hint = meowHint(game.charset);
+    }
+
+    if (!ok()) {
+        game.charset = '1234567890';
+        game.hint = '1234567890';
+    }
+
+    return onGameInit();
 };
 
-const verify = (id, text, onValid, onNotValid, onGameNotExist) => {
-    if (games[id]) {
-        const game = games[id];
-
-        if (game.answer) {
-            if (core.length(text) === core.length(game.answer) && !core.extraChar(text, game.charset)) {
-                return onValid();
-            } else {
-                return onNotValid();
-            }
-        } else {
-            if (core.length(text) <= config.abMaxLength && !core.extraChar(text, game.charset)) {
-                game.answer = core.shuffle(game.charset, core.length(text));
-
-                return onValid();
-            } else {
-                return onNotValid();
-            }
-        }
-    } else {
+const end = (id, onGameEnd, onGameNotExist) => {
+    if (!games[id]) {
         return onGameNotExist();
     }
+
+    const game = games[id];
+
+    delete game.hint;
+
+    delete games[id];
+
+    return onGameEnd();
+};
+
+const verify = (id, str, onValid, onNotValid, onGameNotExist) => {
+    if (!games[id]) {
+        return onGameNotExist();
+    }
+
+    const game = games[id];
+
+    if (game.answer) {
+        if (core.length(str) === core.length(game.answer) && !core.extraChar(str, game.charset)) {
+            return onValid();
+        }
+    } else {
+        if (core.length(str) <= config.abMaxLength && !core.extraChar(str, game.charset)) {
+            game.answer = core.shuffle(game.charset, core.length(str));
+
+            return onValid();
+        }
+    }
+
+    return onNotValid();
+};
+
+const guess = (id, str, onGuess, onGameEnd, onGuessDuplicated, onGameNotExist) => {
+    if (!games[id]) {
+        return onGameNotExist();
+    }
+
+    const game = games[id];
+
+    if (game.guess['#' + str]) {
+        return onGuessDuplicated();
+    }
+
+    game.hint = core.reveal(str, game.hint, game.charset);
+    game.guess['#' + str] = core.getAB(str, game.answer);
+
+    if (Object.keys(game.guess).length > config.abMaxGuessLength) {
+        for (const i in game.guess) {
+            delete game.guess[i]; // delete the first
+
+            break;
+        }
+    }
+
+    if (game.guess['#' + str][0] === core.length(game.answer)) {
+        return end(id, onGameEnd, onGameNotExist);
+    }
+
+    return onGuess();
 };
 
 module.exports = {
     meowInit: meowInit,
     init: init,
+    end: end,
     verify: verify,
+    guess: guess,
 };

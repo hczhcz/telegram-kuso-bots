@@ -37,8 +37,6 @@ const gameInfo = (game) => {
 };
 
 const gameEnd = (game) => {
-    delete game.hint;
-
     for (const i in game.guess) {
         const sentmsg = game.guess[i].msg;
 
@@ -51,43 +49,12 @@ const gameEnd = (game) => {
 };
 
 const gameEvent = event((msg, match) => {
-    const game = games[msg.chat.id];
+    gameplay.guess(
+        msg.chat.id,
+        match[0],
+        () => {
+            // guess
 
-    if (game.guess['#' + match[0]]) {
-        return bot.sendMessage(
-            msg.chat.id,
-            '已经猜过啦',
-            {
-                reply_to_message_id: msg.message_id,
-            }
-        );
-    } else {
-        game.hint = core.reveal(match[0], game.hint, game.charset);
-        game.guess['#' + match[0]] = core.getAB(match[0], game.answer);
-
-        if (Object.keys(game.guess).length > config.abMaxGuessLength) {
-            for (const i in game.guess) {
-                delete game.guess[i]; // delete the first
-
-                break;
-            }
-        }
-
-        if (game.guess['#' + match[0]][0] === core.length(game.answer)) {
-            gameEnd(game);
-            delete games[msg.chat.id];
-
-            return bot.sendMessage(
-                msg.chat.id,
-                gameInfo(game) + '\n\n'
-                    + '猜对啦！答案是：\n'
-                    + game.answer + '\n\n'
-                    + '/1a2b 开始新游戏',
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
-        } else {
             return bot.sendMessage(
                 msg.chat.id,
                 gameInfo(game),
@@ -101,19 +68,56 @@ const gameEvent = event((msg, match) => {
                     bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
                 }
             });
+        },
+        () => {
+            // game end
+
+            gameEnd(game);
+
+            return bot.sendMessage(
+                msg.chat.id,
+                gameInfo(game) + '\n\n'
+                    + '猜对啦！答案是：\n'
+                    + game.answer + '\n\n'
+                    + '/1a2b 开始新游戏',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        },
+        () => {
+            // guess duplicated
+
+            return bot.sendMessage(
+                msg.chat.id,
+                '已经猜过啦',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        },
+        () => {
+            // game not exist
         }
-    }
+    );
 });
 
 bot.onText(/^[^\n\r\s]+$/, (msg, match) => {
-    gameplay.verify(msg.chat.id, match[0], () => {
-        // valid
-        gameEvent(msg, match);
-    }, () => {
-        // not valid
-    }, () => {
-        // game not exist
-    });
+    gameplay.verify(
+        msg.chat.id,
+        match[0],
+        () => {
+            // valid
+
+            gameEvent(msg, match);
+        },
+        () => {
+            // not valid
+        },
+        () => {
+            // game not exist
+        }
+    );
 });
 
 bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
@@ -123,7 +127,8 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
         msg.from.id,
         config.abMaxCharsetLength,
         () => {
-            // new game
+            // game init
+
             return bot.sendMessage(
                 msg.chat.id,
                 '游戏开始啦，猜测目标：\n'
@@ -135,7 +140,8 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
             );
         },
         () => {
-            // game already exists
+            // game exist
+
             return bot.sendMessage(
                 msg.chat.id,
                 '已经开始啦',
@@ -148,40 +154,45 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
-    if (games[msg.chat.id]) {
-        const game = games[msg.chat.id];
+    gameplay.end(
+        msg.chat.id,
+        () => {
+            // game end
 
-        gameEnd(game);
-        delete games[msg.chat.id];
+            gameEnd(game);
 
-        if (game.answer) {
+            if (game.answer) {
+                return bot.sendMessage(
+                    msg.chat.id,
+                    gameInfo(game) + '\n\n'
+                        + '游戏结束啦，答案是：\n'
+                        + game.answer,
+                    {
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
+            } else {
+                return bot.sendMessage(
+                    msg.chat.id,
+                    '游戏结束啦',
+                    {
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
+            }
+        },
+        () => {
+            // game not exist
+
             return bot.sendMessage(
                 msg.chat.id,
-                gameInfo(game) + '\n\n'
-                    + '游戏结束啦，答案是：\n'
-                    + game.answer,
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
-        } else {
-            return bot.sendMessage(
-                msg.chat.id,
-                '游戏结束啦',
+                '不存在的！',
                 {
                     reply_to_message_id: msg.message_id,
                 }
             );
         }
-    } else {
-        return bot.sendMessage(
-            msg.chat.id,
-            '不存在的！',
-            {
-                reply_to_message_id: msg.message_id,
-            }
-        );
-    }
+    );
 }));
 
 bot.on('inline_query', (query) => {
