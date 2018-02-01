@@ -52,7 +52,7 @@ const gameEvent = event((msg, match) => {
     gameplay.guess(
         msg.chat.id,
         match[0],
-        () => {
+        (game) => {
             // guess
 
             return bot.sendMessage(
@@ -62,14 +62,14 @@ const gameEvent = event((msg, match) => {
                     reply_to_message_id: msg.message_id,
                 }
             ).then((sentmsg) => {
-                if (games[msg.chat.id] === game) {
+                if (game.active) {
                     game.guess['#' + match[0]].msg = sentmsg;
                 } else {
                     bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
                 }
             });
         },
-        () => {
+        (game) => {
             // game end
 
             gameEnd(game);
@@ -126,7 +126,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
         match[2] || msg.reply_to_message && msg.reply_to_message.text || '',
         msg.from.id,
         config.abMaxCharsetLength,
-        () => {
+        (game) => {
             // game init
 
             return bot.sendMessage(
@@ -156,7 +156,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
 bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
     gameplay.end(
         msg.chat.id,
-        () => {
+        (game) => {
             // game end
 
             gameEnd(game);

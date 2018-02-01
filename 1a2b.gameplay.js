@@ -36,6 +36,7 @@ const meowInit = (meowId, text) => {
 
 const meowGet = (meowId) => {
     const charset = meows[meowId];
+
     delete meows[meowId];
 
     return charset;
@@ -56,6 +57,7 @@ const init = (id, text, meowId, limit, onGameInit, onGameExist) => {
         charset: null,
         answer: null,
         hint: null,
+        active: true,
         guess: {},
     };
 
@@ -83,7 +85,7 @@ const init = (id, text, meowId, limit, onGameInit, onGameExist) => {
         game.hint = '1234567890';
     }
 
-    return onGameInit();
+    return onGameInit(game);
 };
 
 const end = (id, onGameEnd, onGameNotExist) => {
@@ -94,10 +96,11 @@ const end = (id, onGameEnd, onGameNotExist) => {
     const game = games[id];
 
     delete game.hint;
+    delete game.active
 
     delete games[id];
 
-    return onGameEnd();
+    return onGameEnd(game);
 };
 
 const verify = (id, str, onValid, onNotValid, onGameNotExist) => {
@@ -148,7 +151,7 @@ const guess = (id, str, onGuess, onGameEnd, onGuessDuplicated, onGameNotExist) =
         return end(id, onGameEnd, onGameNotExist);
     }
 
-    return onGuess();
+    return onGuess(game);
 };
 
 module.exports = {
