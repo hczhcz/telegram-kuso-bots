@@ -7,6 +7,7 @@ const group = -1001073512575;
 const botname = 'werewoofbot';
 
 process.on('uncaughtException', (err) => {
+    console.error(Date());
     console.error(err);
 });
 

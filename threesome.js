@@ -14,6 +14,7 @@ const command = require('./threesome.command')(bot, data.games, data.commands, d
 const inline = require('./threesome.inline')(bot);
 
 process.on('uncaughtException', (err) => {
+    console.error(Date());
     console.error(err);
 });
 

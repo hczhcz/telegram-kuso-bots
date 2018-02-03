@@ -8,6 +8,7 @@ const data = require('./codercal.data')(config.coderCalPathCals);
 const core = require('./codercal.core');
 
 process.on('uncaughtException', (err) => {
+    console.error(Date());
     console.error(err);
 });
 

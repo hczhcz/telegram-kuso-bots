@@ -6,6 +6,7 @@ const bot = require('./bot.' + config.bot)(config.abToken);
 const gameplay = require('./1a2b.gameplay');
 
 process.on('uncaughtException', (err) => {
+    console.error(Date());
     console.error(err);
 });
 
