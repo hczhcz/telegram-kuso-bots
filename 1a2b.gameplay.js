@@ -96,7 +96,7 @@ const end = (id, onGameEnd, onGameNotExist) => {
     const game = games[id];
 
     delete game.hint;
-    delete game.active
+    delete game.active;
 
     delete games[id];
 
@@ -114,12 +114,14 @@ const verify = (id, str, onValid, onNotValid, onGameNotExist) => {
         if (core.length(str) === core.length(game.answer) && !core.extraChar(str, game.charset)) {
             return onValid();
         }
-    } else {
-        if (core.length(str) <= config.abMaxLength && !core.extraChar(str, game.charset)) {
-            game.answer = core.shuffle(game.charset, core.length(str));
 
-            return onValid();
-        }
+        return onNotValid();
+    }
+
+    if (core.length(str) <= config.abMaxLength && !core.extraChar(str, game.charset)) {
+        game.answer = core.shuffle(game.charset, core.length(str));
+
+        return onValid();
     }
 
     return onNotValid();
