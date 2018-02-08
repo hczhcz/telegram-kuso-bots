@@ -148,9 +148,9 @@ module.exports = (pathActions, pathCommands) => {
         },
 
         loadCommand: (chat, key, entry) => {
-            self.commands[chat.id] = self.commands[chat.id] || {};
+            self.commands[chat.mapped] = self.commands[chat.mapped] || {};
 
-            const command = self.commands[chat.id];
+            const command = self.commands[chat.mapped];
 
             command['/' + key] = command['/' + key] || [];
             command['/' + key].push(entry);

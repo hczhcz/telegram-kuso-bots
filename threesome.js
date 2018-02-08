@@ -28,6 +28,12 @@ const event = (handler, atIndex) => {
                 msg.has_log = true;
             }
 
+            if (config.threesomeChatMap[msg.chat.id]) {
+                msg.chat.mapped = config.threesomeChatMap[msg.chat.id];
+            } else {
+                msg.chat.mapped = msg.chat.id;
+            }
+
             // notice: take care of the inline query event
             if (config.ban[msg.from.id]) {
                 info.banned(msg);
@@ -36,18 +42,6 @@ const event = (handler, atIndex) => {
             }
         }
     };
-};
-
-const mappedEvent = (msg, handler) => {
-    const id = msg.chat.id;
-
-    if (config.threesomeChatMap[id]) {
-        msg.chat.id = config.threesomeChatMap[id];
-    }
-
-    handler();
-
-    msg.chat.id = id;
 };
 
 const playerEvent = (msg, handler) => {
@@ -284,37 +278,29 @@ bot.onText(/^\/stat(@\w+)?(?: @?\w+)?$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/listall(@\w+)?$/, event((msg, match) => {
-    mappedEvent(msg, () => {
-        command.all(msg);
-    });
+    command.all(msg);
 }));
 
 bot.onText(/^\/list(@\w+)?(?: ((?!_)\w*))?$/, event((msg, match) => {
-    mappedEvent(msg, () => {
-        command.list(msg, match[2] || '');
-    });
+    command.list(msg, match[2] || '');
 }));
 
 bot.onText(/^\/add(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
-    mappedEvent(msg, () => {
-        command.add(msg, match[2], match[3]);
-    });
+    command.add(msg, match[2], match[3]);
 }));
 
 bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
-    mappedEvent(msg, () => {
-        let args = [];
+    let args = [];
 
-        if (match[3]) {
-            if (match[3].match('@')) {
-                args = match[3].split('@');
-            } else {
-                args = match[3].split(' ');
-            }
+    if (match[3]) {
+        if (match[3].match('@')) {
+            args = match[3].split('@');
+        } else {
+            args = match[3].split(' ');
         }
+    }
 
-        command.get(msg, match[1], args);
-    });
+    command.get(msg, match[1], args);
 }, 2));
 
 bot.on('inline_query', (query) => {
@@ -349,15 +335,19 @@ setInterval(() => {
             },
         };
 
+        if (config.threesomeChatMap[i]) {
+            mockMsg.chat.mapped = config.threesomeChatMap[i];
+        } else {
+            mockMsg.chat.mapped = i;
+        }
+
         if (game.time <= 0) {
             gather.tick(mockMsg);
         } else {
             play.tick(mockMsg);
 
             if (game.time > 0 && game.time - game.total < -15 && game.time % 10 === 0) {
-                mappedEvent(mockMsg, () => {
-                    command.tick(mockMsg);
-                });
+                command.tick(mockMsg);
             }
         }
 

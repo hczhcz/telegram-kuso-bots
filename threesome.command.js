@@ -3,7 +3,7 @@
 module.exports = (bot, games, commands, writeCommand) => {
     const self = {
         all: (msg) => {
-            const command = commands[msg.chat.id] || {};
+            const command = commands[msg.chat.mapped] || {};
 
             let text = '';
 
@@ -21,7 +21,7 @@ module.exports = (bot, games, commands, writeCommand) => {
         },
 
         list: (msg, key) => {
-            const command = commands[msg.chat.id] || {};
+            const command = commands[msg.chat.mapped] || {};
 
             let text = '';
 
@@ -48,9 +48,9 @@ module.exports = (bot, games, commands, writeCommand) => {
         },
 
         add: (msg, key, value) => {
-            commands[msg.chat.id] = commands[msg.chat.id] || {};
+            commands[msg.chat.mapped] = commands[msg.chat.mapped] || {};
 
-            const command = commands[msg.chat.id];
+            const command = commands[msg.chat.mapped];
 
             const entry = {};
 
@@ -100,7 +100,7 @@ module.exports = (bot, games, commands, writeCommand) => {
 
         get: (msg, key, args) => {
             const game = games[msg.chat.id];
-            const command = commands[msg.chat.id] || {};
+            const command = commands[msg.chat.mapped] || {};
             const now = Date.now();
 
             let tot = [];
@@ -224,7 +224,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                 } else if (tot[choice].forward) {
                     return bot.forwardMessage(
                         msg.chat.id,
-                        msg.chat.id, // notice: only from the same chat
+                        msg.chat.mapped,
                         tot[choice].forward
                     );
                 } else {
