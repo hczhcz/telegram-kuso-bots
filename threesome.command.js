@@ -201,6 +201,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                         if (level === 0) {
                             tot.push({
                                 entry: entry,
+                                chat_id: entry.chat_id,
                                 forward: entry.forward,
                             });
                         }
@@ -224,7 +225,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                 } else if (tot[choice].forward) {
                     return bot.forwardMessage(
                         msg.chat.id,
-                        msg.chat.mapped,
+                        tot[choice].chat_id,
                         tot[choice].forward
                     );
                 } else {

@@ -152,6 +152,8 @@ module.exports = (pathActions, pathCommands) => {
 
             const command = self.commands[chat.mapped];
 
+            entry.chat_id = chat.id;
+
             command['/' + key] = command['/' + key] || [];
             command['/' + key].push(entry);
         },
