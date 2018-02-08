@@ -353,3 +353,7 @@ setInterval(() => {
         game.time += 1;
     }
 }, 490);
+
+for (const i in config.threesomePlugins) {
+    require('./plugin.' + config.threesomePlugins[i])(bot);
+}
