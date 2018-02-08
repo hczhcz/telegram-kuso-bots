@@ -284,25 +284,25 @@ bot.onText(/^\/stat(@\w+)?(?: @?\w+)?$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/listall(@\w+)?$/, event((msg, match) => {
-    mappedEvent(() => {
+    mappedEvent(msg, () => {
         command.all(msg);
     });
 }));
 
 bot.onText(/^\/list(@\w+)?(?: ((?!_)\w*))?$/, event((msg, match) => {
-    mappedEvent(() => {
+    mappedEvent(msg, () => {
         command.list(msg, match[2] || '');
     });
 }));
 
 bot.onText(/^\/add(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
-    mappedEvent(() => {
+    mappedEvent(msg, () => {
         command.add(msg, match[2], match[3]);
     });
 }));
 
 bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
-    mappedEvent(() => {
+    mappedEvent(msg, () => {
         let args = [];
 
         if (match[3]) {
@@ -342,32 +342,21 @@ setInterval(() => {
     for (const i in data.games) {
         const game = data.games[i];
 
+        const mockMsg = {
+            date: Date.now(),
+            chat: {
+                id: i,
+            },
+        };
+
         if (game.time <= 0) {
-            gather.tick({
-                // mock object
-                date: Date.now(),
-                chat: {
-                    id: i,
-                },
-            });
+            gather.tick(mockMsg);
         } else {
-            play.tick({
-                // mock object
-                date: Date.now(),
-                chat: {
-                    id: i,
-                },
-            });
+            play.tick(mockMsg);
 
             if (game.time > 0 && game.time - game.total < -15 && game.time % 10 === 0) {
-                mappedEvent(() => {
-                    command.tick({
-                        // mock object
-                        date: Date.now(),
-                        chat: {
-                            id: i,
-                        },
-                    });
+                mappedEvent(mockMsg, () => {
+                    command.tick(mockMsg);
                 });
             }
         }
