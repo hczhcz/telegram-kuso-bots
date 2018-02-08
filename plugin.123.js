@@ -24,7 +24,7 @@ module.exports = (bot) => {
                 actions[msg.chat.id] = '你是假的' + match[1] + '！';
             }
 
-            match = msg.text.match(/123不许(.*)/);
+            match = msg.text.match(/123不许(.+)/);
             if (match) {
                 actions[msg.chat.id] = '你' + match[1] + '了！';
             }
