@@ -38,6 +38,18 @@ const event = (handler, atIndex) => {
     };
 };
 
+const mappedEvent = (msg, handler) => {
+    const id = msg.chat.id;
+
+    if (config.threesomeChatMap[id]) {
+        msg.chat.id = config.threesomeChatMap[id];
+    }
+
+    handler();
+
+    msg.chat.id = id;
+};
+
 const playerEvent = (msg, handler) => {
     for (const i in msg.entities) {
         switch (msg.entities[i].type) {
@@ -272,29 +284,37 @@ bot.onText(/^\/stat(@\w+)?(?: @?\w+)?$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/listall(@\w+)?$/, event((msg, match) => {
-    command.all(msg);
+    mappedEvent(() => {
+        command.all(msg);
+    });
 }));
 
 bot.onText(/^\/list(@\w+)?(?: ((?!_)\w*))?$/, event((msg, match) => {
-    command.list(msg, match[2] || '');
+    mappedEvent(() => {
+        command.list(msg, match[2] || '');
+    });
 }));
 
 bot.onText(/^\/add(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
-    command.add(msg, match[2], match[3]);
+    mappedEvent(() => {
+        command.add(msg, match[2], match[3]);
+    });
 }));
 
 bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
-    let args = [];
+    mappedEvent(() => {
+        let args = [];
 
-    if (match[3]) {
-        if (match[3].match('@')) {
-            args = match[3].split('@');
-        } else {
-            args = match[3].split(' ');
+        if (match[3]) {
+            if (match[3].match('@')) {
+                args = match[3].split('@');
+            } else {
+                args = match[3].split(' ');
+            }
         }
-    }
 
-    command.get(msg, match[1], args);
+        command.get(msg, match[1], args);
+    });
 }, 2));
 
 bot.on('inline_query', (query) => {
@@ -340,12 +360,14 @@ setInterval(() => {
             });
 
             if (game.time > 0 && game.time - game.total < -15 && game.time % 10 === 0) {
-                command.tick({
-                    // mock object
-                    date: Date.now(),
-                    chat: {
-                        id: i,
-                    },
+                mappedEvent(() => {
+                    command.tick({
+                        // mock object
+                        date: Date.now(),
+                        chat: {
+                            id: i,
+                        },
+                    });
                 });
             }
         }
