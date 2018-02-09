@@ -52,17 +52,22 @@ const gameEnd = (game) => {
 
 const playerInfo = (list) => {
     let info = '玩家列表：\n';
+    let total = 0;
 
     for (const i in list) {
         info += ('@' + list[i].username || list[i].first_name) + '\n';
+        total += 1;
     }
+
+    info += '（总共' + total + '人）';
 
     return info;
 };
 
 const playerUpdate = (list, chat_id, message_id) => {
     bot.editMessageText(
-        playerInfo(list),
+        playerInfo(list) + '\n\n'
+            + '/1a2b 开始新游戏',
         {
             chat_id: chat_id,
             message_id: message_id,
