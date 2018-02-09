@@ -126,7 +126,6 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
         msg.chat.id,
         match[2] || msg.reply_to_message && msg.reply_to_message.text || '',
         msg.from.id,
-        config.abMaxCharsetLength,
         (game) => {
             // game init
 

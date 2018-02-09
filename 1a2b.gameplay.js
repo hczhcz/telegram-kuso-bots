@@ -46,7 +46,7 @@ const meowHint = (charset) => {
     return '喵'.repeat(core.length(charset));
 };
 
-const init = (id, text, meowId, limit, onGameInit, onGameExist) => {
+const init = (id, text, meowId, onGameInit, onGameExist) => {
     // charset selection order: argument -> reply -> meow -> default
 
     if (games[id]) {
@@ -62,7 +62,7 @@ const init = (id, text, meowId, limit, onGameInit, onGameExist) => {
     };
 
     const ok = () => {
-        return game.charset && core.length(game.charset) <= limit;
+        return game.charset && core.length(game.charset) <= config.abMaxCharsetLength;
     };
 
     const list = normalInit(text);
