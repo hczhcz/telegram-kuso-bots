@@ -62,7 +62,7 @@ const init = (id, text, meowId, onGameInit, onGameExist) => {
     };
 
     const ok = () => {
-        return game.charset && core.length(game.charset) <= config.abMaxCharsetLength;
+        return game.charset && core.length(game.charset) <= config.abMaxLength;
     };
 
     const list = normalInit(text);
@@ -141,7 +141,7 @@ const guess = (id, str, onGuess, onGameEnd, onGuessDuplicated, onGameNotExist) =
     game.hint = core.reveal(str, game.hint, game.charset);
     game.guess['#' + str] = core.getAB(str, game.answer);
 
-    if (Object.keys(game.guess).length > config.abMaxGuessLength) {
+    if (Object.keys(game.guess).length > config.abMaxGuess) {
         for (const i in game.guess) {
             delete game.guess[i]; // delete the first
 
