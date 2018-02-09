@@ -11,10 +11,6 @@ process.on('uncaughtException', (err) => {
     console.error(err);
 });
 
-bot.on('polling_error', (err) => {
-    console.error(err);
-})
-
 const event = (handler) => {
     return (msg, match) => {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || '') + ' ' + match[0]);
@@ -43,8 +39,6 @@ const gameInfo = (game) => {
 };
 
 const gameEnd = (game) => {
-    multiplayer.clear(msg.chat.id);
-
     for (const i in game.guess) {
         const sentmsg = game.guess[i].msg;
 
@@ -117,6 +111,7 @@ const gameEvent = event((msg, match) => {
         (game) => {
             // game end
 
+            multiplayer.clear(msg.chat.id);
             gameEnd(game);
 
             return bot.sendMessage(
@@ -223,6 +218,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
         (game) => {
             // game end
 
+            multiplayer.clear(msg.chat.id);
             gameEnd(game);
 
             if (game.answer) {

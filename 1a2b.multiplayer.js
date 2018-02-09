@@ -22,7 +22,6 @@ const add = (id, player, onDone, onPlayerExist) => {
 
 const remove = (id, player, onDone, onPlayerNotExist) => {
     const list = lists[id] = lists[id] || [];
-    const i = list.indexOf(player);
 
     for (const i in list) {
         if (list[i].id === player.id) {
