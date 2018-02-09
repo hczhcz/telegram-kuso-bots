@@ -149,7 +149,18 @@ bot.onText(/^[^\n\r\s]+$/, (msg, match) => {
         () => {
             // valid
 
-            gameEvent(msg, match);
+            multiplayer.verify(
+                msg.chat.id,
+                msg.from,
+                () => {
+                    // valid
+
+                    gameEvent(msg, match);
+                },
+                () => {
+                    // not valid
+                }
+            );
         },
         () => {
             // not valid
