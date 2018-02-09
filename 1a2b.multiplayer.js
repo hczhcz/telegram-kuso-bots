@@ -4,26 +4,35 @@ const config = require('./config');
 
 const lists = {};
 
-const add = (id, player) => {
+const add = (id, player, onDone, onPlayerExist) => {
     const list = lists[id] = lists[id] || [];
-    const i = list.indexOf(player);
 
-    if (i < 0 && list.length < config.abMaxPlayer) {
+    for (const i in list) {
+        if (list[i].id === player.id) {
+            return onPlayerExist();
+        }
+    }
+
+    if (list.length < config.abMaxPlayer) {
         list.push(player);
     }
 
-    return list;
+    return onDone(list);
 };
 
-const remove = (id, player) => {
+const remove = (id, player, onDone, onPlayerNotExist) => {
     const list = lists[id] = lists[id] || [];
     const i = list.indexOf(player);
 
-    if (i >= 0) {
-        list.splice(i, 1);
+    for (const i in list) {
+        if (list[i].id === player.id) {
+            list.splice(i, 1);
+
+            return onDone(list);
+        }
     }
 
-    return list;
+    return onPlayerNotExist();
 };
 
 const clear = (id) => {

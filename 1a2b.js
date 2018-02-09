@@ -11,6 +11,10 @@ process.on('uncaughtException', (err) => {
     console.error(err);
 });
 
+bot.on('polling_error', (err) => {
+    console.error(err);
+})
+
 const event = (handler) => {
     return (msg, match) => {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || '') + ' ' + match[0]);
@@ -62,14 +66,31 @@ const playerInfo = (list) => {
     return info;
 };
 
-const playerUpdate = (list) => {
-    if (list.msg) {
-        bot.editMessageText(
-            chat.id,
-            list.msg.message_id,
-            playerInfo(list)
-        );
-    }
+const playerUpdate = (list, chat_id, message_id) => {
+    bot.editMessageText(
+        playerInfo(list),
+        {
+            chat_id: chat_id,
+            message_id: message_id,
+            reply_markup: {
+                inline_keyboard: [[{
+                    text: '加入',
+                    callback_data: JSON.stringify({
+                        command: 'join',
+                        chat_id: chat_id,
+                        message_id: message_id,
+                    }),
+                }, {
+                    text: '离开',
+                    callback_data: JSON.stringify({
+                        command: 'flee',
+                        chat_id: chat_id,
+                        message_id: message_id,
+                    }),
+                }]],
+            },
+        }
+    );
 };
 
 const gameEvent = event((msg, match) => {
@@ -177,32 +198,23 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
-    const list = multiplayer.add(msg.chat.id, msg.from.id);
-
-    return bot.sendMessage(
+    multiplayer.add(
         msg.chat.id,
-        playerInfo(list),
-        {
-            reply_to_message_id: msg.message_id,
-            reply_markup: {
-                inline_keyboard: [[{
-                    text: '加入',
-                    callback_data: JSON.stringify({
-                        command: 'join',
-                        chat: msg.chat.id,
-                    }),
-                }, {
-                    text: '离开',
-                    callback_data: JSON.stringify({
-                        command: 'flee',
-                        chat: msg.chat.id,
-                    }),
-                }]],
-            },
+        msg.from,
+        (list) => {
+            // added
+
+            return bot.sendMessage(
+                msg.chat.id,
+                '一大波玩家正在赶来……'
+            ).then((sentmsg) => {
+                playerUpdate(list, sentmsg.chat.id, sentmsg.message_id);
+            });
+        },
+        () => {
+            // player exist
         }
-    ).then((sentmsg) => {
-        list.msg = sentmsg;
-    });
+    );
 }));
 
 bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
@@ -251,16 +263,40 @@ bot.on('callback_query', (query) => {
     const info = JSON.parse(query.data);
 
     if (info.command === 'join') {
-        const list = multiplayer.add(info.chat, query.from.id);
+        multiplayer.add(
+            info.chat_id,
+            query.from,
+            (list) => {
+                // added
 
-        playerUpdate(list);
+                playerUpdate(list, info.chat_id, info.message_id);
+
+                return bot.answerCallbackQuery(query.id);
+            },
+            () => {
+                // player exist
+
+                return bot.answerCallbackQuery(query.id);
+            }
+        );
     } else if (info.command === 'flee') {
-        const list = multiplayer.remove(info.chat, query.from.id);
+        multiplayer.remove(
+            info.chat_id,
+            query.from,
+            (list) => {
+                // added
 
-        playerUpdate(list);
+                playerUpdate(list, info.chat_id, info.message_id);
+
+                return bot.answerCallbackQuery(query.id);
+            },
+            () => {
+                // player not exist
+
+                return bot.answerCallbackQuery(query.id);
+            }
+        );
     }
-
-    return bot.answerCallbackQuery(query.id);
 });
 
 bot.on('inline_query', (query) => {
