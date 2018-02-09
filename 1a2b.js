@@ -4,6 +4,7 @@ const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.abToken);
 
 const gameplay = require('./1a2b.gameplay');
+const multiplayer = require('./1a2b.multiplayer');
 
 process.on('uncaughtException', (err) => {
     console.error(Date());
@@ -38,6 +39,8 @@ const gameInfo = (game) => {
 };
 
 const gameEnd = (game) => {
+    multiplayer.clear(msg.chat.id);
+
     for (const i in game.guess) {
         const sentmsg = game.guess[i].msg;
 
@@ -47,6 +50,26 @@ const gameEnd = (game) => {
     }
 
     console.log(JSON.stringify(game));
+};
+
+const playerInfo = (list) => {
+    let info = '玩家列表：\n';
+
+    for (const i in list) {
+        info += ('@' + list[i].username || list[i].first_name) + '\n';
+    }
+
+    return info;
+};
+
+const playerUpdate = (list) => {
+    if (list.msg) {
+        bot.editMessageText(
+            chat.id,
+            list.msg.message_id,
+            playerInfo(list)
+        );
+    }
 };
 
 const gameEvent = event((msg, match) => {
@@ -153,6 +176,35 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
     );
 }));
 
+bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
+    const list = multiplayer.add(msg.chat.id, msg.from.id);
+
+    return bot.sendMessage(
+        msg.chat.id,
+        playerInfo(list),
+        {
+            reply_to_message_id: msg.message_id,
+            reply_markup: {
+                inline_keyboard: [[{
+                    text: '加入',
+                    callback_data: JSON.stringify({
+                        command: 'join',
+                        chat: msg.chat.id,
+                    }),
+                }, {
+                    text: '离开',
+                    callback_data: JSON.stringify({
+                        command: 'flee',
+                        chat: msg.chat.id,
+                    }),
+                }]],
+            },
+        }
+    ).then((sentmsg) => {
+        list.msg = sentmsg;
+    });
+}));
+
 bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
     gameplay.end(
         msg.chat.id,
@@ -195,34 +247,58 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
     );
 }));
 
-bot.on('inline_query', (query) => {
-    if (config.ban[query.from.id]) {
-        return bot.answerInlineQuery(query.id, [{
-            type: 'article',
-            id: 'banned',
-            title: '喵a喵b',
-            input_message_content: {
-                message_text: '该用户因存在恶意使用 bot 的报告，已被列入黑名单',
-            },
-        }], {
-            cache_time: 0,
-            is_personal: true,
-        });
+bot.on('callback_query', (query) => {
+    const info = JSON.parse(query.data);
+
+    if (info.command === 'join') {
+        const list = multiplayer.add(info.chat, query.from.id);
+
+        playerUpdate(list);
+    } else if (info.command === 'flee') {
+        const list = multiplayer.remove(info.chat, query.from.id);
+
+        playerUpdate(list);
     }
 
-    return bot.answerInlineQuery(query.id, [{
-        type: 'article',
-        id: 'playmeow',
-        title: '喵a喵b',
-        input_message_content: {
-            message_text: '喵喵模式已装载！\n\n'
-                + '@' + (query.from.username || query.first_name) + '\n'
-                + '/1a2b 开始新游戏',
-        },
-    }], {
-        cache_time: 0,
-        is_personal: true,
-    });
+    return bot.answerCallbackQuery(query.id);
+});
+
+bot.on('inline_query', (query) => {
+    if (config.ban[query.from.id]) {
+        return bot.answerInlineQuery(
+            query.id,
+            [{
+                type: 'article',
+                id: 'banned',
+                title: '喵a喵b',
+                input_message_content: {
+                    message_text: '该用户因存在恶意使用 bot 的报告，已被列入黑名单',
+                },
+            }],
+            {
+                cache_time: 0,
+                is_personal: true,
+            }
+        );
+    }
+
+    return bot.answerInlineQuery(
+        query.id,
+        [{
+            type: 'article',
+            id: 'playmeow',
+            title: '喵a喵b',
+            input_message_content: {
+                message_text: '喵喵模式已装载！\n\n'
+                    + ('@' + query.from.username || query.from.first_name) + '\n'
+                    + '/1a2b 开始新游戏',
+            },
+        }],
+        {
+            cache_time: 0,
+            is_personal: true,
+        }
+    );
 });
 
 bot.on('chosen_inline_result', (chosen) => {
