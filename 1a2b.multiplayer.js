@@ -4,6 +4,16 @@ const config = require('./config');
 
 const lists = {};
 
+const get = (id) => {
+    if (lists[id]) {
+        const list = lists[id];
+
+        return list[0];
+    } else {
+        return null;
+    }
+};
+
 const add = (id, player, onDone, onPlayerExist) => {
     const list = lists[id] = lists[id] || [];
 
@@ -65,6 +75,7 @@ const verify = (id, player, onValid, onNotValid) => {
 };
 
 module.exports = {
+    get: get,
     add: add,
     remove: remove,
     clear: clear,

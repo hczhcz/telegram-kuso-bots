@@ -22,18 +22,23 @@ const event = (handler) => {
     };
 };
 
-const gameInfo = (game) => {
+const gameInfo = (guess, hint, player) => {
     let info = '猜测历史：\n';
     let total = 0;
 
-    for (const i in game.guess) {
-        info += i.slice(1) + ' ' + game.guess[i][0] + 'A' + game.guess[i][1] + 'B\n';
+    for (const i in guess) {
+        info += i.slice(1) + ' ' + guess[i][0] + 'A' + guess[i][1] + 'B\n';
         total += 1;
     }
 
     info += '（总共' + total + '次）\n\n'
         + '猜测目标：\n'
-        + (game.hint || game.charset);
+        + hint;
+
+    if (player) {
+        info += '\n\n'
+            + ('@' + player.username || player.first_name) + ' 轮到你啦\n'
+    }
 
     return info;
 };
@@ -101,7 +106,7 @@ const gameEvent = event((msg, match) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                gameInfo(game),
+                gameInfo(game.guess, game.hint, multiplayer.get(msg.chat.id)),
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -120,7 +125,7 @@ const gameEvent = event((msg, match) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                gameInfo(game) + '\n\n'
+                gameInfo(game.guess, game.charset) + '\n\n'
                     + '猜对啦！答案是：\n'
                     + game.answer + '\n\n'
                     + '/1a2b 开始新游戏\n'
@@ -239,7 +244,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
             if (game.answer) {
                 return bot.sendMessage(
                     msg.chat.id,
-                    gameInfo(game) + '\n\n'
+                    gameInfo(game.guess, game.charset) + '\n\n'
                         + '游戏结束啦，答案是：\n'
                         + game.answer + '\n\n'
                         + '/1a2b 开始新游戏\n'
@@ -364,8 +369,7 @@ bot.on('inline_query', (query) => {
             id: 'playmeow',
             title: '喵a喵b',
             input_message_content: {
-                message_text: '喵喵模式已装载！\n\n'
-                    + ('@' + query.from.username || query.from.first_name) + '\n'
+                message_text: ('@' + query.from.username || query.from.first_name) + ' 喵喵模式已装载！\n\n'
                     + '/1a2b 开始新游戏\n'
                     + '/3a4b 多人模式',
             },
