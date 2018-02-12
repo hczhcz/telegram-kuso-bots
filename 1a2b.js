@@ -299,6 +299,8 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
 bot.on('callback_query', (query) => {
     const info = JSON.parse(query.data);
 
+    console.log('[' + Date() + '] ' + info.chat_id + ':callback:' + query.from.id + '@' + (query.from.username || '') + ' ' + info.command);
+
     if (info.command === 'join') {
         multiplayer.add(
             info.chat_id,
@@ -376,7 +378,7 @@ bot.on('inline_query', (query) => {
 });
 
 bot.on('chosen_inline_result', (chosen) => {
-    console.log('[' + Date() + '] ' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.result_id + ' ' + chosen.query);
+    console.log('[' + Date() + '] inline:' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.result_id + ' ' + chosen.query);
 
     if (chosen.result_id === 'playmeow') {
         gameplay.meowInit(chosen.from.id, chosen.query);
