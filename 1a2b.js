@@ -116,7 +116,6 @@ const gameEvent = event((msg, match) => {
         (game) => {
             // game end
 
-            multiplayer.clear(msg.chat.id);
             gameEnd(game);
 
             return bot.sendMessage(
@@ -235,7 +234,6 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
         (game) => {
             // game end
 
-            multiplayer.clear(msg.chat.id);
             gameEnd(game);
 
             if (game.answer) {
@@ -243,7 +241,9 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
                     msg.chat.id,
                     gameInfo(game) + '\n\n'
                         + '游戏结束啦，答案是：\n'
-                        + game.answer,
+                        + game.answer + '\n\n'
+                        + '/1a2b 开始新游戏\n'
+                        + '/3a4b 多人模式',
                     {
                         reply_to_message_id: msg.message_id,
                     }
@@ -251,7 +251,9 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
             } else {
                 return bot.sendMessage(
                     msg.chat.id,
-                    '游戏结束啦',
+                    '游戏结束啦\n\n'
+                        + '/1a2b 开始新游戏\n'
+                        + '/3a4b 多人模式',
                     {
                         reply_to_message_id: msg.message_id,
                     }
@@ -261,11 +263,33 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
         () => {
             // game not exist
 
-            return bot.sendMessage(
+            multiplayer.clear(
                 msg.chat.id,
-                '不存在的！',
-                {
-                    reply_to_message_id: msg.message_id,
+                () => {
+                    // cleared
+
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '玩家列表已清空\n\n'
+                            + '/1a2b 开始新游戏\n'
+                            + '/3a4b 多人模式',
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                },
+                () => {
+                    // not multiplayer
+
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '不存在的！\n\n'
+                            + '/1a2b 开始新游戏\n'
+                            + '/3a4b 多人模式',
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
                 }
             );
         }

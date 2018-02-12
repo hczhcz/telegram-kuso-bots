@@ -34,8 +34,14 @@ const remove = (id, player, onDone, onPlayerNotExist) => {
     return onPlayerNotExist();
 };
 
-const clear = (id) => {
-    delete lists[id];
+const clear = (id, onDone, onNotMultiplater) => {
+    if (lists[id]) {
+        delete lists[id];
+
+        return onDone();
+    }
+
+    return onNotMultiplater();
 };
 
 const verify = (id, player, onValid, onNotValid) => {
