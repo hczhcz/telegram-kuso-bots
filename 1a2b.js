@@ -53,7 +53,9 @@ const gameEnd = (game) => {
 const playerLine = (player) => {
     if (player) {
         return '\n\n'
-            + ('@' + player.username || player.first_name) + ' 轮到你啦'
+            + ('@' + player.username || player.first_name) + ' 轮到你啦';
+    } else {
+        return '';
     }
 };
 
