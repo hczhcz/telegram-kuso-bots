@@ -124,7 +124,8 @@ const gameEvent = event((msg, match) => {
                 gameInfo(game) + '\n\n'
                     + '猜对啦！答案是：\n'
                     + game.answer + '\n\n'
-                    + '/1a2b 开始新游戏',
+                    + '/1a2b 开始新游戏\n'
+                    + '/3a4b 多人模式',
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -339,7 +340,8 @@ bot.on('inline_query', (query) => {
             input_message_content: {
                 message_text: '喵喵模式已装载！\n\n'
                     + ('@' + query.from.username || query.from.first_name) + '\n'
-                    + '/1a2b 开始新游戏',
+                    + '/1a2b 开始新游戏\n'
+                    + '/3a4b 多人模式',
             },
         }],
         {
