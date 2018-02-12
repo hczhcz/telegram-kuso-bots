@@ -74,7 +74,8 @@ const playerInfo = (list) => {
 const playerUpdate = (list, chat_id, message_id) => {
     bot.editMessageText(
         playerInfo(list) + '\n\n'
-            + '/1a2b 开始新游戏',
+            + '/1a2b 开始新游戏\n'
+            + '/0a0b 清空玩家列表',
         {
             chat_id: chat_id,
             message_id: message_id,
@@ -131,7 +132,8 @@ const gameEvent = event((msg, match) => {
                     + '猜对啦！答案是：\n'
                     + game.answer + '\n\n'
                     + '/1a2b 开始新游戏\n'
-                    + '/3a4b 多人模式',
+                    + '/3a4b 多人模式\n'
+                    + '/0a0b 清空玩家列表',
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -231,6 +233,14 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
         },
         () => {
             // player exist
+
+            return bot.sendMessage(
+                msg.chat.id,
+                '你已经加入过啦',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
         }
     );
 }));
@@ -250,7 +260,8 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
                         + '游戏结束啦，答案是：\n'
                         + game.answer + '\n\n'
                         + '/1a2b 开始新游戏\n'
-                        + '/3a4b 多人模式',
+                        + '/3a4b 多人模式\n'
+                        + '/0a0b 清空玩家列表',
                     {
                         reply_to_message_id: msg.message_id,
                     }
@@ -260,7 +271,8 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
                     msg.chat.id,
                     '游戏结束啦\n\n'
                         + '/1a2b 开始新游戏\n'
-                        + '/3a4b 多人模式',
+                        + '/3a4b 多人模式\n'
+                        + '/0a0b 清空玩家列表',
                     {
                         reply_to_message_id: msg.message_id,
                     }
@@ -373,7 +385,8 @@ bot.on('inline_query', (query) => {
             input_message_content: {
                 message_text: ('@' + query.from.username || query.from.first_name) + ' 喵喵模式已装载！\n\n'
                     + '/1a2b 开始新游戏\n'
-                    + '/3a4b 多人模式',
+                    + '/3a4b 多人模式\n'
+                    + '/0a0b 清空玩家列表',
             },
         }],
         {
