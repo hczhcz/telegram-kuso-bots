@@ -69,9 +69,11 @@ const verify = (id, player, onValid, onNotValid) => {
 
             return onValid();
         }
+
+        return onNotValid();
     }
 
-    return onNotValid();
+    return onValid();
 };
 
 module.exports = {
