@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 
-module.exports = (bot) => {
+module.exports = (bot, event, playerEvent, env) => {
     const fd = fs.openSync('log.123', 'a');
 
     const actions = {};
@@ -30,7 +30,7 @@ module.exports = (bot) => {
         }
     });
 
-    bot.onText(/123(.*人)/, (msg, match) => {
+    bot.onText(/123(.*人)/, event((msg, match) => {
         actions[msg.chat.id] = '你是假的' + match[1] + '！';
 
         fs.write(fd, JSON.stringify({
@@ -38,9 +38,9 @@ module.exports = (bot) => {
         }) + '\n', () => {
             // nothing
         });
-    });
+    }));
 
-    bot.onText(/123不许(.+)/, (msg, match) => {
+    bot.onText(/123不许(.+)/, event((msg, match) => {
         actions[msg.chat.id] = '你' + match[1] + '了！';
 
         fs.write(fd, JSON.stringify({
@@ -48,5 +48,5 @@ module.exports = (bot) => {
         }) + '\n', () => {
             // nothing
         });
-    });
+    }));
 };

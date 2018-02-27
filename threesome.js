@@ -354,5 +354,20 @@ setInterval(() => {
 }, 490);
 
 for (const i in config.threesomePlugins) {
-    require('./plugin.' + config.threesomePlugins[i])(bot);
+    require('./plugin.' + config.threesomePlugins[i])(
+        bot,
+        event,
+        playerEvent,
+        {
+            data: data,
+
+            info: info,
+            gather: gather,
+            init: init,
+            play: play,
+            stat: stat,
+            command: command,
+            inline: inline,
+        }
+    );
 }
