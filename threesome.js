@@ -21,19 +21,6 @@ process.on('uncaughtException', (err) => {
 const event = (handler, atIndex) => {
     return (msg, match) => {
         if (!match[atIndex || 1] || match[atIndex || 1] === '@' + config.threesomeUsername) {
-            if (!msg.has_log) {
-                console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
-                data.writeMessage(msg);
-
-                msg.has_log = true;
-            }
-
-            if (config.threesomeChatMap[msg.chat.id]) {
-                msg.chat.mapped = config.threesomeChatMap[msg.chat.id];
-            } else {
-                msg.chat.mapped = msg.chat.id;
-            }
-
             // notice: take care of the inline query event
             if (config.ban[msg.from.id]) {
                 info.banned(msg);
@@ -78,6 +65,17 @@ const playerEvent = (msg, handler) => {
 
     handler(msg.reply_to_message && msg.reply_to_message.from);
 };
+
+bot.onText(/\/(?:\w+)(@\w+)?/, event((msg, match) => {
+    console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
+    data.writeMessage(msg);
+
+    if (config.threesomeChatMap[msg.chat.id]) {
+        msg.chat.mapped = config.threesomeChatMap[msg.chat.id];
+    } else {
+        msg.chat.mapped = msg.chat.id;
+    }
+}));
 
 bot.onText(/^\/nextsex(@\w+)?$/, event((msg, match) => {
     info.next(msg);
