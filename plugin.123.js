@@ -27,30 +27,26 @@ module.exports = (bot) => {
                     reply_to_message_id: msg.message_id,
                 }
             );
-        } else if (msg.text) {
-            let match = null;
-
-            match = msg.text.match(/123(.*人)/);
-            if (match) {
-                actions[msg.chat.id] = '你是假的' + match[1] + '！';
-
-                fs.write(fd, JSON.stringify({
-                    msg: msg,
-                }) + '\n', () => {
-                    // nothing
-                });
-            }
-
-            match = msg.text.match(/123不许(.+)/);
-            if (match) {
-                actions[msg.chat.id] = '你' + match[1] + '了！';
-
-                fs.write(fd, JSON.stringify({
-                    msg: msg,
-                }) + '\n', () => {
-                    // nothing
-                });
-            }
         }
+    });
+
+    bot.onText(/123(.*人)/, (msg, match) => {
+        actions[msg.chat.id] = '你是假的' + match[1] + '！';
+
+        fs.write(fd, JSON.stringify({
+            msg: msg,
+        }) + '\n', () => {
+            // nothing
+        });
+    });
+
+    bot.onText(/123不许(.+)/, (msg, match) => {
+        actions[msg.chat.id] = '你' + match[1] + '了！';
+
+        fs.write(fd, JSON.stringify({
+            msg: msg,
+        }) + '\n', () => {
+            // nothing
+        });
     });
 };
