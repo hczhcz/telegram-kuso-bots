@@ -38,7 +38,7 @@ module.exports = (bot, event, playerEvent, env) => {
         }) + '\n', () => {
             // nothing
         });
-    }));
+    }, -1));
 
     bot.onText(/123不许(.+)/, event((msg, match) => {
         actions[msg.chat.id] = '你' + match[1] + '了！';
@@ -48,5 +48,5 @@ module.exports = (bot, event, playerEvent, env) => {
         }) + '\n', () => {
             // nothing
         });
-    }));
+    }, -1));
 };

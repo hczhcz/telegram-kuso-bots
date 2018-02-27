@@ -20,7 +20,7 @@ process.on('uncaughtException', (err) => {
 
 const event = (handler, atIndex) => {
     return (msg, match) => {
-        if (!match[atIndex || 1] || match[atIndex || 1] === '@' + config.threesomeUsername) {
+        if (!match[atIndex] || match[atIndex] === '@' + config.threesomeUsername) {
             // notice: take care of the inline query event
             if (config.ban[msg.from.id]) {
                 info.banned(msg);
@@ -66,7 +66,7 @@ const playerEvent = (msg, handler) => {
     handler(msg.reply_to_message && msg.reply_to_message.from);
 };
 
-bot.onText(/\/(?:\w+)(@\w+)?/, event((msg, match) => {
+bot.onText(/\/(?:(?!_)\w+)(@\w+)?/, event((msg, match) => {
     console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
     data.writeMessage(msg);
 
@@ -75,11 +75,11 @@ bot.onText(/\/(?:\w+)(@\w+)?/, event((msg, match) => {
     } else {
         msg.chat.mapped = msg.chat.id;
     }
-}));
+}, 1));
 
 bot.onText(/^\/nextsex(@\w+)?$/, event((msg, match) => {
     info.next(msg);
-}));
+}, 1));
 
 bot.onText(/^\/startmasturbate(@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
@@ -93,7 +93,7 @@ bot.onText(/^\/startmasturbate(@\w+)?$/, event((msg, match) => {
             gather.join(msg);
         });
     }
-}));
+}, 1));
 
 bot.onText(/^\/startsex(@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
@@ -107,7 +107,7 @@ bot.onText(/^\/startsex(@\w+)?$/, event((msg, match) => {
             gather.join(msg);
         });
     }
-}));
+}, 1));
 
 bot.onText(/^\/startthreesome(@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
@@ -121,7 +121,7 @@ bot.onText(/^\/startthreesome(@\w+)?$/, event((msg, match) => {
             gather.join(msg);
         });
     }
-}));
+}, 1));
 
 bot.onText(/^\/startgroupsex(@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
@@ -135,7 +135,7 @@ bot.onText(/^\/startgroupsex(@\w+)?$/, event((msg, match) => {
             gather.join(msg);
         });
     }
-}));
+}, 1));
 
 bot.onText(/^\/start100kills(@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
@@ -149,7 +149,7 @@ bot.onText(/^\/start100kills(@\w+)?$/, event((msg, match) => {
             gather.join(msg);
         });
     }
-}));
+}, 1));
 
 bot.onText(/^\/extend(@\w+)?(?: ([+\-]?\d+)\w*)?$/, event((msg, match) => {
     let time = parseInt(match[2] || '30', 10);
@@ -171,7 +171,7 @@ bot.onText(/^\/extend(@\w+)?(?: ([+\-]?\d+)\w*)?$/, event((msg, match) => {
     } else {
         info.na(msg);
     }
-}));
+}, 1));
 
 bot.onText(/^\/join(@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
@@ -185,7 +185,7 @@ bot.onText(/^\/join(@\w+)?$/, event((msg, match) => {
     } else {
         info.na(msg);
     }
-}));
+}, 1));
 
 bot.onText(/^\/flee(@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
@@ -199,7 +199,7 @@ bot.onText(/^\/flee(@\w+)?$/, event((msg, match) => {
     } else {
         info.na(msg);
     }
-}));
+}, 1));
 
 bot.onText(/^\/invite(@\w+)?(?: @?\w+)?$/, event((msg, match) => {
     playerEvent(msg, (player) => {
@@ -215,7 +215,7 @@ bot.onText(/^\/invite(@\w+)?(?: @?\w+)?$/, event((msg, match) => {
             info.na(msg);
         }
     });
-}));
+}, 1));
 
 bot.onText(/^\/smite(@\w+)?(?: @?\w+)?$/, event((msg, match) => {
     playerEvent(msg, (player) => {
@@ -231,7 +231,7 @@ bot.onText(/^\/smite(@\w+)?(?: @?\w+)?$/, event((msg, match) => {
             info.na(msg);
         }
     });
-}));
+}, 1));
 
 bot.onText(/^\/forcestart(@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
@@ -243,7 +243,7 @@ bot.onText(/^\/forcestart(@\w+)?$/, event((msg, match) => {
     } else {
         info.na(msg);
     }
-}));
+}, 1));
 
 bot.onText(/^\/forcefallback(@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
@@ -255,7 +255,7 @@ bot.onText(/^\/forcefallback(@\w+)?$/, event((msg, match) => {
     } else {
         info.na(msg);
     }
-}));
+}, 1));
 
 bot.onText(/^\/forceorgasm(@\w+)?$/, event((msg, match) => {
     if (data.games[msg.chat.id]) {
@@ -267,25 +267,25 @@ bot.onText(/^\/forceorgasm(@\w+)?$/, event((msg, match) => {
     } else {
         info.na(msg);
     }
-}));
+}, 1));
 
 bot.onText(/^\/stat(@\w+)?(?: @?\w+)?$/, event((msg, match) => {
     playerEvent(msg, (player) => {
         stat.stat(msg, player);
     });
-}));
+}, 1));
 
 bot.onText(/^\/listall(@\w+)?$/, event((msg, match) => {
     command.all(msg);
-}));
+}, 1));
 
 bot.onText(/^\/list(@\w+)?(?: ((?!_)\w*))?$/, event((msg, match) => {
     command.list(msg, match[2] || '');
-}));
+}, 1));
 
 bot.onText(/^\/add(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
     command.add(msg, match[2], match[3]);
-}));
+}, 1));
 
 bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
     let args = [];

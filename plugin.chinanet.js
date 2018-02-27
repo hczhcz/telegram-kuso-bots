@@ -20,6 +20,6 @@ module.exports = (bot, event, playerEvent, env) => {
     };
 
     for (const i in config.chinanetCommandMap) {
-        bot.onText(config.chinanetCommandMap[i], event(genEvent(i)));
+        bot.onText(config.chinanetCommandMap[i], event(genEvent(i), -1));
     }
 };
