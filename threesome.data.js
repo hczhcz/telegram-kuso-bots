@@ -29,35 +29,39 @@ module.exports = (pathActions, pathCommands) => {
                 replyPair: {},
             };
 
-            const commandStat = self.stats.command[msg.chat.id];
+            const match = msg.text.match(/^\/(?!_)\w+/);
 
-            const command = msg.text.match(/^\/(?!_)\w+/)[0];
+            if (match) {
+                const commandStat = self.stats.command[msg.chat.id];
 
-            commandStat.chat[command] = (commandStat.chat[command] || 0) + 1;
+                const command = match[0];
 
-            const i = msg.from.id;
+                commandStat.chat[command] = (commandStat.chat[command] || 0) + 1;
 
-            self.genName(msg.from);
+                const i = msg.from.id;
 
-            commandStat.user[i] = commandStat.user[i] || {};
-            commandStat.user[i][command] = (commandStat.user[i][command] || 0) + 1;
+                self.genName(msg.from);
 
-            // TODO: support @username?
-            if (msg.reply_to_message) {
-                const j = msg.reply_to_message.from.id;
+                commandStat.user[i] = commandStat.user[i] || {};
+                commandStat.user[i][command] = (commandStat.user[i][command] || 0) + 1;
 
-                self.genName(msg.reply_to_message.from);
+                // TODO: support @username?
+                if (msg.reply_to_message) {
+                    const j = msg.reply_to_message.from.id;
 
-                commandStat.pair[i] = commandStat.pair[i] || {};
-                commandStat.pair[i][j] = commandStat.pair[i][j] || {};
-                commandStat.pair[i][j][command] = (commandStat.pair[i][j][command] || 0) + 1;
+                    self.genName(msg.reply_to_message.from);
 
-                commandStat.reply[j] = commandStat.reply[j] || {};
-                commandStat.reply[j][command] = (commandStat.reply[j][command] || 0) + 1;
+                    commandStat.pair[i] = commandStat.pair[i] || {};
+                    commandStat.pair[i][j] = commandStat.pair[i][j] || {};
+                    commandStat.pair[i][j][command] = (commandStat.pair[i][j][command] || 0) + 1;
 
-                commandStat.replyPair[j] = commandStat.replyPair[j] || {};
-                commandStat.replyPair[j][i] = commandStat.replyPair[j][i] || {};
-                commandStat.replyPair[j][i][command] = (commandStat.replyPair[j][i][command] || 0) + 1;
+                    commandStat.reply[j] = commandStat.reply[j] || {};
+                    commandStat.reply[j][command] = (commandStat.reply[j][command] || 0) + 1;
+
+                    commandStat.replyPair[j] = commandStat.replyPair[j] || {};
+                    commandStat.replyPair[j][i] = commandStat.replyPair[j][i] || {};
+                    commandStat.replyPair[j][i][command] = (commandStat.replyPair[j][i][command] || 0) + 1;
+                }
             }
         },
 
