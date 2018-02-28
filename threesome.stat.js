@@ -78,9 +78,9 @@ module.exports = (bot, stats) => {
             };
 
             if (player) {
-                const gameStat = stats.game[msg.chat.id];
-                const commandStat = stats.command[msg.chat.id];
-                const inlineStat = stats.inline[player.id];
+                const gameStat = stats.game[msg.chat.id] || {};
+                const commandStat = stats.command[msg.chat.id] || {};
+                const inlineStat = stats.inline[player.id] || {};
 
                 const gameUserStat = statSize(gameStat.user[player.id]);
                 const gamePairStat = statTop(gameStat.pair[player.id], 1);
@@ -138,8 +138,8 @@ module.exports = (bot, stats) => {
                     }
                 );
             } else {
-                const gameStat = stats.game[msg.chat.id];
-                const commandStat = stats.command[msg.chat.id];
+                const gameStat = stats.game[msg.chat.id] || {};
+                const commandStat = stats.command[msg.chat.id] || {};
 
                 const gameChatStat = statSize(gameStat.chat);
                 const gameUserTotalStat = statTop(gameStat.userTotal, 1);
