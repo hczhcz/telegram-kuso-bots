@@ -22,9 +22,11 @@ module.exports = (bot, event, playerEvent, env) => {
             }
         }
 
+        const time = Date.now();
+
         const obj = {
             from: msg.from,
-            time: Date.now(),
+            time: time,
             text: text,
         };
 
@@ -34,7 +36,10 @@ module.exports = (bot, event, playerEvent, env) => {
 
         ad.push(obj);
 
-        if (ad.length >= config.advertisementCount) {
+        if (
+            ad.length >= config.advertisementCount
+            || ad.length && ad[0].time + 24 * 3600 * 1000 <= time
+        ) {
             ad.shift();
         }
     }, 1));
@@ -43,7 +48,7 @@ module.exports = (bot, event, playerEvent, env) => {
         let result = '';
 
         for (const i in ad) {
-            const time = ad[i].time + 8 * 60 * 60 * 1000;
+            const time = ad[i].time + 8 * 3600 * 1000;
 
             result += (ad[i].from.username || ad[i].from.first_name) + ' '
                 + time.getUTCHours() + ':' + time.getUTCMinutes() + ' '
