@@ -48,7 +48,7 @@ module.exports = (bot, event, playerEvent, env) => {
         let result = '';
 
         for (const i in ad) {
-            const time = ad[i].time + 8 * 3600 * 1000;
+            const time = new Date(ad[i].time + 8 * 3600 * 1000);
 
             result += (ad[i].from.username || ad[i].from.first_name) + ' '
                 + time.getUTCHours() + ':' + time.getUTCMinutes() + ' '
