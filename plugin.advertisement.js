@@ -10,30 +10,32 @@ module.exports = (bot, event, playerEvent, env) => {
     const ad = [];
 
     bot.onText(/^\/zao(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
-        if (match[2] && match[2].length <= config.advertisementMaxLength) {
-            ad.filter((item, i, arr) => {
-                return item.from.id !== msg.from.id;
-            });
+        const text = match[2]
+            ? match[2].slice(0, config.advertisementMaxLength)
+            : '起床了！';
 
-            const now = new Date();
-            const localTime = new Date(now.getTime() + (now.getTimezoneOffset() + 240) * 60 * 1000);
-            const time = localTime.getUTCHours() + ':' + localTime.getUTCMinutes();
+        for (const i in ad) {
+            if (ad[i].from.id === msg.from.id) {
+                ad[i].text = text;
 
-            const obj = {
-                from: msg.from,
-                time: time,
-                text: match[2],
-            };
-
-            fs.write(fd, JSON.stringify(obj) + '\n', () => {
-                // nothing
-            });
-
-            ad.push(obj);
-
-            if (ad.length >= config.advertisementCount) {
-                ad.shift();
+                return;
             }
+        }
+
+        const obj = {
+            from: msg.from,
+            time: Date.now(),
+            text: text,
+        };
+
+        fs.write(fd, JSON.stringify(obj) + '\n', () => {
+            // nothing
+        });
+
+        ad.push(obj);
+
+        if (ad.length >= config.advertisementCount) {
+            ad.shift();
         }
     }, 1));
 
@@ -41,8 +43,10 @@ module.exports = (bot, event, playerEvent, env) => {
         let result = '';
 
         for (const i in ad) {
+            const time = ad[i].time + 8 * 60 * 60 * 1000;
+
             result += (ad[i].from.username || ad[i].from.first_name) + ' '
-                + ad[i].time + ' '
+                + time.getUTCHours() + ':' + time.getUTCMinutes() + ' '
                 + ad[i].text + '\n';
         }
 
