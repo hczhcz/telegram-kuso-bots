@@ -38,7 +38,7 @@ module.exports = (bot, event, playerEvent, env) => {
 
         if (
             ad.length >= config.advertisementCount
-            || ad.length && ad[0].time + 24 * 3600 * 1000 <= time
+            || ad.length && ad[0].time + 3 * 24 * 3600 * 1000 <= time
         ) {
             ad.shift();
         }
@@ -47,20 +47,31 @@ module.exports = (bot, event, playerEvent, env) => {
     bot.onText(/^\/zaog[au]ys(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
         let result = '';
 
+        let lastDate = '';
+
         for (const i in ad) {
             const time = new Date(ad[i].time + 8 * 3600 * 1000);
+
+            const newDate = (time.getUTCMonth() + 1) + '/' + time.getUTCDate();
+
+            if (lastDate !== newDate) {
+                lastDate = newDate;
+                result += newDate + '\n';
+            }
 
             result += (ad[i].from.username || ad[i].from.first_name) + ' '
                 + time.getUTCHours() + ':' + time.getUTCMinutes() + ' '
                 + ad[i].text + '\n';
         }
 
-        return bot.sendMessage(
-            msg.chat.id,
-            result,
-            {
-                reply_to_message_id: msg.message_id,
-            }
-        );
+        if (result) {
+            return bot.sendMessage(
+                msg.chat.id,
+                result,
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        }
     }, 1));
 };
