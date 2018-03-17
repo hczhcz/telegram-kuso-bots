@@ -98,7 +98,7 @@ module.exports = (bot, games, commands, writeCommand) => {
             );
         },
 
-        get: (msg, key, args) => {
+        tryGet: (msg, key, args, allowForward) => {
             const game = games[msg.chat.id];
             const command = commands[msg.chat.mapped] || {};
             const now = Date.now();
@@ -198,7 +198,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                             }
                         }
                     } else if (entry.forward) {
-                        if (level === 0) {
+                        if (allowForward && level === 0) {
                             tot.push({
                                 entry: entry,
                                 chat_id: entry.chat_id,
@@ -217,20 +217,28 @@ module.exports = (bot, games, commands, writeCommand) => {
 
                 tot[choice].entry.used = now;
 
-                if (tot[choice].text) {
+                return tot[choice];
+            }
+        },
+
+        get: (msg, key, args) => {
+            const chosen = self.tryGet(msg, key, args, true);
+
+            if (chosen) {
+                if (chosen.text) {
                     return bot.sendMessage(
                         msg.chat.id,
-                        tot[choice].text
+                        chosen.text
                     );
-                } else if (tot[choice].forward) {
+                } else if (chosen.forward) {
                     return bot.forwardMessage(
                         msg.chat.id,
-                        tot[choice].chat_id,
-                        tot[choice].forward
+                        chosen.chat_id,
+                        chosen.forward
                     );
                 } else {
                     // never reach
-                    throw Error(JSON.stringify(tot[choice]));
+                    throw Error(JSON.stringify(chosen));
                 }
             }
         },
