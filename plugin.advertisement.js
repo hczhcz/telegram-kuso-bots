@@ -10,9 +10,22 @@ module.exports = (bot, event, playerEvent, env) => {
     const ad = [];
 
     bot.onText(/^\/zao(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
-        const text = match[2]
-            ? match[2].slice(0, config.advertisementMaxLength)
-            : '起床了！';
+        let text = '起床了！';
+
+        if (match[2]) {
+            text = match[2].slice(0, config.advertisementMaxLength);
+        } else {
+            const chosen = env.command.tryGet(msg, 'zao', [], false);
+
+            if (chosen) {
+                if (chosen.text) {
+                    text = chosen.text;
+                } else {
+                    // never reach
+                    throw Error(JSON.stringify(chosen));
+                }
+            }
+        }
 
         for (const i in ad) {
             if (ad[i].from.id === msg.from.id) {
@@ -42,7 +55,7 @@ module.exports = (bot, event, playerEvent, env) => {
         ) {
             ad.shift();
         }
-    }, 1));
+    }, -1));
 
     bot.onText(/^\/zaog[au]ys(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
         let result = '';
@@ -52,7 +65,7 @@ module.exports = (bot, event, playerEvent, env) => {
         for (const i in ad) {
             const time = new Date(ad[i].time + 8 * 3600 * 1000);
 
-            const newDate = (time.getUTCMonth() + 1) + '/' + time.getUTCDate();
+            const newDate = time.getUTCMonth() + 1 + '/' + time.getUTCDate();
 
             if (lastDate !== newDate) {
                 lastDate = newDate;
@@ -73,5 +86,5 @@ module.exports = (bot, event, playerEvent, env) => {
                 }
             );
         }
-    }, 1));
+    }, -1));
 };
