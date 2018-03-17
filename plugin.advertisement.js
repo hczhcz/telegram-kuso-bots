@@ -73,7 +73,7 @@ module.exports = (bot, event, playerEvent, env) => {
             }
 
             result += (ad[i].from.username || ad[i].from.first_name) + ' '
-                + time.getUTCHours() + ':' + time.getUTCMinutes() + ' '
+                + time.getUTCHours() + ':' + time.getUTCMinutes() + '\n'
                 + ad[i].text + '\n';
         }
 
