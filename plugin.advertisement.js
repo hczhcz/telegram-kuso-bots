@@ -27,15 +27,28 @@ module.exports = (bot, event, playerEvent, env) => {
             }
         }
 
+        const time = Date.now();
+
         for (const i in ad) {
             if (ad[i].from.id === msg.from.id) {
-                ad[i].text = text;
+                const cstNow = new Date(time + 8 * 3600 * 1000);
+                const cstTime = new Date(ad[i].time + 8 * 3600 * 1000);
 
-                return;
+                if (
+                    cstNow.getUTCFullYear() === cstTime.getUTCFullYear() &&
+                    cstNow.getUTCMonth() === cstTime.getUTCMonth() &&
+                    cstNow.getUTCDate() === cstTime.getUTCDate()
+                ) {
+                    ad[i].text = text;
+
+                    return;
+                }
             }
         }
 
-        const time = Date.now();
+        if (ad.length >= config.advertisementCount) {
+            ad.shift();
+        }
 
         const obj = {
             from: msg.from,
@@ -43,18 +56,11 @@ module.exports = (bot, event, playerEvent, env) => {
             text: text,
         };
 
+        ad.push(obj);
+
         fs.write(fd, JSON.stringify(obj) + '\n', () => {
             // nothing
         });
-
-        ad.push(obj);
-
-        if (
-            ad.length >= config.advertisementCount
-            || ad.length && ad[0].time + 3 * 24 * 3600 * 1000 <= time
-        ) {
-            ad.shift();
-        }
     }, -1));
 
     bot.onText(/^\/zaog[au]ys(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
@@ -63,17 +69,16 @@ module.exports = (bot, event, playerEvent, env) => {
         let lastDate = '';
 
         for (const i in ad) {
-            const time = new Date(ad[i].time + 8 * 3600 * 1000);
+            const cstTime = new Date(ad[i].time + 8 * 3600 * 1000);
+            const date = cstTime.getUTCMonth() + 1 + '/' + cstTime.getUTCDate();
 
-            const newDate = time.getUTCMonth() + 1 + '/' + time.getUTCDate();
-
-            if (lastDate !== newDate) {
-                lastDate = newDate;
-                result += newDate + '\n';
+            if (lastDate !== date) {
+                lastDate = date;
+                result += date + '\n';
             }
 
             result += (ad[i].from.username || ad[i].from.first_name) + ' '
-                + time.getUTCHours() + ':' + time.getUTCMinutes() + '\n'
+                + cstTime.getUTCHours() + ':' + cstTime.getUTCMinutes() + '\n'
                 + ad[i].text + '\n';
         }
 
