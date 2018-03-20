@@ -8,6 +8,20 @@
 // 0-8 = opened space
 // * = opened mine
 
+const status = (map) => {
+    for (let i = 0; i < map.length; i += 1) {
+        for (let j = 0; j < map[0].length; j += 1) {
+            if (map[i][j] === 'S' || map[i][j] === 's') {
+                return 'normal';
+            } else if (map[i][j] === '*') {
+                return 'lose';
+            }
+        }
+    }
+
+    return 'win';
+};
+
 const flag = (map, targetI, targetJ) => {
     switch (map[targetI][targetJ]) {
         case 'S':
@@ -47,28 +61,15 @@ const click = (map, targetI, targetJ) => {
     };
 
     if (map[targetI][targetJ] === 's') {
-        let nearSpace = 0;
         let nearMine = 0;
 
         scan((i, j, value) => {
-            if (value === 'S' || value === 's') {
-                nearSpace += 1;
-            } else if (value === 'M' || value === 'm' || value === '*') {
+            if (value === 'M' || value === 'm' || value === '*') {
                 nearMine += 1;
             }
         });
 
         map[targetI][targetJ] = nearMine;
-
-        if (nearSpace === 0) {
-            // TODO: option?
-
-            scan((i, j, value) => {
-                if (value === 'm') {
-                    flag(map, i, j);
-                }
-            });
-        }
 
         if (nearMine === 0) {
             scan((i, j, value) => {
@@ -83,14 +84,23 @@ const click = (map, targetI, targetJ) => {
         // TODO: option?
 
         let nearFlag = 0;
+        let nearUnflag = 0;
 
         scan((i, j, value) => {
             if (value === 'S' || value === 'M') {
                 nearFlag += 1;
+            } else if (value === 's' || value === 'm') {
+                nearUnflag += 1;
             }
         });
 
-        if (nearFlag === map[targetI][targetJ]) {
+        if (nearFlag + nearUnflag === map[targetI][targetJ]) {
+            scan((i, j, value) => {
+                if (value === 's' || value === 'm') {
+                    flag(map, i, j);
+                }
+            });
+        } else if (nearFlag === map[targetI][targetJ]) {
             scan((i, j, value) => {
                 if (value === 's' || value === 'm') {
                     click(map, i, j);
@@ -131,24 +141,10 @@ const init = (rows, columns, mines, targetI, targetJ) => {
     return map;
 };
 
-const status = (map) => {
-    for (let i = 0; i < map.length; i += 1) {
-        for (let j = 0; j < map[0].length; j += 1) {
-            if (map[i][j] === 'S' || map[i][j] === 's') {
-                return 'normal';
-            } else if (map[i][j] === '*') {
-                return 'lose';
-            }
-        }
-    }
-
-    return 'win';
-};
-
 module.exports = {
-    click: click,
+    status: status,
     flag: flag,
+    click: click,
     verify: verify,
     init: init,
-    status: status,
 };
