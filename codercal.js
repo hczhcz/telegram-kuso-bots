@@ -7,11 +7,6 @@ const data = require('./codercal.data')(config.coderCalPathCals);
 
 const core = require('./codercal.core');
 
-process.on('uncaughtException', (err) => {
-    console.error(Date());
-    console.error(err);
-});
-
 const event = (handler) => {
     return (msg, match) => {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || '') + ' ' + match[0]);

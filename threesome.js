@@ -13,11 +13,6 @@ const stat = require('./threesome.stat')(bot, data.stats);
 const command = require('./threesome.command')(bot, data.games, data.commands, data.writeCommand);
 const inline = require('./threesome.inline')(bot);
 
-process.on('uncaughtException', (err) => {
-    console.error(Date());
-    console.error(err);
-});
-
 const event = (handler, atIndex) => {
     return (msg, match) => {
         if (!match[atIndex] || match[atIndex] === '@' + config.threesomeUsername) {

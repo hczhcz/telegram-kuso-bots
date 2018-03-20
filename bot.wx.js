@@ -3,6 +3,11 @@
 const Wechat = require('wechat4u');
 const qrcode = require('qrcode-terminal');
 
+process.on('uncaughtException', (err) => {
+    console.error(Date());
+    console.error(err);
+});
+
 module.exports = () => {
     const bot = new Wechat();
 

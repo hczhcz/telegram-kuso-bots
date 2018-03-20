@@ -3,11 +3,6 @@
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.blockToken);
 
-process.on('uncaughtException', (err) => {
-    console.error(Date());
-    console.error(err);
-});
-
 let enable = true;
 
 bot.on('message', (msg) => {

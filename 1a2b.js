@@ -6,11 +6,6 @@ const bot = require('./bot.' + config.bot)(config.abToken);
 const gameplay = require('./1a2b.gameplay');
 const multiplayer = require('./1a2b.multiplayer');
 
-process.on('uncaughtException', (err) => {
-    console.error(Date());
-    console.error(err);
-});
-
 const event = (handler) => {
     return (msg, match) => {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || '') + ' ' + match[0]);
