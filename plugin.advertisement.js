@@ -35,9 +35,9 @@ module.exports = (bot, event, playerEvent, env) => {
                 const cstTime = new Date(ad[i].time + 8 * 3600 * 1000);
 
                 if (
-                    cstNow.getUTCFullYear() === cstTime.getUTCFullYear() &&
-                    cstNow.getUTCMonth() === cstTime.getUTCMonth() &&
-                    cstNow.getUTCDate() === cstTime.getUTCDate()
+                    cstNow.getUTCFullYear() === cstTime.getUTCFullYear()
+                    && cstNow.getUTCMonth() === cstTime.getUTCMonth()
+                    && cstNow.getUTCDate() === cstTime.getUTCDate()
                 ) {
                     ad[i].text = text;
 
