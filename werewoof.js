@@ -3,7 +3,6 @@
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.werewoofToken);
 
-const group = -1001073512575;
 const botname = 'werewoofbot';
 
 const handler = (func) => {
@@ -41,7 +40,7 @@ for (const i in messages) {
         if (Math.random() < messages[i][2]) {
             bot.onText(message[0], handler((msg, match) => {
                 bot.sendMessage(
-                    group,
+                    msg.chat.id,
                     message[1].replace('#MSG', msg.text),
                     {
                         reply_to_message_id: message[3]
@@ -56,59 +55,37 @@ for (const i in messages) {
 }
 
 bot.onText(/./, handler((msg, match) => {
-    if (msg.chat.id === group) {
-        if (
-            msg.reply_to_message
-            && msg.reply_to_message.from.username === botname
-        ) {
-            if (Math.random() < 0.3) {
-                bot.sendMessage(
-                    group,
-                    '么么哒～',
-                    {
-                        reply_to_message_id: msg.message_id,
-                        parse_mode: 'HTML',
-                    }
-                );
-            } else if (Math.random() < 0.3) {
-                bot.sendMessage(
-                    group,
-                    'cao你妈～',
-                    {
-                        reply_to_message_id: msg.message_id,
-                        parse_mode: 'HTML',
-                    }
-                );
-            } else {
-                bot.sendMessage(
-                    group,
-                    '神tm ' + msg.text,
-                    {
-                        reply_to_message_id: msg.message_id,
-                        parse_mode: 'HTML',
-                    }
-                );
-            }
+    if (
+        msg.reply_to_message
+        && msg.reply_to_message.from.username === botname
+    ) {
+        if (Math.random() < 0.3) {
+            bot.sendMessage(
+                msg.chat.id,
+                '么么哒～',
+                {
+                    reply_to_message_id: msg.message_id,
+                    parse_mode: 'HTML',
+                }
+            );
+        } else if (Math.random() < 0.3) {
+            bot.sendMessage(
+                msg.chat.id,
+                'cao你妈～',
+                {
+                    reply_to_message_id: msg.message_id,
+                    parse_mode: 'HTML',
+                }
+            );
+        } else {
+            bot.sendMessage(
+                msg.chat.id,
+                '神tm ' + msg.text,
+                {
+                    reply_to_message_id: msg.message_id,
+                    parse_mode: 'HTML',
+                }
+            );
         }
-    } else {
-        bot.sendMessage(
-            group,
-            msg.text,
-            {
-                parse_mode: 'HTML',
-            }
-        );
     }
 }));
-
-bot.on('message', (msg) => {
-    if (msg.new_chat_member) {
-        bot.sendMessage(
-            group,
-            '让我们祝福这对新人！',
-            {
-                parse_mode: 'HTML',
-            }
-        );
-    }
-});
