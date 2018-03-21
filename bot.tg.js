@@ -8,9 +8,18 @@ process.on('uncaughtException', (err) => {
 });
 
 module.exports = (token) => {
-    return new TelegramBot(token, {
+    const bot = new TelegramBot(token, {
         polling: {
             interval: 1000,
         },
     });
+
+    bot.on('polling_error', (err) => {
+        if (!err instanceof TelegramBot.errors.ParseError) {
+            console.error(Date());
+            console.error(err);
+        }
+    });
+
+    return bot;
 };
