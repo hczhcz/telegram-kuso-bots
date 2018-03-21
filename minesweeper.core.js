@@ -8,6 +8,37 @@
 // 0-8 = opened space
 // * = opened mine
 
+const verify = (rows, columns, mines) => {
+    return rows > 0 && columns > 0 && mines > 0
+        && rows <= 16 && columns <= 8 && mines <= rows * columns - 1;
+};
+
+const init = (rows, columns, mines, targetI, targetJ) => {
+    const map = [];
+
+    let space = rows * columns - 1;
+    let remain = mines;
+
+    for (let i = 0; i < rows; i += 1) {
+        map.push([]);
+
+        for (let j = 0; j < columns; j += 1) {
+            if (i === targetI && j === targetJ) {
+                map[i].push('s');
+            } else if (Math.random() * space < remain) {
+                map[i].push('m');
+                space -= 1;
+                remain -= 1;
+            } else {
+                map[i].push('s');
+                space -= 1;
+            }
+        }
+    }
+
+    return map;
+};
+
 const status = (map) => {
     for (let i = 0; i < map.length; i += 1) {
         for (let j = 0; j < map[0].length; j += 1) {
@@ -110,41 +141,10 @@ const click = (map, targetI, targetJ) => {
     }
 };
 
-const verify = (rows, columns, mines) => {
-    return rows > 0 && columns > 0 && mines > 0
-        && rows <= 16 && columns <= 8 && mines <= rows * columns - 1;
-};
-
-const init = (rows, columns, mines, targetI, targetJ) => {
-    const map = [];
-
-    let space = rows * columns - 1;
-    let remain = mines;
-
-    for (let i = 0; i < rows; i += 1) {
-        map.push([]);
-
-        for (let j = 0; j < columns; j += 1) {
-            if (i === targetI && j === targetJ) {
-                map[i].push('s');
-            } else if (Math.random() * space < remain) {
-                map[i].push('m');
-                space -= 1;
-                remain -= 1;
-            } else {
-                map[i].push('s');
-                space -= 1;
-            }
-        }
-    }
-
-    return map;
-};
-
 module.exports = {
+    verify: verify,
+    init: init,
     status: status,
     flag: flag,
     click: click,
-    verify: verify,
-    init: init,
 };
