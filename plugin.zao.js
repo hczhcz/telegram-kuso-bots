@@ -5,7 +5,7 @@ const fs = require('fs');
 const config = require('./config');
 
 module.exports = (bot, event, playerEvent, env) => {
-    const fd = fs.openSync('log.advertisement', 'a');
+    const fd = fs.openSync('log.zao', 'a');
 
     const ad = [];
 
@@ -13,7 +13,7 @@ module.exports = (bot, event, playerEvent, env) => {
         let text = '起床了！';
 
         if (match[2]) {
-            text = match[2].slice(0, config.advertisementMaxLength);
+            text = match[2].slice(0, config.zaoMaxLength);
         } else {
             const chosen = env.command.tryGet(msg, 'zao', [], false);
 
@@ -46,7 +46,7 @@ module.exports = (bot, event, playerEvent, env) => {
             }
         }
 
-        if (ad.length >= config.advertisementCount) {
+        if (ad.length >= config.zaoCount) {
             ad.shift();
         }
 
