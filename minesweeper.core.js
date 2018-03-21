@@ -77,7 +77,7 @@ const flag = (map, targetI, targetJ) => {
 };
 
 const click = (map, targetI, targetJ) => {
-    const scan = (callback) => {
+    const scan = (task) => {
         for (let i = targetI - 1; i <= targetI + 1; i += 1) {
             for (let j = targetJ - 1; j <= targetJ + 1; j += 1) {
                 if (
@@ -85,7 +85,7 @@ const click = (map, targetI, targetJ) => {
                     && i >= 0 && i < map.length
                     && j >= 0 && j < map[0].length
                 ) {
-                    callback(i, j, map[i][j]);
+                    task(i, j, map[i][j]);
                 }
             }
         }

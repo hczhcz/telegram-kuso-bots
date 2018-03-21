@@ -1,7 +1,5 @@
 'use strict';
 
-const config = require('./config');
-
 const core = require('./minesweeper.core');
 
 const games = {};
@@ -55,9 +53,6 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGame
 };
 
 module.exports = {
-    meowInit: meowInit,
     init: init,
-    end: end,
-    verify: verify,
-    guess: guess,
+    click: click,
 };
