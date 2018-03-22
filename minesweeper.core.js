@@ -45,12 +45,6 @@ const status = (map) => {
 
     for (let i = 0; i < map.length; i += 1) {
         for (let j = 0; j < map[i].length; j += 1) {
-
-        }
-    }
-
-    for (let i = 0; i < map.length; i += 1) {
-        for (let j = 0; j < map[i].length; j += 1) {
             if (map[i][j] === 'S' || map[i][j] === 's') {
                 normal = true;
             } else if (map[i][j] === '*') {
