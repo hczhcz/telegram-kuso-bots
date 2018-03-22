@@ -50,16 +50,32 @@ const messageUpdate = (game, text, chat_id, message_id) => {
 
     // TODO: add delay & message merging
     // TODO: make callback data shorter
-    return bot.editMessageText(
-        text,
-        {
-            chat_id: chat_id,
-            message_id: message_id,
-            reply_markup: {
-                inline_keyboard: matrix,
-            },
-        }
-    );
+    const updateFunc = () => {
+        game.update = () => {
+            delete game.update;
+        };
+
+        return bot.editMessageText(
+            text,
+            {
+                chat_id: chat_id,
+                message_id: message_id,
+                reply_markup: {
+                    inline_keyboard: matrix,
+                },
+            }
+        ).finally(() => {
+            setTimeout(() => {
+                game.update();
+            }, config.minesweeperUpdateDelay);
+        });
+    };
+
+    if (game.update) {
+        game.update = updateFunc;
+    } else {
+        updateFunc();
+    }
 };
 
 bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
