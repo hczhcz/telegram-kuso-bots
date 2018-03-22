@@ -656,7 +656,7 @@ module.exports = (pathCals) => {
 
         writeCalAction: (action, msg, args) => {
             try {
-                self['action' + action].apply(msg, args);
+                Reflect.apply(self['action' + action], msg, args);
 
                 fs.write(fdCals, JSON.stringify({
                     action: action,
@@ -681,7 +681,7 @@ module.exports = (pathCals) => {
                 try {
                     const obj = JSON.parse(line);
 
-                    self['action' + obj.action].apply(obj.msg, obj.args);
+                    Reflect.apply(self['action' + obj.action], obj.msg, obj.args);
                 } catch (err) {
                     console.error(err);
                 }
