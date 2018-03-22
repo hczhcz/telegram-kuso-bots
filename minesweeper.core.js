@@ -40,14 +40,31 @@ const init = (rows, columns, mines, targetI, targetJ) => {
 };
 
 const status = (map) => {
+    let lose = false;
+    let normal = false;
+
+    for (let i = 0; i < map.length; i += 1) {
+        for (let j = 0; j < map[i].length; j += 1) {
+
+        }
+    }
+
     for (let i = 0; i < map.length; i += 1) {
         for (let j = 0; j < map[i].length; j += 1) {
             if (map[i][j] === 'S' || map[i][j] === 's') {
-                return 'normal';
+                normal = true;
             } else if (map[i][j] === '*') {
-                return 'lose';
+                lose = true;
             }
         }
+    }
+
+    if (lose) {
+        return 'lose';
+    }
+
+    if (normal) {
+        return 'normal';
     }
 
     return 'win';
@@ -72,7 +89,7 @@ const flag = (map, targetI, targetJ) => {
 
             return true;
         default:
-            // ignore
+            return false;
     }
 };
 
@@ -129,6 +146,10 @@ const click = (map, targetI, targetJ) => {
             }
         });
 
+        if (!nearUnflag) {
+            return false;
+        }
+
         if (nearFlag + nearUnflag === map[targetI][targetJ]) {
             scan((i, j, value) => {
                 if (value === 's' || value === 'm') {
@@ -145,6 +166,8 @@ const click = (map, targetI, targetJ) => {
 
         return true;
     }
+
+    return false;
 };
 
 module.exports = {
