@@ -46,7 +46,6 @@ const messageUpdate = (game, text, info) => {
                 callback_data: JSON.stringify({
                     chat_id: info.chat_id,
                     message_id: info.message_id,
-                    reply_id: info.reply_id,
                     i: i,
                     j: j,
                 }),
@@ -59,7 +58,6 @@ const messageUpdate = (game, text, info) => {
         {
             chat_id: info.chat_id,
             message_id: info.message_id,
-            reply_to_message_id: info.reply_id,
             reply_markup: {
                 inline_keyboard: matrix,
             },
@@ -89,7 +87,6 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
                     {
                         chat_id: sentmsg.chat.id,
                         message_id: sentmsg.message_id,
-                        reply_id: msg.message_id,
                     }
                 );
             },
