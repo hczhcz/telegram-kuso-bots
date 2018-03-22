@@ -53,6 +53,8 @@ const messageUpdate = (game, text, info) => {
         }
     }
 
+    // TODO: add delay & message merging
+    // TODO: make callback data shorter
     return bot.editMessageText(
         text,
         {
@@ -129,39 +131,49 @@ bot.on('callback_query', (query) => {
         (game) => {
             // game continue
 
-            return messageUpdate(
+            messageUpdate(
                 game,
                 '路过的大爷～来扫个雷嘛～',
                 info
             );
+
+            return bot.answerCallbackQuery(query.id);
         },
         (game) => {
             // game win
 
             console.log(JSON.stringify(game));
 
-            return messageUpdate(
+            messageUpdate(
                 game,
                 '哇所有奇怪的地方都被你看了个遍啦…好羞羞',
                 info
             );
+
+            return bot.answerCallbackQuery(query.id);
         },
         (game) => {
             // game lose
 
             console.log(JSON.stringify(game));
 
-            return messageUpdate(
+            messageUpdate(
                 game,
                 '一道火光之后，你就在天上飞了呢…好奇怪喵',
                 info
             );
+
+            return bot.answerCallbackQuery(query.id);
         },
         (game) => {
             // not changed
+
+            return bot.answerCallbackQuery(query.id);
         },
         () => {
             // game not exist
+
+            return bot.answerCallbackQuery(query.id);
         }
     );
 });
