@@ -15,14 +15,14 @@ const event = (handler) => {
     };
 };
 
-const makeMatrix = (chat_id, message_id, game) => {
-    const result = [];
+const messageUpdate = (game, text, info) => {
+    const matrix = [];
 
     for (let i = 0; i < game.rows; i += 1) {
-        result.push([]);
+        matrix.push([]);
 
         for (let j = 0; j < game.columns; j += 1) {
-            result[i].push({
+            matrix[i].push({
                 text: {
                     's': '\u2588',
                     'S': '\u259a',
@@ -44,110 +44,117 @@ const makeMatrix = (chat_id, message_id, game) => {
                         : 's'
                 ],
                 callback_data: JSON.stringify({
-                    chat_id: chat_id,
-                    message_id: message_id,
-                    targetI: i,
-                    targetJ: j,
+                    chat_id: info.chat_id,
+                    message_id: info.message_id,
+                    reply_id: info.reply_id,
+                    i: i,
+                    j: j,
                 }),
             });
         }
     }
 
-    return result;
+    return bot.editMessageText(
+        text,
+        {
+            chat_id: info.chat_id,
+            message_id: info.message_id,
+            reply_to_message_id: info.reply_id,
+            reply_markup: {
+                inline_keyboard: matrix,
+            },
+        }
+    );
 };
 
 bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
-    gameplay.init(
-        msg.chat.id + '_' + msg.message_id,
-        parseInt(match[2], 10) || 8,
-        parseInt(match[3], 10) || 8,
-        parseInt(match[4], 10) || 9,
-        (game) => {
-            // game init
-
-            return bot.sendMessage(
-                msg.chat.id,
-                '路过的大爷～来扫个雷嘛～',
-                {
-                    reply_to_message_id: msg.message_id,
-                    reply_markup: {
-                        inline_keyboard: makeMatrix(
-                            msg.chat.id,
-                            msg.message_id,
-                            game
-                        ),
-                    },
-                }
-            ).then((sentmsg) => {
-                game.update = (text) => {
-                    bot.editMessageText(
-                        text,
-                        {
-                            chat_id: sentmsg.chat.id,
-                            message_id: sentmsg.message_id,
-                            reply_markup: {
-                                inline_keyboard: makeMatrix(
-                                    msg.chat.id,
-                                    msg.message_id,
-                                    game
-                                ),
-                            },
-                        }
-                    );
-                };
-            });
-        },
-        () => {
-            // game exist
-        },
-        () => {
-            // not valid
-
-            return bot.sendMessage(
-                msg.chat.id,
-                '不支持此参数哦',
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
+    return bot.sendMessage(
+        msg.chat.id,
+        '一大波地雷正在赶来……',
+        {
+            reply_to_message_id: msg.message_id,
         }
-    );
+    ).then((sentmsg) => {
+        gameplay.init(
+            sentmsg.chat.id + '_' + sentmsg.message_id,
+            parseInt(match[2], 10) || 8,
+            parseInt(match[3], 10) || 8,
+            parseInt(match[4], 10) || 9,
+            (game) => {
+                // game init
+
+                return messageUpdate(
+                    game,
+                    '路过的大爷～来扫个雷嘛～',
+                    {
+                        chat_id: sentmsg.chat.id,
+                        message_id: sentmsg.message_id,
+                        reply_id: msg.message_id,
+                    }
+                );
+            },
+            () => {
+                // game exist
+
+                // never reach
+                throw Error(sentmsg);
+            },
+            () => {
+                // not valid
+
+                return bot.editMessageText(
+                    '不…这样的参数…不可以…',
+                    {
+                        chat_id: sentmsg.chat.id,
+                        message_id: sentmsg.message_id,
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
+            }
+        );
+    });
 }));
 
 bot.on('callback_query', (query) => {
     const info = JSON.parse(query.data);
 
-    console.log('[' + Date() + '] ' + info.chat_id + ':callback:' + query.from.id + '@' + (query.from.username || '') + ' ' + info.targetI + ' ' + info.targetJ);
+    console.log('[' + Date() + '] ' + info.chat_id + ':callback:' + query.from.id + '@' + (query.from.username || '') + ' ' + info.i + ' ' + info.j);
 
     gameplay.click(
         info.chat_id + '_' + info.message_id,
         query.from.id,
-        info.targetI,
-        info.targetJ,
+        info.i,
+        info.j,
         (game) => {
             // game continue
 
-            if (game.update) {
-                game.update('路过的大爷～来扫个雷嘛～');
-            }
+            return messageUpdate(
+                game,
+                '路过的大爷～来扫个雷嘛～',
+                info
+            );
         },
         (game) => {
             // game win
 
             console.log(JSON.stringify(game));
 
-            if (game.update) {
-                game.update('你赢啦！');
-            }
+            return messageUpdate(
+                game,
+                '哇所有奇怪的地方都被你看了个遍啦…好羞羞',
+                info
+            );
         },
         (game) => {
             // game lose
 
             console.log(JSON.stringify(game));
 
-            if (game.update) {
-                game.update('你现在在天上飞。。。');
-            }
+            return messageUpdate(
+                game,
+                '一道火光之后，你就在天上飞了呢…好奇怪喵',
+                info
+            );
         },
         (game) => {
             // not changed
