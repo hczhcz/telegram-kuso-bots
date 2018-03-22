@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs');
+
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.coderCalToken);
 
@@ -7,9 +9,20 @@ const data = require('./codercal.data')(config.coderCalPathCals);
 
 const core = require('./codercal.core');
 
+const fd = fs.openSync('log_codercal', 'a');
+
+const log = (head, body) => {
+    fs.write(fd, '[' + Date() + '] ' + head + ' ' + body + '\n', () => {
+        // nothing
+    });
+};
+
 const event = (handler) => {
     return (msg, match) => {
-        console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || '') + ' ' + match[0]);
+        log(
+            msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+            match[0]
+        );
 
         // notice: take care of the inline query event
         if (!config.ban[msg.from.id]) {
@@ -295,7 +308,10 @@ bot.on('inline_query', (query) => {
 });
 
 bot.on('chosen_inline_result', (chosen) => {
-    console.log('[' + Date() + '] ' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.result_id + ' ' + chosen.query);
+    log(
+        'inline:' + chosen.from.id + '@' + (chosen.from.username || ''),
+        chosen.result_id + ' ' + chosen.query
+    );
 });
 
 data.loadCalActions();

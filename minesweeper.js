@@ -1,13 +1,26 @@
 'use strict';
 
+const fs = require('fs');
+
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.minesweeperToken);
 
 const gameplay = require('./minesweeper.gameplay');
 
+const fd = fs.openSync('log_minesweeper', 'a');
+
+const log = (head, body) => {
+    fs.write(fd, '[' + Date() + '] ' + head + ' ' + body + '\n', () => {
+        // nothing
+    });
+};
+
 const event = (handler) => {
     return (msg, match) => {
-        console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || '') + ' ' + match[0]);
+        log(
+            msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+            match[0]
+        );
 
         if (!config.ban[msg.from.id]) {
             handler(msg, match);
@@ -48,8 +61,6 @@ const messageUpdate = (game, text, chat_id, message_id) => {
         }
     }
 
-    // TODO: add delay & message merging
-    // TODO: make callback data shorter
     const updateFunc = () => {
         game.update = () => {
             delete game.update;
@@ -126,10 +137,9 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
 bot.on('callback_query', (query) => {
     const info = JSON.parse(query.data);
 
-    console.log(
-        '[' + Date() + '] '
-            + info[0] + '_' + info[1] + ':callback:' + query.from.id + '@' + (query.from.username || '')
-            + ' ' + info[2] + ' ' + info[3]
+    log(
+        info[0] + '_' + info[1] + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+        info[2] + ' ' + info[3]
     );
 
     gameplay.click(
@@ -152,7 +162,9 @@ bot.on('callback_query', (query) => {
         (game) => {
             // game win
 
-            console.log(JSON.stringify(game));
+            fs.write(fd, JSON.stringify(game) + '\n', () => {
+                // nothing
+            });
 
             messageUpdate(
                 game,
@@ -166,7 +178,9 @@ bot.on('callback_query', (query) => {
         (game) => {
             // game lose
 
-            console.log(JSON.stringify(game));
+            fs.write(fd, JSON.stringify(game) + '\n', () => {
+                // nothing
+            });
 
             messageUpdate(
                 game,

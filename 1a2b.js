@@ -1,14 +1,27 @@
 'use strict';
 
+const fs = require('fs');
+
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.abToken);
 
 const gameplay = require('./1a2b.gameplay');
 const multiplayer = require('./1a2b.multiplayer');
 
+const fd = fs.openSync('log_1a2b', 'a');
+
+const log = (head, body) => {
+    fs.write(fd, '[' + Date() + '] ' + head + ' ' + body + '\n', () => {
+        // nothing
+    });
+};
+
 const event = (handler) => {
     return (msg, match) => {
-        console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || '') + ' ' + match[0]);
+        log(
+            msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+            match[0]
+        );
 
         // notice: take care of the inline query event
         if (!config.ban[msg.from.id]) {
@@ -42,7 +55,9 @@ const gameEnd = (game) => {
         }
     }
 
-    console.log(JSON.stringify(game));
+    fs.write(fd, JSON.stringify(game) + '\n', () => {
+        // nothing
+    });
 };
 
 const playerLine = (player) => {
@@ -315,7 +330,10 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
 bot.on('callback_query', (query) => {
     const info = JSON.parse(query.data);
 
-    console.log('[' + Date() + '] ' + info.chat_id + ':callback:' + query.from.id + '@' + (query.from.username || '') + ' ' + info.command);
+    log(
+        info.chat_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+        info.command
+    );
 
     if (info.command === 'join') {
         multiplayer.add(
@@ -394,7 +412,10 @@ bot.on('inline_query', (query) => {
 });
 
 bot.on('chosen_inline_result', (chosen) => {
-    console.log('[' + Date() + '] inline:' + chosen.from.id + '@' + (chosen.from.username || '') + ' ' + chosen.result_id + ' ' + chosen.query);
+    log(
+        'inline:' + chosen.from.id + '@' + (chosen.from.username || ''),
+        chosen.result_id + ' ' + chosen.query
+    );
 
     if (chosen.result_id === 'playmeow') {
         gameplay.meowInit(chosen.from.id, chosen.query);
