@@ -7,11 +7,7 @@ module.exports = (pathCals) => {
     const fdCals = fs.openSync(pathCals, 'a');
 
     const ActionError = function (info) {
-        if (this) {
-            this.info = info;
-        } else {
-            return new ActionError(info);
-        }
+        this.info = info;
     };
 
     ActionError.prototype = new Error();
@@ -340,11 +336,11 @@ module.exports = (pathCals) => {
                     || calender.owner === msg.chat.id
                 ) {
                     return calender;
-                } else {
-                    throw ActionError('请在创建 ' + calId + ' 的群内进行操作');
                 }
+
+                throw new ActionError('请在创建 ' + calId + ' 的群内进行操作');
             }, () => {
-                throw ActionError('找不到 ' + calId);
+                throw new ActionError('找不到 ' + calId);
             });
         },
 
@@ -370,11 +366,11 @@ module.exports = (pathCals) => {
                     || luck.owner === msg.chat.id
                 ) {
                     return luck;
-                } else {
-                    throw ActionError('请在创建 ' + luckId + ' 的群内进行操作');
                 }
+
+                throw new ActionError('请在创建 ' + luckId + ' 的群内进行操作');
             }, () => {
-                throw ActionError('找不到 ' + luckId);
+                throw new ActionError('找不到 ' + luckId);
             });
         },
 
@@ -385,9 +381,9 @@ module.exports = (pathCals) => {
                     calender.title = title;
 
                     return;
-                } else {
-                    throw ActionError(calId + ' 已被其它用户创建');
                 }
+
+                throw new ActionError(calId + ' 已被其它用户创建');
             }, () => {
                 let count = 0;
 
@@ -398,7 +394,7 @@ module.exports = (pathCals) => {
                 }
 
                 if (count >= 3) {
-                    throw ActionError('你创建了太多的黄历');
+                    throw new ActionError('你创建了太多的黄历');
                 }
 
                 self.calenders.push({
@@ -420,7 +416,7 @@ module.exports = (pathCals) => {
             if (calender.creator === this.from.id) {
                 calender.title = '';
             } else {
-                throw ActionError('只有 ' + calId + ' 的创建者可以进行此操作');
+                throw new ActionError('只有 ' + calId + ' 的创建者可以进行此操作');
             }
         },
 
@@ -596,9 +592,9 @@ module.exports = (pathCals) => {
                     luck.title = title;
 
                     return;
-                } else {
-                    throw ActionError(luckId + ' 已被其它用户创建');
                 }
+
+                throw new ActionError(luckId + ' 已被其它用户创建');
             }, () => {
                 let count = 0;
 
@@ -609,7 +605,7 @@ module.exports = (pathCals) => {
                 }
 
                 if (count >= 1) {
-                    throw ActionError('你创建了太多的求签');
+                    throw new ActionError('你创建了太多的求签');
                 }
 
                 self.lucks.push({
@@ -629,7 +625,7 @@ module.exports = (pathCals) => {
             if (luck.creator === this.from.id) {
                 luck.title = '';
             } else {
-                throw ActionError('只有 ' + luckId + ' 的创建者可以进行此操作');
+                throw new ActionError('只有 ' + luckId + ' 的创建者可以进行此操作');
             }
         },
 

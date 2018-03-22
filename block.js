@@ -13,7 +13,7 @@ bot.on('message', (msg) => {
     }
 });
 
-bot.onText(/\/ban/, (msg, match) => {
+bot.onText(/^\/ban(@\w+)?$/, (msg, match) => {
     if (config.blockAdmin[msg.from.id]) {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ban');
 
@@ -21,7 +21,7 @@ bot.onText(/\/ban/, (msg, match) => {
     }
 });
 
-bot.onText(/\/unban/, (msg, match) => {
+bot.onText(/^\/unban(@\w+)?$/, (msg, match) => {
     if (config.blockAdmin[msg.from.id]) {
         console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' unban');
 

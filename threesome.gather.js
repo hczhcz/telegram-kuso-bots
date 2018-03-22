@@ -203,16 +203,16 @@ module.exports = (bot, games, writeGame) => {
                             msg.chat.id,
                             '开始啪啪啦！啪啪啪啪啪啪啪啪'
                         );
-                    } else {
-                        const mode = game.modename;
-
-                        delete games[msg.chat.id];
-
-                        return bot.sendMessage(
-                            msg.chat.id,
-                            '禽兽人数不足，已取消' + mode
-                        );
                     }
+
+                    const mode = game.modename;
+
+                    delete games[msg.chat.id];
+
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '禽兽人数不足，已取消' + mode
+                    );
                 default:
                     // nothing
             }

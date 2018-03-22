@@ -36,14 +36,14 @@ module.exports = (bot, games) => {
                         (msg.from.first_name || msg.from.last_name) + ' 拔了出来，'
                             + '离开了' + game.modename
                     );
-                } else {
-                    return bot.sendMessage(
-                        msg.chat.id,
-                        (msg.from.first_name || msg.from.last_name) + ' 拔了出来，'
-                            + '然后忍不住又插了进去，'
-                            + '回到了' + game.modename
-                    );
                 }
+
+                return bot.sendMessage(
+                    msg.chat.id,
+                    (msg.from.first_name || msg.from.last_name) + ' 拔了出来，'
+                        + '然后忍不住又插了进去，'
+                        + '回到了' + game.modename
+                );
             }
         },
 
@@ -105,12 +105,12 @@ module.exports = (bot, games) => {
                     (msg.from.first_name || msg.from.last_name) + ' 用力一挺，'
                         + '棒棒变得更坚硬了'
                 );
-            } else {
-                return bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 被吓软了'
-                );
             }
+
+            return bot.sendMessage(
+                msg.chat.id,
+                (msg.from.first_name || msg.from.last_name) + ' 被吓软了'
+            );
         },
 
         orgasm: (msg) => {
@@ -123,21 +123,21 @@ module.exports = (bot, games) => {
                 ).then(() => {
                     game.time = game.total;
                 });
-            } else {
-                return bot.sendMessage(
-                    msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 强制让自己达到了高潮'
-                ).then(() => {
-                    if (game.users[msg.from.id]) {
-                        game.usercount -= 1;
-                        delete game.users[msg.from.id];
-
-                        if (!game.usercount) {
-                            game.time = game.total;
-                        }
-                    }
-                });
             }
+
+            return bot.sendMessage(
+                msg.chat.id,
+                (msg.from.first_name || msg.from.last_name) + ' 强制让自己达到了高潮'
+            ).then(() => {
+                if (game.users[msg.from.id]) {
+                    game.usercount -= 1;
+                    delete game.users[msg.from.id];
+
+                    if (!game.usercount) {
+                        game.time = game.total;
+                    }
+                }
+            });
         },
 
         tick: (msg) => {

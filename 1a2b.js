@@ -49,9 +49,9 @@ const playerLine = (player) => {
     if (player) {
         return '\n\n'
             + ('@' + player.username || player.first_name) + ' 轮到你啦';
-    } else {
-        return '';
     }
+
+    return '';
 };
 
 const playerInfo = (list) => {
@@ -263,18 +263,18 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
                         reply_to_message_id: msg.message_id,
                     }
                 );
-            } else {
-                return bot.sendMessage(
-                    msg.chat.id,
-                    '游戏结束啦\n\n'
-                        + '/1a2b 开始新游戏\n'
-                        + '/3a4b 多人模式\n'
-                        + '/0a0b 清空玩家列表',
-                    {
-                        reply_to_message_id: msg.message_id,
-                    }
-                );
             }
+
+            return bot.sendMessage(
+                msg.chat.id,
+                '游戏结束啦\n\n'
+                    + '/1a2b 开始新游戏\n'
+                    + '/3a4b 多人模式\n'
+                    + '/0a0b 清空玩家列表',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
         },
         () => {
             // game not exist

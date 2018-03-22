@@ -19,9 +19,9 @@ const init = (id, rows, columns, mines, onGameInit, onGameExist, onNotValid) => 
         };
 
         return onGameInit(game);
-    } else {
-        return onNotValid();
     }
+
+    return onNotValid();
 };
 
 const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGameLose, onGameNotExist) => {

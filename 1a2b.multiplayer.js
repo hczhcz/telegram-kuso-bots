@@ -9,9 +9,9 @@ const get = (id) => {
         const list = lists[id];
 
         return list[0];
-    } else {
-        return null;
     }
+
+    return null;
 };
 
 const add = (id, player, onDone, onPlayerExist) => {

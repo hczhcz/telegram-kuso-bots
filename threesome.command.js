@@ -236,10 +236,10 @@ module.exports = (bot, games, commands, writeCommand) => {
                         chosen.chat_id,
                         chosen.forward
                     );
-                } else {
-                    // never reach
-                    throw Error(JSON.stringify(chosen));
                 }
+
+                // never reach
+                throw Error(JSON.stringify(chosen));
             }
         },
 

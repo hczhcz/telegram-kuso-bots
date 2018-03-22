@@ -63,10 +63,10 @@ const pickDictionary = (dictionaries, id) => {
                 ];
             } else if ('pick' in dictionaries[i]) {
                 return pickRandom(dictionaries[i].items, dictionaries[i].pick).join('，');
-            } else {
-                // never reach
-                throw Error();
             }
+
+            // never reach
+            throw Error();
         }
     }
 

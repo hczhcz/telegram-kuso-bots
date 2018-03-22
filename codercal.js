@@ -19,10 +19,10 @@ const event = (handler) => {
 };
 
 const limitNum = (num, min, max) => {
-    return Math.min(Math.max(num | 0, min), max);
+    return Math.min(Math.max(parseInt(num, 10), min), max);
 };
 
-bot.onText(/^\/help(?!\w)/, event((msg, match) => {
+bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
         '命令列表：\n'
