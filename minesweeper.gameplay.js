@@ -43,8 +43,12 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGame
         if (result === 'normal') {
             onGameContinue(game);
         } else if (result === 'win') {
+            delete games[id];
+
             onGameWin(game);
         } else if (result === 'lose') {
+            delete games[id];
+
             onGameLose(game);
         } else {
             // never reach
