@@ -143,7 +143,8 @@ const guess = (id, str, onGuess, onGameEnd, onGuessDuplicated, onGameNotExist) =
 
     if (Object.keys(game.guess).length > config.abMaxGuess) {
         for (const i in game.guess) {
-            delete game.guess[i]; // delete the first
+            // delete the first one
+            delete game.guess[i];
 
             break;
         }

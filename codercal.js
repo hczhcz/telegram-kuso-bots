@@ -182,7 +182,7 @@ bot.onText(/^\/(luck|l) (\w+luck) ([^@\r\n]+)@(\d+)$/, event((msg, match) => {
 // /disable luck <luck id>
 bot.onText(/^\/(disable luck|dl) (\w+luck)$/, event((msg, match) => {
     bot.sendMessage(
-    msg.chat.id,
+        msg.chat.id,
         data.writeCalAction('DisableLuck', msg, [match[2]])
     );
 }));
@@ -190,14 +190,14 @@ bot.onText(/^\/(disable luck|dl) (\w+luck)$/, event((msg, match) => {
 // /rate <luck id> <name>@<weight>@<descrpiton>
 bot.onText(/^\/(rate|r) (\w+luck) ([^@\r\n]+)@(\d+)@([^@\r\n]*)$/, event((msg, match) => {
     bot.sendMessage(
-    msg.chat.id,
+        msg.chat.id,
         data.writeCalAction('Rate', msg, [match[2], match[3], limitNum(match[4], 1, 10000), match[5]])
     );
 }));
 // /delete rate <luck id> <name>
 bot.onText(/^\/(delete rate|dr) (\w+luck) ([^@\r\n]+)$/, event((msg, match) => {
     bot.sendMessage(
-    msg.chat.id,
+        msg.chat.id,
         data.writeCalAction('DeleteRate', msg, [match[2], match[3]])
     );
 }));

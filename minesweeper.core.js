@@ -1,12 +1,12 @@
 'use strict';
 
 // tags
-// s = space
-// S = space with flag
-// m = mine
-// M = mine with flag
+// 's' = space
+// 'S' = space with flag
+// 'm' = mine
+// 'M' = mine with flag
 // 0-8 = opened space
-// * = opened mine
+// '*' = opened mine
 
 const verify = (rows, columns, mines) => {
     return rows > 0 && columns > 0 && mines > 0

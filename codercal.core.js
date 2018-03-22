@@ -186,7 +186,8 @@ const pickLuck = (rates, iter, query) => {
     }
 
     const target = seedRandom(
-        (crc32.str(query.query) ^ query.from.id ^ getTodayInt()) % 23333, iter
+        (crc32.str(query.query) ^ query.from.id ^ getTodayInt()) % 23333,
+        iter
     ) % range;
     let sum = 0;
 
