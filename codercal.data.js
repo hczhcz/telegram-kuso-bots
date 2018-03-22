@@ -382,13 +382,9 @@ module.exports = (pathCals) => {
             readline.createInterface({
                 input: fs.createReadStream(pathCals),
             }).on('line', (line) => {
-                try {
-                    const obj = JSON.parse(line);
+                const obj = JSON.parse(line);
 
-                    Reflect.apply(self['action' + obj.action], obj.msg, obj.args);
-                } catch (err) {
-                    console.error(err);
-                }
+                Reflect.apply(self['action' + obj.action], obj.msg, obj.args);
             });
         },
     };

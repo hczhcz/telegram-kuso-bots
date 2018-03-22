@@ -368,3 +368,7 @@ for (const i in config.threesomePlugins) {
         }
     );
 }
+
+for (const i in config.threesomeExtraBots) {
+    require('./' + config.threesomeExtraBots[i]);
+}
