@@ -156,15 +156,17 @@ const click = (map, targetI, targetJ) => {
                     flag(map, i, j);
                 }
             });
+
+            return true;
         } else if (nearFlag === map[targetI][targetJ]) {
             scan((i, j, value) => {
                 if (value === 's' || value === 'm') {
                     click(map, i, j);
                 }
             });
-        }
 
-        return true;
+            return true;
+        }
     }
 
     return false;

@@ -115,7 +115,11 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
 bot.on('callback_query', (query) => {
     const info = JSON.parse(query.data);
 
-    console.log('[' + Date() + '] ' + info.chat_id + ':callback:' + query.from.id + '@' + (query.from.username || '') + ' ' + info.i + ' ' + info.j);
+    console.log(
+        '[' + Date() + '] '
+            + info.chat_id + '_' + info.message_id + ':callback:' + query.from.id + '@' + (query.from.username || '')
+            + ' ' + info.i + ' ' + info.j
+    );
 
     gameplay.click(
         info.chat_id + '_' + info.message_id,
