@@ -10,7 +10,7 @@
 
 const verify = (rows, columns, mines) => {
     return rows > 0 && columns > 0 && mines > 0
-        && rows <= 16 && columns <= 8 && mines <= rows * columns - 1;
+        && rows <= 12 && columns <= 8 && mines <= rows * columns - 1;
 };
 
 const init = (rows, columns, mines, targetI, targetJ) => {
