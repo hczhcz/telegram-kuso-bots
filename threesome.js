@@ -16,7 +16,7 @@ const inline = require('./threesome.inline')(bot);
 const event = (handler, atIndex) => {
     return (msg, match) => {
         if (!match[atIndex] || match[atIndex] === '@' + config.threesomeUsername) {
-            if (!msg.__init) {
+            if (!msg.msg_init) {
                 console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
                 data.writeMessage(msg);
 
@@ -26,7 +26,7 @@ const event = (handler, atIndex) => {
                     msg.chat.mapped = msg.chat.id;
                 }
 
-                msg.__init = true;
+                msg.msg_init = true;
             }
 
             // notice: take care of the inline query event

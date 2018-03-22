@@ -220,7 +220,7 @@ bot.on('inline_query', (query) => {
     const answers = [];
 
     for (const i in data.calenders) {
-        if (data.calenders[i].title && data.calenders[i].title.match(query.query)) {
+        if (data.calenders[i].title && data.calenders[i].title.indexOf(query.query) >= 0) {
             const pickedEvents = core.pickEvents(
                 data.calenders[i].dictionaries,
                 data.calenders[i].activities,
