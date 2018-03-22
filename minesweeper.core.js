@@ -58,19 +58,19 @@ const flag = (map, targetI, targetJ) => {
         case 'S':
             map[targetI][targetJ] = 's';
 
-            break;
+            return true;
         case 's':
             map[targetI][targetJ] = 'S';
 
-            break;
+            return true;
         case 'M':
             map[targetI][targetJ] = 'm';
 
-            break;
+            return true;
         case 'm':
             map[targetI][targetJ] = 'M';
 
-            break;
+            return true;
         default:
             // ignore
     }
@@ -109,8 +109,12 @@ const click = (map, targetI, targetJ) => {
                 }
             });
         }
+
+        return true;
     } else if (map[targetI][targetJ] === 'm') {
         map[targetI][targetJ] = '*';
+
+        return true;
     } else if (map[targetI][targetJ] >= 0 && map[targetI][targetJ] <= 8) {
         // TODO: option?
 
@@ -138,6 +142,8 @@ const click = (map, targetI, targetJ) => {
                 }
             });
         }
+
+        return true;
     }
 };
 

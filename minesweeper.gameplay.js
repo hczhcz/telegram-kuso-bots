@@ -24,7 +24,7 @@ const init = (id, rows, columns, mines, onGameInit, onGameExist, onNotValid) => 
     return onNotValid();
 };
 
-const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGameLose, onGameNotExist) => {
+const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGameLose, onNotChanged, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
@@ -35,20 +35,23 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGame
         game.map = core.init(game.rows, game.columns, game.mines, targetI, targetJ);
     }
 
-    core.click(game.map, targetI, targetJ);
-    game.history.push([playerId, targetI, targetJ]);
+    if (core.click(game.map, targetI, targetJ)) {
+        game.history.push([playerId, targetI, targetJ]);
 
-    const result = core.status(game.map);
+        const result = core.status(game.map);
 
-    if (result === 'normal') {
-        onGameContinue(game);
-    } else if (result === 'win') {
-        onGameWin(game);
-    } else if (result === 'lose') {
-        onGameLose(game);
+        if (result === 'normal') {
+            onGameContinue(game);
+        } else if (result === 'win') {
+            onGameWin(game);
+        } else if (result === 'lose') {
+            onGameLose(game);
+        } else {
+            // never reach
+            throw Error(result);
+        }
     } else {
-        // never reach
-        throw Error(result);
+        onNotChanged(game);
     }
 };
 

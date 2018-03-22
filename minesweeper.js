@@ -137,6 +137,9 @@ bot.on('callback_query', (query) => {
                 game.update('.');
             }
         },
+        (game) => {
+            // not changed
+        },
         () => {
             // game not exist
         }
