@@ -41,7 +41,7 @@ const init = (rows, columns, mines, targetI, targetJ) => {
 
 const status = (map) => {
     for (let i = 0; i < map.length; i += 1) {
-        for (let j = 0; j < map[0].length; j += 1) {
+        for (let j = 0; j < map[i].length; j += 1) {
             if (map[i][j] === 'S' || map[i][j] === 's') {
                 return 'normal';
             } else if (map[i][j] === '*') {
@@ -83,7 +83,7 @@ const click = (map, targetI, targetJ) => {
                 if (
                     (i !== targetI || j !== targetJ)
                     && i >= 0 && i < map.length
-                    && j >= 0 && j < map[0].length
+                    && j >= 0 && j < map[i].length
                 ) {
                     task(i, j, map[i][j]);
                 }
