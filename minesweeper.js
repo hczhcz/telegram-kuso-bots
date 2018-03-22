@@ -18,25 +18,25 @@ const event = (handler) => {
 const makeMatrix = (chat_id, message_id, game) => {
     const result = [];
 
-    for (let i = 0; i < game.rows; ++i) {
+    for (let i = 0; i < game.rows; i += 1) {
         result.push([]);
 
-        for (let j = 0; j < game.columns; ++j) {
+        for (let j = 0; j < game.columns; j += 1) {
             result[i].push({
                 text: {
-                    s: '\u2588',
-                    S: '\u259a',
-                    m: '\u2588',
-                    M: '\u259a',
-                    0: ' ',
-                    1: '1',
-                    2: '2',
-                    3: '3',
-                    4: '4',
-                    5: '5',
-                    6: '6',
-                    7: '7',
-                    8: '8',
+                    's': '\u2588',
+                    'S': '\u259a',
+                    'm': '\u2588',
+                    'M': '\u259a',
+                    '0': ' ',
+                    '1': '1',
+                    '2': '2',
+                    '3': '3',
+                    '4': '4',
+                    '5': '5',
+                    '6': '6',
+                    '7': '7',
+                    '8': '8',
                     '*': '*',
                 }[
                     game.map
@@ -49,7 +49,7 @@ const makeMatrix = (chat_id, message_id, game) => {
                     targetI: i,
                     targetJ: j,
                 }),
-            })
+            });
         }
     }
 
@@ -76,7 +76,7 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
                             msg.message_id,
                             game
                         ),
-                    }
+                    },
                 }
             ).then((sentmsg) => {
                 game.update = (text) => {
