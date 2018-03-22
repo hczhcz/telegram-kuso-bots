@@ -67,7 +67,7 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '.',
+                '路过的大爷～来扫个雷嘛～',
                 {
                     reply_to_message_id: msg.message_id,
                     reply_markup: {
@@ -102,6 +102,14 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
         },
         () => {
             // not valid
+
+            return bot.sendMessage(
+                msg.chat.id,
+                '不支持此参数哦',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
         }
     );
 }));
@@ -120,21 +128,25 @@ bot.on('callback_query', (query) => {
             // game continue
 
             if (game.update) {
-                game.update('.');
+                game.update('路过的大爷～来扫个雷嘛～');
             }
         },
         (game) => {
             // game win
 
+            console.log(JSON.stringify(game));
+
             if (game.update) {
-                game.update('.');
+                game.update('你赢啦！');
             }
         },
         (game) => {
             // game lose
 
+            console.log(JSON.stringify(game));
+
             if (game.update) {
-                game.update('.');
+                game.update('你现在在天上飞。。。');
             }
         },
         (game) => {
