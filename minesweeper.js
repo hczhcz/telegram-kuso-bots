@@ -15,7 +15,7 @@ const event = (handler) => {
     };
 };
 
-const messageUpdate = (game, text, info) => {
+const messageUpdate = (game, text, chat_id, message_id) => {
     const matrix = [];
 
     for (let i = 0; i < game.rows; i += 1) {
@@ -43,12 +43,7 @@ const messageUpdate = (game, text, info) => {
                         ? game.map[i][j]
                         : 's'
                 ],
-                callback_data: JSON.stringify({
-                    chat_id: info.chat_id,
-                    message_id: info.message_id,
-                    i: i,
-                    j: j,
-                }),
+                callback_data: JSON.stringify([chat_id, message_id, i, j]),
             });
         }
     }
@@ -58,8 +53,8 @@ const messageUpdate = (game, text, info) => {
     return bot.editMessageText(
         text,
         {
-            chat_id: info.chat_id,
-            message_id: info.message_id,
+            chat_id: chat_id,
+            message_id: message_id,
             reply_markup: {
                 inline_keyboard: matrix,
             },
@@ -86,10 +81,8 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
                 return messageUpdate(
                     game,
                     '路过的大爷～来扫个雷嘛～',
-                    {
-                        chat_id: sentmsg.chat.id,
-                        message_id: sentmsg.message_id,
-                    }
+                    sentmsg.chat.id,
+                    sentmsg.message_id
                 );
             },
             () => {
@@ -119,22 +112,23 @@ bot.on('callback_query', (query) => {
 
     console.log(
         '[' + Date() + '] '
-            + info.chat_id + '_' + info.message_id + ':callback:' + query.from.id + '@' + (query.from.username || '')
-            + ' ' + info.i + ' ' + info.j
+            + info[0] + '_' + info[1] + ':callback:' + query.from.id + '@' + (query.from.username || '')
+            + ' ' + info[2] + ' ' + info[3]
     );
 
     gameplay.click(
-        info.chat_id + '_' + info.message_id,
+        info[0] + '_' + info[1],
         query.from.id,
-        info.i,
-        info.j,
+        info[2],
+        info[3],
         (game) => {
             // game continue
 
             messageUpdate(
                 game,
                 '路过的大爷～来扫个雷嘛～',
-                info
+                info[0],
+                info[1]
             );
 
             return bot.answerCallbackQuery(query.id);
@@ -147,7 +141,8 @@ bot.on('callback_query', (query) => {
             messageUpdate(
                 game,
                 '哇所有奇怪的地方都被你看了个遍啦…好羞羞',
-                info
+                info[0],
+                info[1]
             );
 
             return bot.answerCallbackQuery(query.id);
@@ -160,7 +155,8 @@ bot.on('callback_query', (query) => {
             messageUpdate(
                 game,
                 '一道火光之后，你就在天上飞了呢…好奇怪喵',
-                info
+                info[0],
+                info[1]
             );
 
             return bot.answerCallbackQuery(query.id);
