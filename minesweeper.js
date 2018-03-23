@@ -99,7 +99,7 @@ const gameStat = (game, chat_id, message_id, title, last) => {
     let result = title + '\n\n统计：\n';
 
     for (const i in stat) {
-        result += game.nameMap()[i] + ': ' + stat[i] + '项操作\n';
+        result += game.nameMap()[i] + ' - ' + stat[i] + '项操作\n';
     }
 
     result += '\n' + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last;
