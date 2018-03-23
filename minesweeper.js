@@ -28,7 +28,7 @@ const event = (handler) => {
     };
 };
 
-const messageUpdate = (game, text, chat_id, message_id) => {
+const messageUpdate = (game, chat_id, message_id) => {
     const matrix = [];
 
     for (let i = 0; i < game.rows; i += 1) {
@@ -67,7 +67,7 @@ const messageUpdate = (game, text, chat_id, message_id) => {
         };
 
         return bot.editMessageText(
-            text,
+            '路过的大爷～来扫个雷嘛～',
             {
                 chat_id: chat_id,
                 message_id: message_id,
@@ -89,6 +89,30 @@ const messageUpdate = (game, text, chat_id, message_id) => {
     }
 };
 
+const gameStat = (game, chat_id, message_id, title, last) => {
+    const stat = {};
+
+    for (const i in game.history) {
+        stat[game.history[i][0]] = stat[game.history[i][0]] + 1 || 1;
+    }
+
+    let result = title + '\n\n统计：\n';
+
+    for (const i in stat) {
+        result += game.nameMap()[i] + ': ' + stat[i] + '项操作\n';
+    }
+
+    result += '\n' + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last;
+
+    bot.sendMessage(
+        chat_id,
+        result,
+        {
+            reply_to_message_id: message_id,
+        }
+    );
+};
+
 bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
     return bot.sendMessage(
         msg.chat.id,
@@ -105,9 +129,16 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
             (game) => {
                 // game init
 
+                const nameMap = {};
+
+                game.nameMap = () => {
+                    return nameMap;
+                };
+
+                game.nameMap()[msg.from.id] = msg.from.username || msg.from.first_name;
+
                 return messageUpdate(
                     game,
-                    '路过的大爷～来扫个雷嘛～',
                     sentmsg.chat.id,
                     sentmsg.message_id
                 );
@@ -150,9 +181,10 @@ bot.on('callback_query', (query) => {
         (game) => {
             // game continue
 
+            game.nameMap()[query.from.id] = query.from.username || query.from.first_name;
+
             messageUpdate(
                 game,
-                '路过的大爷～来扫个雷嘛～',
                 info[0],
                 info[1]
             );
@@ -162,15 +194,24 @@ bot.on('callback_query', (query) => {
         (game) => {
             // game win
 
+            game.nameMap()[query.from.id] = query.from.username || query.from.first_name;
+
             fs.write(fd, JSON.stringify(game) + '\n', () => {
                 // nothing
             });
 
             messageUpdate(
                 game,
-                '哇所有奇怪的地方都被你看了个遍啦…好羞羞',
                 info[0],
                 info[1]
+            );
+
+            gameStat(
+                game,
+                info[0],
+                info[1],
+                '哇所有奇怪的地方都被你打开啦…好羞羞',
+                '你要对人家负责哟/// ///'
             );
 
             return bot.answerCallbackQuery(query.id);
@@ -178,15 +219,24 @@ bot.on('callback_query', (query) => {
         (game) => {
             // game lose
 
+            game.nameMap()[query.from.id] = query.from.username || query.from.first_name;
+
             fs.write(fd, JSON.stringify(game) + '\n', () => {
                 // nothing
             });
 
             messageUpdate(
                 game,
-                '一道火光之后，你就在天上飞了呢…好奇怪喵',
                 info[0],
                 info[1]
+            );
+
+            gameStat(
+                game,
+                info[0],
+                info[1],
+                '一道火光之后，你就在天上飞了呢…好奇怪喵',
+                '是我们中出的叛徒！'
             );
 
             return bot.answerCallbackQuery(query.id);
