@@ -1,23 +1,38 @@
 'use strict';
 
+const util = require('util');
+const fs = require('fs');
+
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.threesomeToken);
 
 const data = require('./threesome.data')(config.threesomePathActions, config.threesomePathCommands);
 
 const info = require('./threesome.info')(bot);
-const gather = require('./threesome.gather')(bot, data.games, data.writeGame);
+const gather = require('./threesome.gather')(bot, data.games);
 const init = require('./threesome.init')(bot, data.games);
 const play = require('./threesome.play')(bot, data.games);
 const stat = require('./threesome.stat')(bot, data.stats);
 const command = require('./threesome.command')(bot, data.games, data.commands, data.writeCommand);
 const inline = require('./threesome.inline')(bot);
 
+const fd = fs.openSync('log', 'a');
+
+const log = (head, body) => {
+    fs.write(fd, '[' + Date() + '] ' + head + ' ' + body + '\n', () => {
+        // nothing
+    });
+};
+
 const event = (handler, atIndex) => {
     return (msg, match) => {
         if (!match[atIndex] || match[atIndex] === '@' + config.threesomeUsername) {
             if (!msg.msg_init) {
-                console.log('[' + Date() + '] ' + msg.chat.id + ':' + msg.from.id + ' ' + match[0]);
+                log(
+                    msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+                    match[0]
+                );
+
                 data.writeMessage(msg);
 
                 if (config.threesomeChatMap[msg.chat.id]) {
@@ -299,9 +314,6 @@ bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
 }, 2));
 
 bot.on('inline_query', (query) => {
-    // console.log('[' + Date() + '] inline:' + query.from.id + ' ' + query.query);
-    // data.writeQuery(query);
-
     if (config.ban[query.from.id]) {
         inline.banned(query);
     } else {
@@ -310,7 +322,10 @@ bot.on('inline_query', (query) => {
 });
 
 bot.on('chosen_inline_result', (chosen) => {
-    console.log('[' + Date() + '] inline:' + chosen.from.id + ' ' + chosen.query);
+    log(
+        'inline:' + chosen.from.id + '@' + (chosen.from.username || ''),
+        chosen.query
+    );
 
     chosen.date = Date.now();
     data.writeQuery(chosen);
@@ -337,6 +352,17 @@ setInterval(() => {
         }
 
         if (game.time <= 0) {
+            if (game.time === 0) {
+                fs.write(fd, i + ':' + util.inspect(game) + '\n', () => {
+                    // nothing
+                });
+
+                data.writeGame(
+                    mockMsg,
+                    game
+                );
+            }
+
             gather.tick(mockMsg);
         } else {
             play.tick(mockMsg);

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (bot, games, writeGame) => {
+module.exports = (bot, games) => {
     const self = {
         join: (msg) => {
             const game = games[msg.chat.id];
@@ -189,15 +189,7 @@ module.exports = (bot, games, writeGame) => {
                     );
                 case 0:
                     if (game.usercount >= game.modemin) {
-                        console.log(msg.chat.id + ':');
-                        console.log(game);
-
                         game.total = 120 + game.usercount * 60;
-
-                        writeGame(
-                            msg,
-                            game
-                        );
 
                         return bot.sendMessage(
                             msg.chat.id,
