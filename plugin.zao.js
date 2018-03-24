@@ -64,7 +64,7 @@ module.exports = (bot, event, playerEvent, env) => {
     }, -1));
 
     bot.onText(/^\/zaog[au]ys(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
-        let result = '';
+        let resultText = '';
 
         let lastDate = '';
 
@@ -74,18 +74,18 @@ module.exports = (bot, event, playerEvent, env) => {
 
             if (lastDate !== date) {
                 lastDate = date;
-                result += date + '\n';
+                resultText += date + '\n';
             }
 
-            result += (ad[i].from.username || ad[i].from.first_name) + ' '
+            resultText += (ad[i].from.username || ad[i].from.first_name) + ' '
                 + cstTime.getUTCHours() + ':' + cstTime.getUTCMinutes() + '\n'
                 + ad[i].text + '\n';
         }
 
-        if (result) {
+        if (resultText) {
             return bot.sendMessage(
                 msg.chat.id,
-                result,
+                resultText,
                 {
                     reply_to_message_id: msg.message_id,
                 }

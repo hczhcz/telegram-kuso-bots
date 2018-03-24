@@ -30,16 +30,16 @@ module.exports = (bot) => {
                     '不要', '那里不可以', '好变态', '要坏掉啦',
                 ];
 
-                let str = content[Math.floor(Math.random() * content.length)];
+                let text = content[Math.floor(Math.random() * content.length)];
 
-                while (str.length < 20 && Math.random() < 0.25) {
-                    str += randomSeparator() + content[Math.floor(Math.random() * content.length)];
+                while (text.length < 20 && Math.random() < 0.25) {
+                    text += randomSeparator() + content[Math.floor(Math.random() * content.length)];
                 }
 
-                return str;
+                return text;
             };
 
-            let str = randomText() + randomSeparator();
+            let text = randomText() + randomSeparator();
 
             let tokens = null;
 
@@ -52,7 +52,7 @@ module.exports = (bot) => {
 
             for (const i in tokens) {
                 if (tokens[i]) {
-                    str += tokens[i] + randomSeparator() + randomText() + randomSeparator();
+                    text += tokens[i] + randomSeparator() + randomText() + randomSeparator();
                 }
             }
 
@@ -61,7 +61,7 @@ module.exports = (bot) => {
                 id: 'CONTENT',
                 title: '娇喘',
                 input_message_content: {
-                    message_text: str,
+                    message_text: text,
                 },
             }], {
                 cache_time: 0,

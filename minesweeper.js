@@ -96,17 +96,17 @@ const gameStat = (game, chat_id, message_id, title, last) => {
         stat[game.history[i][0]] = stat[game.history[i][0]] + 1 || 1;
     }
 
-    let result = title + '\n\n统计：\n';
+    let text = title + '\n\n统计：\n';
 
     for (const i in stat) {
-        result += game.nameMap()[i] + ' - ' + stat[i] + '项操作\n';
+        text += game.nameMap()[i] + ' - ' + stat[i] + '项操作\n';
     }
 
-    result += '\n' + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last;
+    text += '\n' + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last;
 
     bot.sendMessage(
         chat_id,
-        result,
+        text,
         {
             reply_to_message_id: message_id,
         }
