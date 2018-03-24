@@ -66,7 +66,7 @@ const messageUpdate = (game, chat_id, message_id) => {
             delete game.update;
         };
 
-        return bot.editMessageText(
+        bot.editMessageText(
             '路过的大爷～来扫个雷嘛～',
             {
                 chat_id: chat_id,
@@ -114,7 +114,7 @@ const gameStat = (game, chat_id, message_id, title, last) => {
 };
 
 bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
-    return bot.sendMessage(
+    bot.sendMessage(
         msg.chat.id,
         '一大波地雷正在赶来……',
         {
@@ -152,7 +152,7 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
             () => {
                 // not valid
 
-                return bot.editMessageText(
+                bot.editMessageText(
                     '不…这样的参数…不可以…',
                     {
                         chat_id: sentmsg.chat.id,
@@ -189,7 +189,7 @@ bot.on('callback_query', (query) => {
                 info[1]
             );
 
-            return bot.answerCallbackQuery(query.id);
+            bot.answerCallbackQuery(query.id);
         },
         (game) => {
             // game win
@@ -214,7 +214,7 @@ bot.on('callback_query', (query) => {
                 '你要对人家负责哟/// ///'
             );
 
-            return bot.answerCallbackQuery(query.id);
+            bot.answerCallbackQuery(query.id);
         },
         (game) => {
             // game lose
@@ -239,17 +239,17 @@ bot.on('callback_query', (query) => {
                 '是我们中出的叛徒！'
             );
 
-            return bot.answerCallbackQuery(query.id);
+            bot.answerCallbackQuery(query.id);
         },
         (game) => {
             // not changed
 
-            return bot.answerCallbackQuery(query.id);
+            bot.answerCallbackQuery(query.id);
         },
         () => {
             // game not exist
 
-            return bot.answerCallbackQuery(query.id);
+            bot.answerCallbackQuery(query.id);
         }
     );
 });

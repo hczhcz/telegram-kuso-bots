@@ -83,7 +83,7 @@ module.exports = (bot, event, playerEvent, env) => {
         }
 
         if (resultText) {
-            return bot.sendMessage(
+            bot.sendMessage(
                 msg.chat.id,
                 resultText,
                 {

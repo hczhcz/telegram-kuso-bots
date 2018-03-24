@@ -217,7 +217,7 @@ bot.onText(/^\/(delete rate|dr) (\w+luck) ([^@\r\n]+)$/, event((msg, match) => {
 
 bot.on('inline_query', (query) => {
     if (config.ban[query.from.id]) {
-        return bot.answerInlineQuery(query.id, [{
+        bot.answerInlineQuery(query.id, [{
             type: 'article',
             id: 'banned',
             title: data.calenders[0].title + (data.suffix[core.getTodayInt() % 10000] || ''),
@@ -228,83 +228,83 @@ bot.on('inline_query', (query) => {
             cache_time: 0,
             is_personal: true,
         });
-    }
+    } else {
+        const answers = [];
 
-    const answers = [];
+        for (const i in data.calenders) {
+            if (data.calenders[i].title && data.calenders[i].title.indexOf(query.query) >= 0) {
+                const pickedEvents = core.pickEvents(
+                    data.calenders[i].dictionaries,
+                    data.calenders[i].activities,
+                    data.calenders[i].specials
+                );
 
-    for (const i in data.calenders) {
-        if (data.calenders[i].title && data.calenders[i].title.indexOf(query.query) >= 0) {
-            const pickedEvents = core.pickEvents(
-                data.calenders[i].dictionaries,
-                data.calenders[i].activities,
-                data.calenders[i].specials
-            );
+                let calText = data.calenders[i].title + '\n' + core.getTodayString() + '\n\n宜：';
 
-            let calText = data.calenders[i].title + '\n' + core.getTodayString() + '\n\n宜：';
+                for (const j in pickedEvents.good) {
+                    calText += '\n' + pickedEvents.good[j].name;
 
-            for (const j in pickedEvents.good) {
-                calText += '\n' + pickedEvents.good[j].name;
-
-                if (pickedEvents.good[j].description) {
-                    calText += ' - ' + pickedEvents.good[j].description;
+                    if (pickedEvents.good[j].description) {
+                        calText += ' - ' + pickedEvents.good[j].description;
+                    }
                 }
-            }
 
-            calText += '\n\n不宜：';
+                calText += '\n\n不宜：';
 
-            for (const j in pickedEvents.bad) {
-                calText += '\n' + pickedEvents.bad[j].name;
+                for (const j in pickedEvents.bad) {
+                    calText += '\n' + pickedEvents.bad[j].name;
 
-                if (pickedEvents.bad[j].description) {
-                    calText += ' - ' + pickedEvents.bad[j].description;
+                    if (pickedEvents.bad[j].description) {
+                        calText += ' - ' + pickedEvents.bad[j].description;
+                    }
                 }
-            }
 
-            calText += '\n\n' + core.pickHints(
-                data.calenders[i].dictionaries,
-                data.calenders[i].hints
-            ).join('\n');
-
-            answers.push({
-                type: 'article',
-                id: data.calenders[i].id,
-                title: data.calenders[i].title + (data.suffix[core.getTodayInt() % 10000] || ''),
-                input_message_content: {
-                    message_text: calText,
-                },
-            });
-        }
-    }
-
-    if (query.query) {
-        for (const i in data.lucks) {
-            if (data.lucks[i].title) {
-                const pickedLuck = core.pickLuck(data.lucks[i].rates, data.lucks[i].random, query);
-
-                let luckText = data.lucks[i].title + '\n' + core.getTodayString()
-                    + '\n\n所求事项：' + query.query
-                    + '\n结果：' + pickedLuck.name;
-
-                if (pickedLuck.description) {
-                    luckText += ' - ' + pickedLuck.description;
-                }
+                calText += '\n\n' + core.pickHints(
+                    data.calenders[i].dictionaries,
+                    data.calenders[i].hints
+                ).join('\n');
 
                 answers.push({
                     type: 'article',
-                    id: data.lucks[i].id,
-                    title: data.lucks[i].title + (data.suffix[core.getTodayInt() % 10000] || ''),
+                    id: data.calenders[i].id,
+                    title: data.calenders[i].title + (data.suffix[core.getTodayInt() % 10000] || ''),
                     input_message_content: {
-                        message_text: luckText,
+                        message_text: calText,
                     },
                 });
             }
         }
-    }
 
-    return bot.answerInlineQuery(query.id, answers, {
-        cache_time: 0,
-        is_personal: true,
-    });
+        if (query.query) {
+            for (const i in data.lucks) {
+                if (data.lucks[i].title) {
+                    const pickedLuck = core.pickLuck(data.lucks[i].rates, data.lucks[i].random, query);
+
+                    let luckText = data.lucks[i].title + '\n' + core.getTodayString()
+                        + '\n\n所求事项：' + query.query
+                        + '\n结果：' + pickedLuck.name;
+
+                    if (pickedLuck.description) {
+                        luckText += ' - ' + pickedLuck.description;
+                    }
+
+                    answers.push({
+                        type: 'article',
+                        id: data.lucks[i].id,
+                        title: data.lucks[i].title + (data.suffix[core.getTodayInt() % 10000] || ''),
+                        input_message_content: {
+                            message_text: luckText,
+                        },
+                    });
+                }
+            }
+        }
+
+        bot.answerInlineQuery(query.id, answers, {
+            cache_time: 0,
+            is_personal: true,
+        });
+    }
 });
 
 bot.on('chosen_inline_result', (chosen) => {

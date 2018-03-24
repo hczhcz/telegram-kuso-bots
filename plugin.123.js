@@ -20,7 +20,7 @@ module.exports = (bot, event, playerEvent, env) => {
                 // nothing
             });
 
-            return bot.sendMessage(
+            bot.sendMessage(
                 msg.chat.id,
                 action,
                 {

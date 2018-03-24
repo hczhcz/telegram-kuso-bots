@@ -119,7 +119,7 @@ const gameEvent = event((msg, match) => {
         (game) => {
             // guess
 
-            return bot.sendMessage(
+            bot.sendMessage(
                 msg.chat.id,
                 gameInfo(game.guess, game.hint) + playerLine(multiplayer.get(msg.chat.id)),
                 {
@@ -138,7 +138,7 @@ const gameEvent = event((msg, match) => {
 
             gameEnd(game);
 
-            return bot.sendMessage(
+            bot.sendMessage(
                 msg.chat.id,
                 gameInfo(game.guess, game.charset) + '\n\n'
                     + '猜对啦！答案是：\n'
@@ -154,7 +154,7 @@ const gameEvent = event((msg, match) => {
         () => {
             // guess duplicated
 
-            return bot.sendMessage(
+            bot.sendMessage(
                 msg.chat.id,
                 '已经猜过啦',
                 {
@@ -205,7 +205,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
         (game) => {
             // game init
 
-            return bot.sendMessage(
+            bot.sendMessage(
                 msg.chat.id,
                 '游戏开始啦，猜测目标：\n'
                     + game.hint + playerLine(multiplayer.get(msg.chat.id)) + '\n\n'
@@ -218,7 +218,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
         () => {
             // game exist
 
-            return bot.sendMessage(
+            bot.sendMessage(
                 msg.chat.id,
                 '已经开始啦',
                 {
@@ -236,7 +236,7 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
         (list) => {
             // added
 
-            return bot.sendMessage(
+            bot.sendMessage(
                 msg.chat.id,
                 '一大波玩家正在赶来……'
             ).then((sentmsg) => {
@@ -246,7 +246,7 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
         () => {
             // player exist
 
-            return bot.sendMessage(
+            bot.sendMessage(
                 msg.chat.id,
                 '你已经加入过啦',
                 {
@@ -266,7 +266,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
             gameEnd(game);
 
             if (game.answer) {
-                return bot.sendMessage(
+                bot.sendMessage(
                     msg.chat.id,
                     gameInfo(game.guess, game.charset) + '\n\n'
                         + '游戏结束啦，答案是：\n'
@@ -278,18 +278,18 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
                         reply_to_message_id: msg.message_id,
                     }
                 );
+            } else {
+                bot.sendMessage(
+                    msg.chat.id,
+                    '游戏结束啦\n\n'
+                        + '/1a2b 开始新游戏\n'
+                        + '/3a4b 多人模式\n'
+                        + '/0a0b 清空玩家列表',
+                    {
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
             }
-
-            return bot.sendMessage(
-                msg.chat.id,
-                '游戏结束啦\n\n'
-                    + '/1a2b 开始新游戏\n'
-                    + '/3a4b 多人模式\n'
-                    + '/0a0b 清空玩家列表',
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
         },
         () => {
             // game not exist
@@ -299,7 +299,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
                 () => {
                     // cleared
 
-                    return bot.sendMessage(
+                    bot.sendMessage(
                         msg.chat.id,
                         '玩家列表已清空\n\n'
                             + '/1a2b 开始新游戏\n'
@@ -312,7 +312,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
                 () => {
                     // not multiplayer
 
-                    return bot.sendMessage(
+                    bot.sendMessage(
                         msg.chat.id,
                         '不存在的！\n\n'
                             + '/1a2b 开始新游戏\n'
@@ -344,12 +344,12 @@ bot.on('callback_query', (query) => {
 
                 playerUpdate(list, info.chat_id, info.message_id);
 
-                return bot.answerCallbackQuery(query.id);
+                bot.answerCallbackQuery(query.id);
             },
             () => {
                 // player exist
 
-                return bot.answerCallbackQuery(query.id);
+                bot.answerCallbackQuery(query.id);
             }
         );
     } else if (info.command === 'flee') {
@@ -361,12 +361,12 @@ bot.on('callback_query', (query) => {
 
                 playerUpdate(list, info.chat_id, info.message_id);
 
-                return bot.answerCallbackQuery(query.id);
+                bot.answerCallbackQuery(query.id);
             },
             () => {
                 // player not exist
 
-                return bot.answerCallbackQuery(query.id);
+                bot.answerCallbackQuery(query.id);
             }
         );
     }
@@ -374,7 +374,7 @@ bot.on('callback_query', (query) => {
 
 bot.on('inline_query', (query) => {
     if (config.ban[query.from.id]) {
-        return bot.answerInlineQuery(
+        bot.answerInlineQuery(
             query.id,
             [{
                 type: 'article',
@@ -389,26 +389,26 @@ bot.on('inline_query', (query) => {
                 is_personal: true,
             }
         );
+    } else {
+        bot.answerInlineQuery(
+            query.id,
+            [{
+                type: 'article',
+                id: 'playmeow',
+                title: '喵a喵b',
+                input_message_content: {
+                    message_text: ('@' + query.from.username || query.from.first_name) + ' 喵喵模式已装载！\n\n'
+                        + '/1a2b 开始新游戏\n'
+                        + '/3a4b 多人模式\n'
+                        + '/0a0b 清空玩家列表',
+                },
+            }],
+            {
+                cache_time: 0,
+                is_personal: true,
+            }
+        );
     }
-
-    return bot.answerInlineQuery(
-        query.id,
-        [{
-            type: 'article',
-            id: 'playmeow',
-            title: '喵a喵b',
-            input_message_content: {
-                message_text: ('@' + query.from.username || query.from.first_name) + ' 喵喵模式已装载！\n\n'
-                    + '/1a2b 开始新游戏\n'
-                    + '/3a4b 多人模式\n'
-                    + '/0a0b 清空玩家列表',
-            },
-        }],
-        {
-            cache_time: 0,
-            is_personal: true,
-        }
-    );
 });
 
 bot.on('chosen_inline_result', (chosen) => {
