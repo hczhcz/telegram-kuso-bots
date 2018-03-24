@@ -56,7 +56,7 @@ const messageUpdate = (game, chat_id, message_id) => {
                         ? game.map[i][j]
                         : 's'
                 ],
-                callback_data: JSON.stringify([chat_id, message_id, i, j]),
+                callback_data: JSON.stringify([i, j]),
             });
         }
     }
@@ -166,18 +166,19 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
 }));
 
 bot.on('callback_query', (query) => {
+    const msg = query.message;
     const info = JSON.parse(query.data);
 
     log(
-        info[0] + '_' + info[1] + ':callback:' + query.from.id + '@' + (query.from.username || ''),
-        info[2] + ' ' + info[3]
+        msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+        info[0] + ' ' + info[1]
     );
 
     gameplay.click(
-        info[0] + '_' + info[1],
+        msg.chat.id + '_' + msg.message_id,
         query.from.id,
-        info[2],
-        info[3],
+        info[0],
+        info[1],
         (game) => {
             // game continue
 
@@ -185,8 +186,8 @@ bot.on('callback_query', (query) => {
 
             messageUpdate(
                 game,
-                info[0],
-                info[1]
+                msg.chat.id,
+                msg.message_id
             );
 
             bot.answerCallbackQuery(query.id);
@@ -202,14 +203,14 @@ bot.on('callback_query', (query) => {
 
             messageUpdate(
                 game,
-                info[0],
-                info[1]
+                msg.chat.id,
+                msg.message_id
             );
 
             gameStat(
                 game,
-                info[0],
-                info[1],
+                msg.chat.id,
+                msg.message_id,
                 '哇所有奇怪的地方都被你打开啦…好羞羞',
                 '你要对人家负责哟/// ///'
             );
@@ -227,14 +228,14 @@ bot.on('callback_query', (query) => {
 
             messageUpdate(
                 game,
-                info[0],
-                info[1]
+                msg.chat.id,
+                msg.message_id
             );
 
             gameStat(
                 game,
-                info[0],
-                info[1],
+                msg.chat.id,
+                msg.message_id,
                 '一道火光之后，你就在天上飞了呢…好奇怪喵',
                 '是我们中出的叛徒！'
             );
