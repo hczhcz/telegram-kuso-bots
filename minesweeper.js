@@ -28,7 +28,7 @@ const event = (handler) => {
     };
 };
 
-const messageUpdate = (game, chat_id, message_id) => {
+const messageUpdate = (msg, game) => {
     const matrix = [];
 
     for (let i = 0; i < game.rows; i += 1) {
@@ -69,8 +69,8 @@ const messageUpdate = (game, chat_id, message_id) => {
         bot.editMessageText(
             '路过的大爷～来扫个雷嘛～',
             {
-                chat_id: chat_id,
-                message_id: message_id,
+                chat_id: msg.chat.id,
+                message_id: msg.message_id,
                 reply_markup: {
                     inline_keyboard: matrix,
                 },
@@ -89,7 +89,7 @@ const messageUpdate = (game, chat_id, message_id) => {
     }
 };
 
-const gameStat = (game, chat_id, message_id, title, last) => {
+const gameStat = (msg, game, title, last) => {
     const stat = {};
 
     for (const i in game.history) {
@@ -105,10 +105,10 @@ const gameStat = (game, chat_id, message_id, title, last) => {
     text += '\n' + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last;
 
     bot.sendMessage(
-        chat_id,
+        msg.chat.id,
         text,
         {
-            reply_to_message_id: message_id,
+            reply_to_message_id: msg.message_id,
         }
     );
 };
@@ -138,9 +138,8 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
                 game.nameMap()[msg.from.id] = msg.from.username || msg.from.first_name;
 
                 return messageUpdate(
-                    game,
-                    sentmsg.chat.id,
-                    sentmsg.message_id
+                    sentmsg,
+                    game
                 );
             },
             () => {
@@ -185,9 +184,8 @@ bot.on('callback_query', (query) => {
             game.nameMap()[query.from.id] = query.from.username || query.from.first_name;
 
             messageUpdate(
-                game,
-                msg.chat.id,
-                msg.message_id
+                msg,
+                game
             );
 
             bot.answerCallbackQuery(query.id);
@@ -202,15 +200,13 @@ bot.on('callback_query', (query) => {
             });
 
             messageUpdate(
-                game,
-                msg.chat.id,
-                msg.message_id
+                msg,
+                game
             );
 
             gameStat(
+                msg,
                 game,
-                msg.chat.id,
-                msg.message_id,
                 '哇所有奇怪的地方都被你打开啦…好羞羞',
                 '你要对人家负责哟/// ///'
             );
@@ -227,15 +223,13 @@ bot.on('callback_query', (query) => {
             });
 
             messageUpdate(
-                game,
-                msg.chat.id,
-                msg.message_id
+                msg,
+                game
             );
 
             gameStat(
+                msg,
                 game,
-                msg.chat.id,
-                msg.message_id,
                 '一道火光之后，你就在天上飞了呢…好奇怪喵',
                 '是我们中出的叛徒！'
             );

@@ -83,29 +83,21 @@ const playerInfo = (list) => {
     return info;
 };
 
-const playerUpdate = (list, chat_id, message_id) => {
+const playerUpdate = (msg, list) => {
     bot.editMessageText(
         playerInfo(list) + '\n\n'
             + '/1a2b 开始新游戏\n'
             + '/0a0b 清空玩家列表',
         {
-            chat_id: chat_id,
-            message_id: message_id,
+            chat_id: msg.chat.id,
+            message_id: msg.message_id,
             reply_markup: {
                 inline_keyboard: [[{
                     text: '加入',
-                    callback_data: JSON.stringify({
-                        command: 'join',
-                        chat_id: chat_id,
-                        message_id: message_id,
-                    }),
+                    callback_data: 'join',
                 }, {
                     text: '离开',
-                    callback_data: JSON.stringify({
-                        command: 'flee',
-                        chat_id: chat_id,
-                        message_id: message_id,
-                    }),
+                    callback_data: 'flee',
                 }]],
             },
         }
@@ -240,7 +232,10 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
                 msg.chat.id,
                 '一大波玩家正在赶来……'
             ).then((sentmsg) => {
-                playerUpdate(list, sentmsg.chat.id, sentmsg.message_id);
+                playerUpdate(
+                    sentmsg,
+                    list
+                );
             });
         },
         () => {
@@ -328,21 +323,24 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
 }));
 
 bot.on('callback_query', (query) => {
-    const info = JSON.parse(query.data);
+    const msg = query.message;
 
     log(
-        info.chat_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
-        info.command
+        msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+        query.data
     );
 
-    if (info.command === 'join') {
+    if (query.data === 'join') {
         multiplayer.add(
-            info.chat_id,
+            msg.chat.id,
             query.from,
             (list) => {
                 // added
 
-                playerUpdate(list, info.chat_id, info.message_id);
+                playerUpdate(
+                    msg,
+                    list
+                );
 
                 bot.answerCallbackQuery(query.id);
             },
@@ -352,14 +350,17 @@ bot.on('callback_query', (query) => {
                 bot.answerCallbackQuery(query.id);
             }
         );
-    } else if (info.command === 'flee') {
+    } else if (query.data === 'flee') {
         multiplayer.remove(
-            info.chat_id,
+            msg.chat.id,
             query.from,
             (list) => {
                 // added
 
-                playerUpdate(list, info.chat_id, info.message_id);
+                playerUpdate(
+                    msg,
+                    list
+                );
 
                 bot.answerCallbackQuery(query.id);
             },
