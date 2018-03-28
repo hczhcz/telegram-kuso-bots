@@ -87,7 +87,7 @@ const playerUpdate = (msg, list) => {
     bot.editMessageText(
         playerInfo(list) + '\n\n'
             + '/1a2b 开始新游戏\n'
-            + '/0a0b 清空玩家列表',
+            + '/0a0b 结束游戏',
         {
             chat_id: msg.chat.id,
             message_id: msg.message_id,
@@ -98,6 +98,9 @@ const playerUpdate = (msg, list) => {
                 }, {
                     text: '离开',
                     callback_data: 'flee',
+                }, {
+                    text: '清空',
+                    callback_data: 'clear',
                 }]],
             },
         }
@@ -136,8 +139,7 @@ const gameEvent = event((msg, match) => {
                     + '猜对啦！答案是：\n'
                     + game.answer + '\n\n'
                     + '/1a2b 开始新游戏\n'
-                    + '/3a4b 多人模式\n'
-                    + '/0a0b 清空玩家列表',
+                    + '/3a4b 多人模式',
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -267,8 +269,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
                         + '游戏结束啦，答案是：\n'
                         + game.answer + '\n\n'
                         + '/1a2b 开始新游戏\n'
-                        + '/3a4b 多人模式\n'
-                        + '/0a0b 清空玩家列表',
+                        + '/3a4b 多人模式',
                     {
                         reply_to_message_id: msg.message_id,
                     }
@@ -278,8 +279,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
                     msg.chat.id,
                     '游戏结束啦\n\n'
                         + '/1a2b 开始新游戏\n'
-                        + '/3a4b 多人模式\n'
-                        + '/0a0b 清空玩家列表',
+                        + '/3a4b 多人模式',
                     {
                         reply_to_message_id: msg.message_id,
                     }
@@ -289,33 +289,13 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
         () => {
             // game not exist
 
-            multiplayer.clear(
+            bot.sendMessage(
                 msg.chat.id,
-                () => {
-                    // cleared
-
-                    bot.sendMessage(
-                        msg.chat.id,
-                        '玩家列表已清空\n\n'
-                            + '/1a2b 开始新游戏\n'
-                            + '/3a4b 多人模式',
-                        {
-                            reply_to_message_id: msg.message_id,
-                        }
-                    );
-                },
-                () => {
-                    // not multiplayer
-
-                    bot.sendMessage(
-                        msg.chat.id,
-                        '不存在的！\n\n'
-                            + '/1a2b 开始新游戏\n'
-                            + '/3a4b 多人模式',
-                        {
-                            reply_to_message_id: msg.message_id,
-                        }
-                    );
+                '不存在的！\n\n'
+                    + '/1a2b 开始新游戏\n'
+                    + '/3a4b 多人模式',
+                {
+                    reply_to_message_id: msg.message_id,
                 }
             );
         }
@@ -370,6 +350,25 @@ bot.on('callback_query', (query) => {
                 bot.answerCallbackQuery(query.id);
             }
         );
+    } else if (query.data === 'clear') {
+        multiplayer.clear(
+            msg.chat.id,
+            () => {
+                // cleared
+
+                playerUpdate(
+                    msg,
+                    list
+                );
+
+                bot.answerCallbackQuery(query.id);
+            },
+            () => {
+                // not multiplayer
+
+                bot.answerCallbackQuery(query.id);
+            }
+        );
     }
 });
 
@@ -401,7 +400,7 @@ bot.on('inline_query', (query) => {
                     message_text: ('@' + query.from.username || query.from.first_name) + ' 喵喵模式已装载！\n\n'
                         + '/1a2b 开始新游戏\n'
                         + '/3a4b 多人模式\n'
-                        + '/0a0b 清空玩家列表',
+                        + '/0a0b 结束游戏',
                 },
             }],
             {
