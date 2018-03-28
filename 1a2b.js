@@ -4,9 +4,9 @@ const fs = require('fs');
 
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.abToken);
+const multiplayer = require('./multiplayer');
 
 const gameplay = require('./1a2b.gameplay');
-const multiplayer = require('./1a2b.multiplayer');
 
 const fd = fs.openSync('log_1a2b', 'a');
 
