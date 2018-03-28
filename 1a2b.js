@@ -358,7 +358,7 @@ bot.on('callback_query', (query) => {
 
                 playerUpdate(
                     msg,
-                    list
+                    []
                 );
 
                 bot.answerCallbackQuery(query.id);
