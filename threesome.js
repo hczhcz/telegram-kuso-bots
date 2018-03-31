@@ -367,7 +367,12 @@ setInterval(() => {
         } else {
             play.tick(mockMsg);
 
-            if (game.time > 0 && game.time - game.total < -15 && game.time % 10 === 0) {
+            if (
+                !config.threesomeSilent[i]
+                && game.time > 0
+                && game.time - game.total < -15
+                && game.time % 10 === 0
+            ) {
                 command.tick(mockMsg);
             }
         }

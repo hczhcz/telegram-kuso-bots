@@ -14,6 +14,13 @@ module.exports = (token) => {
         },
     });
 
+    bot.on('error', (err) => {
+        if (!(err instanceof TelegramBot.errors.ParseError)) {
+            console.error(Date());
+            console.error(err);
+        }
+    });
+
     bot.on('polling_error', (err) => {
         if (!(err instanceof TelegramBot.errors.ParseError)) {
             console.error(Date());
