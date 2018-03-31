@@ -168,6 +168,10 @@ bot.on('callback_query', (query) => {
     const msg = query.message;
     const info = JSON.parse(query.data);
 
+    if (typeof info[0] !== 'number' || typeof info[1] !== 'number') {
+        throw Error(info);
+    }
+
     log(
         msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
         info[0] + ' ' + info[1]
