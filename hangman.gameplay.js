@@ -23,7 +23,7 @@ const init = (id, meowId, dict, keyboardSize, onGameInit, onGameExist) => {
 
         delete meows[meowId];
     } else {
-        answer = dictionary[Math.floor(Math.random() * dictionary.length)];
+        answer = core.dictSelect(dict);
     }
 
     const game = games[id] = {

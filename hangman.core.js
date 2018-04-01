@@ -35,6 +35,10 @@ const dictAdd = (dict, str) => {
     }
 };
 
+const dictSelect = (dict) => {
+    return dict.strList[Math.floor(Math.random() * dict.strList.length)];
+};
+
 const makeKeyboard = (dict, str, size) => {
     const arr = splitter.splitGraphemes(str);
 
@@ -66,6 +70,7 @@ module.exports = {
     length: length,
     dictInit: dictInit,
     dictAdd: dictAdd,
+    dictSelect: dictSelect,
     makeKeyboard: makeKeyboard,
     guess: guess,
 };
