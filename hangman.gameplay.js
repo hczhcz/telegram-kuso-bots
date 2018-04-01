@@ -1,7 +1,5 @@
 'use strict';
 
-const config = require('./config');
-
 const core = require('./hangman.core');
 
 const games = {};
