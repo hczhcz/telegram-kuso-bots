@@ -35,22 +35,38 @@ const dictAdd = (dict, str) => {
     }
 };
 
+const dictFinalize = (dict) => {
+    delete dict.strSet;
+    delete dict.charSet;
+};
+
 const dictSelect = (dict) => {
     return dict.strList[Math.floor(Math.random() * dict.strList.length)];
 };
 
 const makeKeyboard = (dict, str, size) => {
     const arr = splitter.splitGraphemes(str);
+    const keyboard = {};
 
-    for (let i = dict.charList.length - 1; i >= 0; i -= 1) {
-        if (Math.random() * (i + 1) < size - arr.length) {
-            arr.push(dict.charList[i]);
+    for (const i in arr) {
+        if (!keyboard[arr[i]]) {
+            keyboard[arr[i]] = true;
+            size -= 1;
         }
     }
 
-    arr.sort();
+    for (let i = dict.charList.length - 1; i >= 0; i -= 1) {
+        if (Math.random() * (i + 1) < size && !keyboard[dict.charList[i]]) {
+            keyboard[dict.charList[i]] = true;
+            size -= 1;
+        }
+    }
 
-    return arr;
+    Object.keys(keyboard).sort().forEach((char, i, list) => {
+        keyboard[char] = i;
+    });
+
+    return keyboard;
 };
 
 const guess = (str, strH, char) => {
@@ -70,6 +86,7 @@ module.exports = {
     length: length,
     dictInit: dictInit,
     dictAdd: dictAdd,
+    dictFinalize: dictFinalize,
     dictSelect: dictSelect,
     makeKeyboard: makeKeyboard,
     guess: guess,
