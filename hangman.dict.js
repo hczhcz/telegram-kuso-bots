@@ -7,7 +7,9 @@ const config = require('./config');
 
 const core = require('./hangman.core');
 
-const load = (id, onDone, onNotValid) => {
+const dicts = {};
+
+const load = (id, limit, onDone, onNotValid) => {
     let dictInfo = null;
 
     for (const i in config.hangmanDict) {
@@ -19,19 +21,27 @@ const load = (id, onDone, onNotValid) => {
     }
 
     if (dictInfo) {
-        const rl = readline.createInterface({
-            input: fs.createReadStream('hangman/' + id + '.dict'),
-        });
+        if (dicts[id + '_' + limit]) {
+            onDone(dicts[id + '_' + limit]);
+        } else {
+            const rl = readline.createInterface({
+                input: fs.createReadStream('hangman/' + id + '.dict'),
+            });
 
-        const dict = core.dictInit();
+            const dict = core.dictInit();
 
-        rl.on('line', (str) => {
-            core.dictAdd(dict, str);
-        });
+            rl.on('line', (str) => {
+                if (dict.strList.length < limit) {
+                    core.dictAdd(dict, str);
+                }
+            });
 
-        rl.on('close', () => {
-            onDone(dict);
-        });
+            rl.on('close', () => {
+                dicts[id + '_' + limit] = dict;
+
+                onDone(dict);
+            });
+        }
     } else {
         onNotValid();
     }
