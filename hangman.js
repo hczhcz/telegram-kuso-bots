@@ -86,8 +86,10 @@ const messageUpdate = (msg, game) => {
 //     );
 // };
 
-bot.onText(/^\/hang(@\w+)?$/, event((msg, match) => {
+bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {
     const lines = [];
+
+    const keyboardSize = parseInt(match[2], 10) || 32;
 
     for (const i in config.hangmanDict) {
         const dictInfo = config.hangmanDict[i];
@@ -95,7 +97,7 @@ bot.onText(/^\/hang(@\w+)?$/, event((msg, match) => {
         // note: default dict size limit is 1m
         lines.push([{
             text: dictInfo.title,
-            callback_data: JSON.stringify(['dict', dictInfo.id, 1000000]),
+            callback_data: JSON.stringify(['dict', dictInfo.id, 1000000, keyboardSize]),
         }]);
 
         if (dictInfo.limits.length) {
@@ -104,7 +106,7 @@ bot.onText(/^\/hang(@\w+)?$/, event((msg, match) => {
             for (const j in dictInfo.limits) {
                 line.push({
                     text: dictInfo.limits[j],
-                    callback_data: JSON.stringify(['dict', dictInfo.id, dictInfo.limits[j]]),
+                    callback_data: JSON.stringify(['dict', dictInfo.id, dictInfo.limits[j], keyboardSize]),
                 });
             }
 
@@ -129,14 +131,18 @@ bot.on('callback_query', (query) => {
     const info = JSON.parse(query.data);
 
     if (info[0] === 'dict') {
+        if (typeof info[2] !== 'number' || typeof info[3] !== 'number') {
+            throw Error(JSON.stringify(query));
+        }
+
         log(
             msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
-            'dict ' + info[1] + ' ' + info[2]
+            'dict ' + info[1] + ' ' + info[2] + ' ' + info[3]
         );
 
         dictionary.load(
             info[1],
-            parseInt(info[2], 10),
+            info[2],
             (dict) => {
                 // loaded
 
@@ -144,7 +150,7 @@ bot.on('callback_query', (query) => {
                     msg.chat.id + '_' + msg.message_id,
                     query.from.id,
                     dict,
-                    32,
+                    info[3],
                     (game) => {
                         // game init
 
@@ -171,6 +177,10 @@ bot.on('callback_query', (query) => {
             }
         );
     } else if (info[0] === 'guess') {
+        if (typeof info[1] !== 'number') {
+            throw Error(JSON.stringify(query));
+        }
+
         log(
             msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'guess ' + info[1]
@@ -179,7 +189,7 @@ bot.on('callback_query', (query) => {
         gameplay.click(
             msg.chat.id + '_' + msg.message_id,
             query.from.id,
-            parseInt(info[1], 10),
+            info[1],
             (game) => {
                 // game continue
 
