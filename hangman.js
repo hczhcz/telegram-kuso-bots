@@ -5,7 +5,7 @@ const fs = require('fs');
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.hangmanToken);
 
-const dict = require('./hangman.dict');
+const dictionary = require('./hangman.dictionary');
 const gameplay = require('./hangman.gameplay');
 
 const fd = fs.openSync('log_hangman', 'a');
@@ -115,27 +115,29 @@ const event = (handler) => {
 //     );
 // };
 
-bot.onText(/^\/hang(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
+bot.onText(/^\/hang(@\w+)?$/, event((msg, match) => {
     const lines = [];
 
     for (const i in config.hangmanDict) {
         const dictInfo = config.hangmanDict[i];
 
-        const line = [];
-
-        line.push({
+        lines.push([{
             text: dictInfo.title,
             callback_data: JSON.stringify(['dict', dictInfo.id, 1000000]), // default limit
-        });
+        }]);
 
-        for (const j in dictInfo.limits) {
-            line.push({
-                text: dictInfo.limits[j],
-                callback_data: JSON.stringify(['dict', dictInfo.id, dictInfo.limits[j]]),
-            });
+        if (dictInfo.limits.length) {
+            const line = [];
+
+            for (const j in dictInfo.limits) {
+                line.push({
+                    text: dictInfo.limits[j],
+                    callback_data: JSON.stringify(['dict', dictInfo.id, dictInfo.limits[j]]),
+                });
+            }
+
+            lines.push(line);
         }
-
-        lines.push(line);
     }
 
     bot.sendMessage(
@@ -158,6 +160,33 @@ bot.on('callback_query', (query) => {
         log(
             msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'dict ' + info[1] + ' ' + info[2]
+        );
+
+        dictionary.load(
+            info[1],
+            parseInt(info[2], 10),
+            (dict) => {
+                // loaded
+
+                gameplay.init(
+                    msg.chat.id + '_' + msg.message_id,
+                    query.from.id,
+                    dict,
+                    32, // TODO: config?
+                    (game) => {
+                        // game init
+                    },
+                    () => {
+                        // game exist
+
+                        // never reach
+                        throw Error(JSON.stringify(query));
+                    }
+                );
+            },
+            () => {
+                // not valid
+            }
         );
 
         // gameplay.click(
