@@ -12,54 +12,63 @@ const length = (str) => {
 
 const dictInit = () => {
     return {
-        strList: [],
-        charList: [],
-        strSet: {},
-        charSet: {},
+        list: [],
+        charset: {},
+        charsetSize: 0,
     };
 };
 
 const dictAdd = (dict, str) => {
-    if (!dict.strSet[str]) {
-        dict.strSet[str] = true;
-        dict.strList.push(str);
+    dict.list.push(str);
 
-        const arr = splitter.splitGraphemes(str);
+    const arr = splitter.splitGraphemes(str);
 
-        for (const i in arr) {
-            if (!dict.charSet[arr[i]]) {
-                dict.charSet[arr[i]] = true;
-                dict.charList.push(arr[i]);
-            }
+    for (const i in arr) {
+        if (!dict.charset[arr[i]]) {
+            dict.charset[arr[i]] = true;
+            dict.charsetSize += 1;
         }
     }
 };
 
-const dictFinalize = (dict) => {
-    delete dict.strSet;
-    delete dict.charSet;
-};
-
 const dictSelect = (dict) => {
-    return dict.strList[Math.floor(Math.random() * dict.strList.length)];
+    return dict.list[Math.floor(Math.random() * dict.list.length)];
 };
 
 const makeKeyboard = (dict, str, size) => {
     const arr = splitter.splitGraphemes(str);
     const keyboard = {};
+    let keyboardSize = 0;
+
+    let remain = dict.charsetSize;
 
     for (const i in arr) {
         if (!keyboard[arr[i]]) {
             keyboard[arr[i]] = true;
-            size -= 1;
+            keyboardSize += 1;
+
+            if (dict.charset[arr[i]]) {
+                remain -= 1;
+            }
         }
     }
 
-    for (let i = dict.charList.length - 1; i >= 0; i -= 1) {
-        if (Math.random() * (i + 1) < size && !keyboard[dict.charList[i]]) {
-            keyboard[dict.charList[i]] = true;
-            size -= 1;
+    for (const i in dict.charset) {
+        if (keyboard[i]) {
+            continue;
         }
+
+        if (Math.random() * remain < size - keyboardSize) {
+            keyboard[i] = true;
+            keyboardSize += 1;
+        }
+
+        remain -= 1;
+    }
+
+    if (remain) {
+        // never reach
+        throw Error();
     }
 
     return Object.keys(keyboard).sort();
@@ -82,7 +91,6 @@ module.exports = {
     length: length,
     dictInit: dictInit,
     dictAdd: dictAdd,
-    dictFinalize: dictFinalize,
     dictSelect: dictSelect,
     makeKeyboard: makeKeyboard,
     guess: guess,

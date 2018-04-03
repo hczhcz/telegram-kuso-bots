@@ -31,7 +31,7 @@ const load = (id, limit, onDone, onNotValid) => {
             const dict = core.dictInit();
 
             rl.on('line', (str) => {
-                if (dict.strList.length < limit) {
+                if (dict.list.length < limit) {
                     core.dictAdd(dict, str);
                 }
             });
