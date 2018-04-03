@@ -91,6 +91,7 @@ const playerUpdate = (msg, list) => {
         {
             chat_id: msg.chat.id,
             message_id: msg.message_id,
+            reply_to_message_id: msg.reply_to_message.message_id,
             reply_markup: {
                 inline_keyboard: [[{
                     text: '加入',
@@ -232,7 +233,10 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
 
             bot.sendMessage(
                 msg.chat.id,
-                '一大波玩家正在赶来……'
+                '一大波玩家正在赶来……',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
             ).then((sentmsg) => {
                 playerUpdate(
                     sentmsg,
