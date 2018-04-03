@@ -54,16 +54,14 @@ const makeKeyboard = (dict, str, size) => {
     }
 
     for (const i in dict.charset) {
-        if (keyboard[i]) {
-            continue;
-        }
+        if (!keyboard[i]) {
+            if (Math.random() * remain < size - keyboardSize) {
+                keyboard[i] = true;
+                keyboardSize += 1;
+            }
 
-        if (Math.random() * remain < size - keyboardSize) {
-            keyboard[i] = true;
-            keyboardSize += 1;
+            remain -= 1;
         }
-
-        remain -= 1;
     }
 
     if (remain) {

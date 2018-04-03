@@ -42,21 +42,25 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGame
 
         if (result === 'normal') {
             return onGameContinue(game);
-        } else if (result === 'win') {
+        }
+
+        if (result === 'win') {
             delete games[id];
 
             return onGameWin(game);
-        } else if (result === 'lose') {
+        }
+
+        if (result === 'lose') {
             delete games[id];
 
             return onGameLose(game);
-        } else {
-            // never reach
-            throw Error();
         }
-    } else {
-        return onNotChanged(game);
+
+        // never reach
+        throw Error();
     }
+
+    return onNotChanged(game);
 };
 
 module.exports = {

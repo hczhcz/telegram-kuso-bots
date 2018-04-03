@@ -92,9 +92,10 @@ bot.onText(/^\/hang(@\w+)?$/, event((msg, match) => {
     for (const i in config.hangmanDict) {
         const dictInfo = config.hangmanDict[i];
 
+        // note: default dict size limit is 1m
         lines.push([{
             text: dictInfo.title,
-            callback_data: JSON.stringify(['dict', dictInfo.id, 1000000]), // default limit
+            callback_data: JSON.stringify(['dict', dictInfo.id, 1000000]),
         }]);
 
         if (dictInfo.limits.length) {
@@ -143,7 +144,7 @@ bot.on('callback_query', (query) => {
                     msg.chat.id + '_' + msg.message_id,
                     query.from.id,
                     dict,
-                    32, // TODO: config?
+                    32,
                     (game) => {
                         // game init
 

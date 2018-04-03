@@ -65,9 +65,9 @@ const click = (id, playerId, charIndex, onGameContinue, onGameWin, onNotValid, o
         }
 
         return onGameContinue(game);
-    } else {
-        return onNotValid();
     }
+
+    return onNotValid();
 };
 
 module.exports = {
