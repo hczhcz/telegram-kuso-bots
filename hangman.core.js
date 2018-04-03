@@ -62,11 +62,7 @@ const makeKeyboard = (dict, str, size) => {
         }
     }
 
-    Object.keys(keyboard).sort().forEach((char, i, list) => {
-        keyboard[char] = i;
-    });
-
-    return keyboard;
+    return Object.keys(keyboard).sort();
 };
 
 const guess = (str, strH, char) => {

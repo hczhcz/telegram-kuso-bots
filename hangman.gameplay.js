@@ -32,28 +32,41 @@ const init = (id, meowId, dict, keyboardSize, onGameInit, onGameExist) => {
         answer: answer,
         hint: hint(answer),
         keyboard: core.makeKeyboard(dict, answer, keyboardSize),
+        error: 0,
         history: [],
     };
 
     return onGameInit(game);
 };
 
-const click = (id, playerId, char, onGameContinue, onGameWin, onGameNotExist) => {
+const click = (id, playerId, key, onGameContinue, onGameWin, onNotValid, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
 
     const game = games[id];
 
-    game.hint = core.guess(game.answer, game.hint, char);
-    game.history.push([playerId, char]);
+    const char = game.keyboard[key];
+    const oldHint = game.hint;
 
-    if (game.answer === game.hint) {
-        delete games[id];
+    if (char) {
+        game.hint = core.guess(game.answer, game.hint, char);
+        game.keyboard[key] = null;
+        game.history.push([playerId, char]);
 
-        onGameWin(game);
+        if (game.hint === game.answer) {
+            delete games[id];
+
+            return onGameWin(game);
+        }
+
+        if (game.hint === oldHint) {
+            error += 1;
+        }
+
+        return onGameContinue(game);
     } else {
-        onGameContinue(game);
+        return onNotValid();
     }
 };
 
