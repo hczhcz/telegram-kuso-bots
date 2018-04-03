@@ -5,6 +5,10 @@ const core = require('./hangman.core');
 const games = {};
 const meows = {};
 
+const meowInit = (meowId, answer) => {
+    meows[meowId] = answer;
+};
+
 const hint = (answer) => {
     return '喵'.repeat(core.length(answer));
 };
@@ -54,6 +58,7 @@ const click = (id, playerId, char, onGameContinue, onGameWin, onGameNotExist) =>
 };
 
 module.exports = {
+    meowInit: meowInit,
     init: init,
     click: click,
 };
