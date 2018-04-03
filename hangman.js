@@ -33,10 +33,10 @@ const messageUpdate = (msg, game) => {
     console.log(game)
     const matrix = [];
 
-    for (let i = 0; i < game.keyboard.length; i += 8) {
+    for (let i = 0; i < game.keyboard.length / 8; i += 1) {
         matrix.push([]);
 
-        for (let j = i; j < i + 8 && j < game.keyboard.length; j += 1) {
+        for (let j = i * 8; j < i * 8 + 8 && j < game.keyboard.length; j += 1) {
             matrix[i].push({
                 text: game.keyboard[j],
                 callback_data: JSON.stringify(['guess', j]),
