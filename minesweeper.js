@@ -144,12 +144,6 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
                 );
             },
             () => {
-                // game exist
-
-                // never reach
-                throw Error(sentmsg);
-            },
-            () => {
                 // not valid
 
                 bot.editMessageText(
@@ -160,6 +154,12 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
                         reply_to_message_id: msg.message_id,
                     }
                 );
+            },
+            () => {
+                // game exist
+
+                // never reach
+                throw Error(JSON.stringify(sentmsg));
             }
         );
     });
@@ -170,7 +170,7 @@ bot.on('callback_query', (query) => {
     const info = JSON.parse(query.data);
 
     if (typeof info[0] !== 'number' || typeof info[1] !== 'number') {
-        throw Error(info);
+        throw Error(JSON.stringify(query));
     }
 
     log(

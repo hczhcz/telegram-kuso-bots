@@ -4,7 +4,7 @@ const core = require('./minesweeper.core');
 
 const games = {};
 
-const init = (id, rows, columns, mines, onGameInit, onGameExist, onNotValid) => {
+const init = (id, rows, columns, mines, onGameInit, onNotValid, onGameExist) => {
     if (games[id]) {
         return onGameExist();
     }
@@ -41,21 +41,21 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGame
         const result = core.status(game.map);
 
         if (result === 'normal') {
-            onGameContinue(game);
+            return onGameContinue(game);
         } else if (result === 'win') {
             delete games[id];
 
-            onGameWin(game);
+            return onGameWin(game);
         } else if (result === 'lose') {
             delete games[id];
 
-            onGameLose(game);
+            return onGameLose(game);
         } else {
             // never reach
-            throw Error(result);
+            throw Error();
         }
     } else {
-        onNotChanged(game);
+        return onNotChanged(game);
     }
 };
 

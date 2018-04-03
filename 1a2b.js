@@ -159,6 +159,9 @@ const gameEvent = event((msg, match) => {
         },
         () => {
             // game not exist
+
+            // never reach
+            throw Error(JSON.stringify(msg));
         }
     );
 });
