@@ -13,7 +13,7 @@ const load = (id, limit, onDone, onNotValid) => {
     let dictInfo = null;
 
     for (const i in config.hangmanDict) {
-        if (config.hangman[i].id === id) {
+        if (config.hangmanDict[i].id === id) {
             dictInfo = config.hangmanDict[i];
 
             break;

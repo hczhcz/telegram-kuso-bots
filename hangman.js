@@ -29,67 +29,33 @@ const event = (handler) => {
     };
 };
 
-// const messageUpdate = (msg, game) => {
-//     const matrix = [];
+const messageUpdate = (msg, game) => {
+    console.log(game)
+    const matrix = [];
 
-//     for (let i = 0; i < game.rows; i += 1) {
-//         matrix.push([]);
+    for (let i = 0; i < game.keyboard.length; i += 8) {
+        matrix.push([]);
 
-//         for (let j = 0; j < game.columns; j += 1) {
-//             matrix[i].push({
-//                 text: {
-//                     's': '\u2588',
-//                     'S': '\u259a',
-//                     'm': '\u2588',
-//                     'M': '\u259a',
-//                     '0': ' ',
-//                     '1': '1',
-//                     '2': '2',
-//                     '3': '3',
-//                     '4': '4',
-//                     '5': '5',
-//                     '6': '6',
-//                     '7': '7',
-//                     '8': '8',
-//                     '*': '*',
-//                 }[
-//                     game.map
-//                         ? game.map[i][j]
-//                         : 's'
-//                 ],
-//                 callback_data: JSON.stringify([i, j]),
-//             });
-//         }
-//     }
+        for (let j = i; j < i + 8 && j < game.keyboard.length; j += 1) {
+            matrix[i].push({
+                text: game.keyboard[j],
+                callback_data: JSON.stringify(['guess', j]),
+            });
+        }
+    }
 
-//     const updateFunc = () => {
-//         game.update = () => {
-//             delete game.update;
-//         };
-
-//         bot.editMessageText(
-//             '路过的大爷～来扫个雷嘛～',
-//             {
-//                 chat_id: msg.chat.id,
-//                 message_id: msg.message_id,
-//                 reply_to_message_id: msg.reply_to_message.message_id,
-//                 reply_markup: {
-//                     inline_keyboard: matrix,
-//                 },
-//             }
-//         ).finally(() => {
-//             setTimeout(() => {
-//                 game.update();
-//             }, config.minesweeperUpdateDelay);
-//         });
-//     };
-
-//     if (game.update) {
-//         game.update = updateFunc;
-//     } else {
-//         updateFunc();
-//     }
-// };
+    bot.editMessageText(
+        '...' + game.hint,
+        {
+            chat_id: msg.chat.id,
+            message_id: msg.message_id,
+            reply_to_message_id: msg.reply_to_message.message_id,
+            reply_markup: {
+                inline_keyboard: matrix,
+            },
+        }
+    );
+};
 
 // const gameStat = (msg, game, title, last) => {
 //     const stat = {};
@@ -175,6 +141,13 @@ bot.on('callback_query', (query) => {
                     32, // TODO: config?
                     (game) => {
                         // game init
+
+                        messageUpdate(
+                            msg,
+                            game
+                        );
+
+                        bot.answerCallbackQuery(query.id);
                     },
                     () => {
                         // game exist
@@ -186,87 +159,51 @@ bot.on('callback_query', (query) => {
             },
             () => {
                 // not valid
+
+                // never reach
+                throw Error(JSON.stringify(query));
             }
         );
-
-        // gameplay.click(
-        //     msg.chat.id + '_' + msg.message_id,
-        //     query.from.id,
-        //     info[0],
-        //     info[1],
-        //     (game) => {
-        //         // game continue
-
-        //         game.nameMap()[query.from.id] = query.from.username || query.from.first_name;
-
-        //         messageUpdate(
-        //             msg,
-        //             game
-        //         );
-
-        //         bot.answerCallbackQuery(query.id);
-        //     },
-        //     (game) => {
-        //         // game win
-
-        //         game.nameMap()[query.from.id] = query.from.username || query.from.first_name;
-
-        //         fs.write(fd, JSON.stringify(game) + '\n', () => {
-        //             // nothing
-        //         });
-
-        //         messageUpdate(
-        //             msg,
-        //             game
-        //         );
-
-        //         gameStat(
-        //             msg,
-        //             game,
-        //             '哇所有奇怪的地方都被你打开啦…好羞羞',
-        //             '你要对人家负责哟/// ///'
-        //         );
-
-        //         bot.answerCallbackQuery(query.id);
-        //     },
-        //     (game) => {
-        //         // game lose
-
-        //         game.nameMap()[query.from.id] = query.from.username || query.from.first_name;
-
-        //         fs.write(fd, JSON.stringify(game) + '\n', () => {
-        //             // nothing
-        //         });
-
-        //         messageUpdate(
-        //             msg,
-        //             game
-        //         );
-
-        //         gameStat(
-        //             msg,
-        //             game,
-        //             '一道火光之后，你就在天上飞了呢…好奇怪喵',
-        //             '是我们中出的叛徒！'
-        //         );
-
-        //         bot.answerCallbackQuery(query.id);
-        //     },
-        //     (game) => {
-        //         // not changed
-
-        //         bot.answerCallbackQuery(query.id);
-        //     },
-        //     () => {
-        //         // game not exist
-
-        //         bot.answerCallbackQuery(query.id);
-        //     }
-        // );
     } else if (info[0] === 'guess') {
         log(
             msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'guess ' + info[1]
+        );
+
+        gameplay.click(
+            msg.chat.id + '_' + msg.message_id,
+            query.from.id,
+            parseInt(info[1], 10),
+            (game) => {
+                // game continue
+
+                messageUpdate(
+                    msg,
+                    game
+                );
+
+                bot.answerCallbackQuery(query.id);
+            },
+            (game) => {
+                // game win
+
+                messageUpdate(
+                    msg,
+                    game
+                );
+
+                bot.answerCallbackQuery(query.id);
+            },
+            () => {
+                // not valid
+
+                bot.answerCallbackQuery(query.id);
+            },
+            () => {
+                // game not exist
+
+                bot.answerCallbackQuery(query.id);
+            }
         );
     }
 });

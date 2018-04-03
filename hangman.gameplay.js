@@ -39,19 +39,19 @@ const init = (id, meowId, dict, keyboardSize, onGameInit, onGameExist) => {
     return onGameInit(game);
 };
 
-const click = (id, playerId, key, onGameContinue, onGameWin, onNotValid, onGameNotExist) => {
+const click = (id, playerId, charIndex, onGameContinue, onGameWin, onNotValid, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
 
     const game = games[id];
 
-    const char = game.keyboard[key];
+    const char = game.keyboard[charIndex];
     const oldHint = game.hint;
 
     if (char) {
         game.hint = core.guess(game.answer, game.hint, char);
-        game.keyboard[key] = null;
+        game.keyboard[charIndex] = null;
         game.history.push([playerId, char]);
 
         if (game.hint === game.answer) {
@@ -61,7 +61,7 @@ const click = (id, playerId, key, onGameContinue, onGameWin, onNotValid, onGameN
         }
 
         if (game.hint === oldHint) {
-            error += 1;
+            game.error += 1;
         }
 
         return onGameContinue(game);
