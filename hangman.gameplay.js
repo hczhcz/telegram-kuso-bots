@@ -10,7 +10,7 @@ const meowInit = (meowId, answer) => {
 };
 
 const hint = (answer) => {
-    return '喵'.repeat(core.length(answer));
+    return '.'.repeat(core.length(answer));
 };
 
 const init = (id, meowId, dict, keyboardSize, onGameInit, onGameExist) => {

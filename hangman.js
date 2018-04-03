@@ -30,7 +30,6 @@ const event = (handler) => {
 };
 
 const messageUpdate = (msg, game) => {
-    console.log(game)
     const matrix = [];
 
     for (let i = 0; i < game.keyboard.length / 8; i += 1) {
@@ -38,17 +37,23 @@ const messageUpdate = (msg, game) => {
 
         for (let j = i * 8; j < i * 8 + 8 && j < game.keyboard.length; j += 1) {
             matrix[i].push({
-                text: game.keyboard[j],
+                text: game.keyboard[j] || '⨯',
                 callback_data: JSON.stringify(['guess', j]),
             });
         }
     }
 
+    let text = '( *・ω・)✄╰ひ╯';
+
     bot.editMessageText(
-        '...' + game.hint,
+        '<pre>\n'
+            + '[ ' + game.hint.toLocaleUpperCase() + ' ]\n'
+            + '[ 剩余生命：' + (9 - game.error) + ' ]\n'
+            + '</pre>',
         {
             chat_id: msg.chat.id,
             message_id: msg.message_id,
+            parse_mode: 'HTML',
             reply_to_message_id: msg.reply_to_message.message_id,
             reply_markup: {
                 inline_keyboard: matrix,
