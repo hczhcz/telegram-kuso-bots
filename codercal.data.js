@@ -3,7 +3,7 @@
 const fs = require('fs');
 const readline = require('readline');
 
-const presets = require('./codercal.presets');
+const preset = require('./codercal.preset');
 
 module.exports = (pathCals) => {
     const fdCals = fs.openSync(pathCals, 'a');
@@ -15,9 +15,9 @@ module.exports = (pathCals) => {
     ActionError.prototype = new Error();
 
     const self = {
-        calenders: presets.calenders,
-        lucks: presets.lucks,
-        suffix: presets.suffix,
+        calenders: preset.calenders,
+        lucks: preset.lucks,
+        suffix: preset.suffix,
 
         find: (list, key, value, found, notFound) => {
             for (const i in list) {
