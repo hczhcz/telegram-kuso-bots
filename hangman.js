@@ -91,6 +91,20 @@ const messageUpdate = (msg, game, win) => {
 
     appendLine(null);
 
+    let dictInfo = null;
+
+    for (const i in config.hangmanDict) {
+        if (config.hangmanDict[i].id === game.dictSettings()[0]) {
+            dictInfo = config.hangmanDict[i];
+
+            break;
+        }
+    }
+
+    const limitText = game.dictSettings()[1]
+        ? ' - ' + game.dictSettings()[1]
+        : '';
+
     let winText = '';
 
     if (win) {
@@ -106,6 +120,7 @@ const messageUpdate = (msg, game, win) => {
     bot.editMessageText(
         '<pre>' + text + '\n'
             + '[ ' + game.hint.toLocaleUpperCase() + ' ]\n'
+            + '[ 词典：' + dictInfo.title + limitText + ' ]\n'
             + '[ 剩余生命：' + lives + ' ]\n'
             + winText
             + '</pre>',
@@ -132,7 +147,7 @@ bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {
         // note: default dict size limit is 1m
         lines.push([{
             text: dictInfo.title,
-            callback_data: JSON.stringify(['dict', dictInfo.id, 1000000, keyboardSize]),
+            callback_data: JSON.stringify(['dict', dictInfo.id, null, keyboardSize]),
         }]);
 
         if (dictInfo.limits.length) {
@@ -188,6 +203,10 @@ bot.on('callback_query', (query) => {
                     info[3],
                     (game) => {
                         // game init
+
+                        game.dictSettings = () => {
+                            return [info[1], info[2]];
+                        };
 
                         messageUpdate(
                             msg,
