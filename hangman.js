@@ -258,6 +258,10 @@ bot.on('callback_query', (query) => {
             (game) => {
                 // game win
 
+                fs.write(fd, JSON.stringify(game) + '\n', () => {
+                    // nothing
+                });
+
                 messageUpdate(
                     msg,
                     game,
