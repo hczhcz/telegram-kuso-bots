@@ -29,7 +29,7 @@ const event = (handler) => {
     };
 };
 
-const messageUpdate = (msg, game) => {
+const messageUpdate = (msg, game, win) => {
     const matrix = [];
 
     for (let i = 0; i < game.keyboard.length / 8; i += 1) {
@@ -37,7 +37,7 @@ const messageUpdate = (msg, game) => {
 
         for (let j = i * 8; j < i * 8 + 8 && j < game.keyboard.length; j += 1) {
             matrix[i].push({
-                text: game.keyboard[j] || '⨯',
+                text: game.keyboard[j].toLocaleUpperCase() || '⨯',
                 callback_data: JSON.stringify(['guess', j]),
             });
         }
@@ -70,7 +70,7 @@ const messageUpdate = (msg, game) => {
         }
 
         if (guess) {
-            text += lmr[0] + lmr[1] + lmr[2] + ' [ ' + guess + ' ]\n';
+            text += lmr[0] + lmr[1] + lmr[2] + ' [ ' + guess.toLocaleUpperCase() + ' ]\n';
         } else {
             text += lmr[0] + 'ひ' + lmr[2] + '\n';
         }
@@ -86,10 +86,23 @@ const messageUpdate = (msg, game) => {
 
     appendLine(null);
 
+    let winText = '';
+
+    if (win) {
+        if (lives > 0) {
+            winText = '回答正确～撒花～';
+        } else if (lives === 0) {
+            winText = '回答正确～真是好险呢～';
+        } else {
+            winText = '虽然 JJ 已经被 bot 切掉了，但是回答正确～';
+        }
+    }
+
     bot.editMessageText(
         '<pre>' + text + '\n'
             + '[ ' + game.hint.toLocaleUpperCase() + ' ]\n'
             + '[ 剩余生命：' + lives + ' ]\n'
+            + winText
             + '</pre>',
         {
             chat_id: msg.chat.id,
@@ -173,7 +186,8 @@ bot.on('callback_query', (query) => {
 
                         messageUpdate(
                             msg,
-                            game
+                            game,
+                            false
                         );
 
                         bot.answerCallbackQuery(query.id);
@@ -212,7 +226,8 @@ bot.on('callback_query', (query) => {
 
                 messageUpdate(
                     msg,
-                    game
+                    game,
+                    false
                 );
 
                 bot.answerCallbackQuery(query.id);
@@ -222,7 +237,8 @@ bot.on('callback_query', (query) => {
 
                 messageUpdate(
                     msg,
-                    game
+                    game,
+                    true
                 );
 
                 bot.answerCallbackQuery(query.id);
