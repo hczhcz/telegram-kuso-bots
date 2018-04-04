@@ -37,7 +37,7 @@ const messageUpdate = (msg, game, win) => {
 
         for (let j = i * 8; j < i * 8 + 8 && j < game.keyboard.length; j += 1) {
             matrix[i].push({
-                text: game.keyboard[j].toLocaleUpperCase() || '⨯',
+                text: (game.keyboard[j] || '⨯').toLocaleUpperCase(),
                 callback_data: JSON.stringify(['guess', j]),
             });
         }
