@@ -219,8 +219,7 @@ bot.on('callback_query', (query) => {
                     () => {
                         // game exist
 
-                        // never reach
-                        throw Error(JSON.stringify(query));
+                        bot.answerCallbackQuery(query.id);
                     }
                 );
             },
