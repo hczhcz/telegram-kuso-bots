@@ -32,7 +32,6 @@ const init = (id, meowId, dict, keyboardSize, onGameInit, onGameExist) => {
         answer: answer,
         hint: hint(answer),
         keyboard: core.makeKeyboard(dict, answer, keyboardSize),
-        error: 0,
         history: [],
     };
 
@@ -52,16 +51,12 @@ const click = (id, playerId, charIndex, onGameContinue, onGameWin, onNotValid, o
     if (char) {
         game.hint = core.guess(game.answer, game.hint, char);
         game.keyboard[charIndex] = null;
-        game.history.push([playerId, char]);
+        game.history.push([playerId, char, game.hint !== oldHint]);
 
         if (game.hint === game.answer) {
             delete games[id];
 
             return onGameWin(game);
-        }
-
-        if (game.hint === oldHint) {
-            game.error += 1;
         }
 
         return onGameContinue(game);

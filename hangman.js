@@ -43,12 +43,42 @@ const messageUpdate = (msg, game) => {
         }
     }
 
-    let text = '( *・ω・)✄╰ひ╯';
+    let lives = 9;
+    let text = '';
+
+    // '(  ・＿・)╰||╯\n';
+
+    const appendLine = (guess) => {
+        if (lives > 3) {
+            text += '(  ・＿・)';
+        } else if (lives > 0) {
+            text += '(  ・Ｗ・)';
+        } else if (lives > -3) {
+            text += '( *・皿・)';
+        } else {
+            text += '(  ・皿・)';
+        }
+
+        text += (lives === 9 ? '╰' : lives === 0 ? '✄' : '　')
+            + (guess ? lives === 0 ? '██' : '||' : 'ひ')
+            + (lives === 9 ? '╯' : '　')
+            + (guess ? ' [ ' + guess + ' ]' : '') + '\n';
+    };
+
+    for (const i in game.history) {
+        if (!game.history[i][2]) {
+            appendLine(game.history[i][1]);
+
+            lives -= 1;
+        }
+    }
+
+    appendLine(null);
 
     bot.editMessageText(
-        '<pre>\n'
+        '<pre>' + text + '\n'
             + '[ ' + game.hint.toLocaleUpperCase() + ' ]\n'
-            + '[ 剩余生命：' + (9 - game.error) + ' ]\n'
+            + '[ 剩余生命：' + lives + ' ]\n'
             + '</pre>',
         {
             chat_id: msg.chat.id,
@@ -61,30 +91,6 @@ const messageUpdate = (msg, game) => {
         }
     );
 };
-
-// const gameStat = (msg, game, title, last) => {
-//     const stat = {};
-
-//     for (const i in game.history) {
-//         stat[game.history[i][0]] = stat[game.history[i][0]] + 1 || 1;
-//     }
-
-//     let text = title + '\n\n统计：\n';
-
-//     for (const i in stat) {
-//         text += game.nameMap()[i] + ' - ' + stat[i] + '项操作\n';
-//     }
-
-//     text += '\n' + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last;
-
-//     bot.sendMessage(
-//         msg.chat.id,
-//         text,
-//         {
-//             reply_to_message_id: msg.message_id,
-//         }
-//     );
-// };
 
 bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {
     const lines = [];
