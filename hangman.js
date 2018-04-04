@@ -59,10 +59,21 @@ const messageUpdate = (msg, game) => {
             text += '(  ・皿・)';
         }
 
-        text += (lives === 9 ? '╰' : lives === 0 ? '✄' : '　')
-            + (guess ? lives === 0 ? '██' : '||' : 'ひ')
-            + (lives === 9 ? '╯' : '　')
-            + (guess ? ' [ ' + guess + ' ]' : '') + '\n';
+        const lmr = ['　', '||', '　'];
+
+        if (lives === 9) {
+            lmr[0] = '╰';
+            lmr[2] = '╯';
+        } else if (lives === 0) {
+            lmr[0] = '✄';
+            lmr[1] = '██';
+        }
+
+        if (guess) {
+            text += lmr[0] + lmr[1] + lmr[2] + ' [ ' + guess + ' ]\n';
+        } else {
+            text += lmr[0] + 'ひ' + lmr[2] + '\n';
+        }
     };
 
     for (const i in game.history) {
