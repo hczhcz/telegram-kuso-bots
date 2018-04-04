@@ -31,14 +31,14 @@ const event = (handler) => {
 
 const messageUpdate = (msg, game, win) => {
     const matrix = [];
-    const lineCount = game.keyboard.length / 8;
+    const lineCount = Math.floor((game.keyboard.length - 1) / 8) + 1;
 
     for (let i = 0; i < lineCount; i += 1) {
         matrix.push([]);
 
         for (
             let j = Math.floor(game.keyboard.length * i / lineCount);
-            j < Math.floor(game.keyboard.length * (i + 1) / lineCount) && j < game.keyboard.length;
+            j < Math.floor(game.keyboard.length * (i + 1) / lineCount);
             j += 1
         ) {
             matrix[i].push({
