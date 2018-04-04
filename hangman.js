@@ -37,8 +37,8 @@ const messageUpdate = (msg, game, win) => {
         matrix.push([]);
 
         for (
-            let j = game.keyboard.length * i / lineCount;
-            j < game.keyboard.length * (i + 1) / lineCount && j < game.keyboard.length;
+            let j = Math.floor(game.keyboard.length * i / lineCount);
+            j < Math.floor(game.keyboard.length * (i + 1) / lineCount) && j < game.keyboard.length;
             j += 1
         ) {
             matrix[i].push({
@@ -119,8 +119,8 @@ const messageUpdate = (msg, game, win) => {
 
     bot.editMessageText(
         '<pre>' + text + '\n'
+            + '[ ' + dictInfo.title + limitText + ' ]\n'
             + '[ ' + game.hint.toLocaleUpperCase() + ' ]\n'
-            + '[ 词典：' + dictInfo.title + limitText + ' ]\n'
             + '[ 剩余生命：' + lives + ' ]\n'
             + winText
             + '</pre>',
@@ -181,7 +181,7 @@ bot.on('callback_query', (query) => {
     const info = JSON.parse(query.data);
 
     if (info[0] === 'dict') {
-        if (typeof info[2] !== 'number' || typeof info[3] !== 'number') {
+        if ((typeof info[2] !== 'number' && info[2] !== null) || typeof info[3] !== 'number') {
             throw Error(JSON.stringify(query));
         }
 
