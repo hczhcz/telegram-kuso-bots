@@ -57,13 +57,17 @@ const messageUpdate = (msg, game, win) => {
     const appendLine = (guess, correct) => {
         const face = [' ', '＿', '・'];
 
-        if (lives <= 3 && lives > 0) {
+        if (!correct) {
+            lives -= 1;
+        }
+
+        if (lives < 3 && lives >= 0) {
             face[0] = '!';
-        } else if (lives <= 0 && lives > -3) {
+        } else if (lives < 0 && lives >= -3) {
             face[0] = '*';
         }
 
-        if (lives > 0) {
+        if (lives >= 0) {
             if (correct) {
                 face[1] = 'Ｗ';
             }
@@ -74,11 +78,15 @@ const messageUpdate = (msg, game, win) => {
         }
 
         if (win) {
-            if (lives > 0) {
-                // nothing
-            } else if (lives === 0) {
-                face[2] = '☆';
-            } else if (game.history.length === game.keyboard.length) {
+            if (!guess) {
+                if (lives > 0) {
+                    face[1] = 'Ｗ';
+                } else if (lives === 0) {
+                    face[2] = '☆';
+                }
+            }
+
+            if (game.history.length === game.keyboard.length) {
                 face[2] = '◉';
             }
         }
@@ -92,7 +100,7 @@ const messageUpdate = (msg, game, win) => {
             lmr[2] = '╯';
 
             first = false;
-        } else if (lives === 0) {
+        } else if (lives === -1 && !correct) {
             lmr[0] = '✄';
             lmr[1] = '██';
         }
@@ -101,10 +109,6 @@ const messageUpdate = (msg, game, win) => {
             text += lmr[0] + lmr[1] + lmr[2] + ' [ ' + guess.toLocaleUpperCase() + ' ]\n';
         } else {
             text += lmr[0] + 'ひ' + lmr[2] + '\n';
-        }
-
-        if (!correct) {
-            lives -= 1;
         }
     };
 
