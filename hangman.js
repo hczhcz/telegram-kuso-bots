@@ -55,9 +55,9 @@ const messageUpdate = (msg, game, win) => {
     // '(  ・＿・)╰||╯\n';
 
     const appendLine = (guess, correct) => {
-        const face = [' ', '＿', '・'];
+        const face = [' ', 'ｗ', '・'];
 
-        if (!correct) {
+        if (guess && !correct) {
             lives -= 1;
         }
 
@@ -68,25 +68,21 @@ const messageUpdate = (msg, game, win) => {
         }
 
         if (lives >= 0) {
-            if (correct) {
-                face[1] = 'Ｗ';
+            if (guess && !correct) {
+                face[1] = '＿';
             }
-        } else if (correct) {
+        } else if (guess && correct) {
             face[1] = 'Ａ';
         } else {
             face[1] = '皿';
         }
 
         if (win) {
-            if (!guess) {
-                if (lives > 0) {
-                    face[1] = 'Ｗ';
-                } else if (lives === 0) {
-                    face[2] = '☆';
-                }
-            }
-
-            if (game.history.length === game.keyboard.length) {
+            if (game.history.length === 9) {
+                face[0] = '!';
+                face[2] = '☆';
+            } else if (game.history.length === game.keyboard.length) {
+                face[0] = '*'
                 face[2] = '◉';
             }
         }
@@ -95,21 +91,29 @@ const messageUpdate = (msg, game, win) => {
 
         const lmr = ['　', '||', '　'];
 
+        if (!guess) {
+            lmr[1] = 'ひ';
+        }
+
         if (first) {
             lmr[0] = '╰';
             lmr[2] = '╯';
 
             first = false;
-        } else if (lives === -1 && !correct) {
+        }
+
+        if (lives === -1 && guess && !correct) {
             lmr[0] = '✄';
             lmr[1] = '██';
         }
 
+        text += lmr[0] + lmr[1] + lmr[2];
+
         if (guess) {
-            text += lmr[0] + lmr[1] + lmr[2] + ' [ ' + guess.toLocaleUpperCase() + ' ]\n';
-        } else {
-            text += lmr[0] + 'ひ' + lmr[2] + '\n';
+            text += ' [ ' + guess.toLocaleUpperCase() + ' ]';
         }
+
+        text += '\n';
     };
 
     for (const i in game.history) {
@@ -135,9 +139,9 @@ const messageUpdate = (msg, game, win) => {
     let winText = '';
 
     if (win) {
-        if (lives > 0) {
+        if (game.history.length < 9) {
             winText = '回答正确～撒花～';
-        } else if (lives === 0) {
+        } else if (game.history.length === 9) {
             winText = '回答正确～真是好险呢～';
         } else if (game.history.length === game.keyboard.length) {
             winText = '卧…卧槽？！';
