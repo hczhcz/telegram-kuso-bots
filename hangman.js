@@ -49,26 +49,49 @@ const messageUpdate = (msg, game, win) => {
     }
 
     let lives = 9;
+    let first = true;
     let text = '';
 
     // '(  ・＿・)╰||╯\n';
 
-    const appendLine = (guess) => {
-        if (lives > 3) {
-            text += '(  ・＿・)';
-        } else if (lives > 0) {
-            text += '(  ・Ｗ・)';
-        } else if (lives > -3) {
-            text += '( *・皿・)';
-        } else {
-            text += '(  ・皿・)';
+    const appendLine = (guess, correct) => {
+        const face = [' ', '＿', '・'];
+
+        if (lives <= 3 && lives > 0) {
+            face[0] = '!';
+        } else if (lives <= 0 && lives > -3) {
+            face[0] = '*';
         }
+
+        if (lives > 0) {
+            if (correct) {
+                face[1] = 'Ｗ';
+            }
+        } else if (correct) {
+            face[1] = 'Ａ';
+        } else {
+            face[1] = '皿';
+        }
+
+        if (win) {
+            if (lives > 0) {
+                // nothing
+            } else if (lives === 0) {
+                face[2] = '☆';
+            } else if (game.history.length === game.keyboard.length) {
+                face[2] = '◉';
+            }
+        }
+
+        text += '( ' + face[0] + face[2] + face[1] + face[2] + ')';
 
         const lmr = ['　', '||', '　'];
 
-        if (lives === 9) {
+        if (first) {
             lmr[0] = '╰';
             lmr[2] = '╯';
+
+            first = false;
         } else if (lives === 0) {
             lmr[0] = '✄';
             lmr[1] = '██';
@@ -79,17 +102,17 @@ const messageUpdate = (msg, game, win) => {
         } else {
             text += lmr[0] + 'ひ' + lmr[2] + '\n';
         }
+
+        if (!correct) {
+            lives -= 1;
+        }
     };
 
     for (const i in game.history) {
-        if (!game.history[i][2]) {
-            appendLine(game.history[i][1]);
-
-            lives -= 1;
-        }
+        appendLine(game.history[i][1], game.history[i][2]);
     }
 
-    appendLine(null);
+    appendLine(null, null);
 
     let dictInfo = null;
 
@@ -112,6 +135,8 @@ const messageUpdate = (msg, game, win) => {
             winText = '回答正确～撒花～';
         } else if (lives === 0) {
             winText = '回答正确～真是好险呢～';
+        } else if (game.history.length === game.keyboard.length) {
+            winText = '卧…卧槽？！';
         } else {
             winText = '虽然 JJ 已经被 bot 切掉了，但是回答正确～';
         }
@@ -181,7 +206,7 @@ bot.on('callback_query', (query) => {
     const info = JSON.parse(query.data);
 
     if (info[0] === 'dict') {
-        if ((typeof info[2] !== 'number' && info[2] !== null) || typeof info[3] !== 'number') {
+        if (typeof info[2] !== 'number' && info[2] !== null || typeof info[3] !== 'number') {
             throw Error(JSON.stringify(query));
         }
 
