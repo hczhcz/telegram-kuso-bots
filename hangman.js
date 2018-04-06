@@ -79,7 +79,9 @@ const messageUpdate = (msg, game, win) => {
         }
 
         if (win) {
-            if (totLives === 0) {
+            if (totLives === 9) {
+                face[2] = '≖';
+            } else if (totLives === 0) {
                 face[0] = '!';
                 face[2] = '☆';
             } else if (game.history.length === game.keyboard.length) {
