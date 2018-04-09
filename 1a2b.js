@@ -329,12 +329,12 @@ bot.on('callback_query', (query) => {
                     list
                 );
 
-                bot.answerCallbackQuery(query.id);
+                bot.answerCallbackQuery(query.id).catch((err) => {});
             },
             () => {
                 // player exist
 
-                bot.answerCallbackQuery(query.id);
+                bot.answerCallbackQuery(query.id).catch((err) => {});
             }
         );
     } else if (query.data === 'flee') {
@@ -349,12 +349,12 @@ bot.on('callback_query', (query) => {
                     list
                 );
 
-                bot.answerCallbackQuery(query.id);
+                bot.answerCallbackQuery(query.id).catch((err) => {});
             },
             () => {
                 // player not exist
 
-                bot.answerCallbackQuery(query.id);
+                bot.answerCallbackQuery(query.id).catch((err) => {});
             }
         );
     } else if (query.data === 'clear') {
@@ -368,12 +368,12 @@ bot.on('callback_query', (query) => {
                     []
                 );
 
-                bot.answerCallbackQuery(query.id);
+                bot.answerCallbackQuery(query.id).catch((err) => {});
             },
             () => {
                 // not multiplayer
 
-                bot.answerCallbackQuery(query.id);
+                bot.answerCallbackQuery(query.id).catch((err) => {});
             }
         );
     }
