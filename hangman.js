@@ -33,14 +33,16 @@ const messageUpdate = (msg, game, win) => {
     const matrix = [];
     const lineCount = Math.floor((game.keyboard.length - 1) / 8) + 1;
 
+    const keyPerLine = Math.floor(game.keyboard.length / lineCount);
+    const keyRemain = game.keyboard.length - keyPerLine * lineCount;
+
     for (let i = 0; i < lineCount; i += 1) {
         matrix.push([]);
 
-        for (
-            let j = Math.floor(game.keyboard.length * i / lineCount);
-            j < Math.floor(game.keyboard.length * (i + 1) / lineCount);
-            j += 1
-        ) {
+        const begin = i * keyPerLine + Math.min(i, keyRemain);
+        const end = (i + 1) * keyPerLine + Math.min(i + 1, keyRemain);
+
+        for (let j = begin; j < end; j += 1) {
             matrix[i].push({
                 text: (game.keyboard[j] || '⨯').toLocaleUpperCase(),
                 callback_data: JSON.stringify(['guess', j]),
