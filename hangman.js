@@ -30,6 +30,20 @@ const event = (handler) => {
 };
 
 const messageUpdate = (msg, game, win) => {
+    if (game.update) {
+        game.update = () => {
+            delete game.update;
+
+            messageUpdate(msg, game);
+        };
+
+        return;
+    }
+
+    game.update = () => {
+        delete game.update;
+    };
+
     const matrix = [];
     const lineCount = Math.floor((game.keyboard.length - 1) / 8) + 1;
 
@@ -179,7 +193,11 @@ const messageUpdate = (msg, game, win) => {
                 inline_keyboard: matrix,
             },
         }
-    );
+    ).finally(() => {
+        setTimeout(() => {
+            game.update();
+        }, config.hangmanUpdateDelay);
+    });;
 };
 
 bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {

@@ -29,6 +29,20 @@ const event = (handler) => {
 };
 
 const messageUpdate = (msg, game) => {
+    if (game.update) {
+        game.update = () => {
+            delete game.update;
+
+            messageUpdate(msg, game);
+        };
+
+        return;
+    }
+
+    game.update = () => {
+        delete game.update;
+    };
+
     const matrix = [];
 
     for (let i = 0; i < game.rows; i += 1) {
@@ -61,33 +75,21 @@ const messageUpdate = (msg, game) => {
         }
     }
 
-    const updateFunc = () => {
-        game.update = () => {
-            delete game.update;
-        };
-
-        bot.editMessageText(
-            '路过的大爷～来扫个雷嘛～',
-            {
-                chat_id: msg.chat.id,
-                message_id: msg.message_id,
-                reply_to_message_id: msg.reply_to_message.message_id,
-                reply_markup: {
-                    inline_keyboard: matrix,
-                },
-            }
-        ).finally(() => {
-            setTimeout(() => {
-                game.update();
-            }, config.minesweeperUpdateDelay);
-        });
-    };
-
-    if (game.update) {
-        game.update = updateFunc;
-    } else {
-        updateFunc();
-    }
+    bot.editMessageText(
+        '路过的大爷～来扫个雷嘛～',
+        {
+            chat_id: msg.chat.id,
+            message_id: msg.message_id,
+            reply_to_message_id: msg.reply_to_message.message_id,
+            reply_markup: {
+                inline_keyboard: matrix,
+            },
+        }
+    ).finally(() => {
+        setTimeout(() => {
+            game.update();
+        }, config.minesweeperUpdateDelay);
+    });
 };
 
 const gameStat = (msg, game, title, last) => {
