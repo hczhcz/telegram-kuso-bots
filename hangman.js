@@ -30,11 +30,11 @@ const event = (handler) => {
 };
 
 const messageUpdate = (msg, game, win) => {
-    if (game.update) {
+    if (game.update && !win) {
         game.update = () => {
             delete game.update;
 
-            messageUpdate(msg, game);
+            messageUpdate(msg, game, win);
         };
 
         return;
@@ -175,9 +175,9 @@ const messageUpdate = (msg, game, win) => {
         ? ' - ' + game.dictSettings()[1]
         : '';
 
-    const hint = win
-        ? '<a href="https://google.com/search?q=' + encodeURIComponent(game.answer) + '">' + game.answer + '</a>'
-        : game.hint;
+    const hint = dictInfo.upperCase
+        ? (game.hint || game.answer).toLocaleUpperCase()
+        : game.hint || game.answer;
 
     let winText = '';
 
