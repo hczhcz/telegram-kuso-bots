@@ -171,10 +171,6 @@ const messageUpdate = (msg, game, win) => {
 
     // game info
 
-    const limitText = game.dictSettings()[1]
-        ? ' - ' + game.dictSettings()[1]
-        : '';
-
     const hint = dictInfo.upperCase
         ? (game.hint || game.answer).toLocaleUpperCase()
         : game.hint || game.answer;
@@ -195,7 +191,7 @@ const messageUpdate = (msg, game, win) => {
 
     bot.editMessageText(
         '<pre>' + text + '\n'
-            + '[ ' + dictInfo.title + limitText + ' ]\n'
+            + '[ ' + dictInfo.title + ' - ' + game.dictSettings()[1] + ' ]\n'
             + '[ ' + hint + ' ]\n'
             + '[ 剩余生命：' + totLives + ' ]\n'
             + winText
@@ -284,7 +280,7 @@ bot.on('callback_query', (query) => {
                         // game init
 
                         game.dictSettings = () => {
-                            return [info[1], info[2]];
+                            return [info[1], info[2] || dict.list.length];
                         };
 
                         messageUpdate(
