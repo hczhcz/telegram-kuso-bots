@@ -358,3 +358,51 @@ bot.on('callback_query', (query) => {
         );
     }
 });
+
+bot.on('inline_query', (query) => {
+    if (config.ban[query.from.id]) {
+        bot.answerInlineQuery(
+            query.id,
+            [{
+                type: 'article',
+                id: 'banned',
+                title: 'hang喵',
+                input_message_content: {
+                    message_text: '该用户因存在恶意使用 bot 的报告，已被列入黑名单',
+                },
+            }],
+            {
+                cache_time: 0,
+                is_personal: true,
+            }
+        );
+    } else {
+        bot.answerInlineQuery(
+            query.id,
+            [{
+                type: 'article',
+                id: 'playmeow',
+                title: 'hang喵',
+                input_message_content: {
+                    message_text: ('@' + query.from.username || query.from.first_name) + ' 喵喵模式已装载！\n\n'
+                        + '/hang 开始新游戏',
+                },
+            }],
+            {
+                cache_time: 0,
+                is_personal: true,
+            }
+        );
+    }
+});
+
+bot.on('chosen_inline_result', (chosen) => {
+    log(
+        'inline:' + chosen.from.id + '@' + (chosen.from.username || ''),
+        chosen.result_id + ' ' + chosen.query
+    );
+
+    if (chosen.result_id === 'playmeow') {
+        gameplay.meowInit(chosen.from.id, chosen.query);
+    }
+});
