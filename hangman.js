@@ -44,15 +44,19 @@ const messageUpdate = (msg, game, win) => {
         delete game.update;
     };
 
-    let allLower = true;
+    // dict info
 
-    for (const i in game.keyboard) {
-        if (game.keyboard[i] && game.keyboard[i].toLocaleLowerCase() !== game.keyboard[i]) {
-            allLower = false;
+    let dictInfo = null;
+
+    for (const i in config.hangmanDict) {
+        if (config.hangmanDict[i].id === game.dictSettings()[0]) {
+            dictInfo = config.hangmanDict[i];
 
             break;
         }
     }
+
+    // keyboard
 
     const matrix = [];
     const lineCount = Math.floor((game.keyboard.length - 1) / 8) + 1;
@@ -67,18 +71,16 @@ const messageUpdate = (msg, game, win) => {
         const end = (i + 1) * keyPerLine + Math.min(i + 1, keyRemain);
 
         for (let j = begin; j < end; j += 1) {
-            const key = {
-                text: game.keyboard[j] || '⨯',
+            matrix[i].push({
+                text: dictInfo.upperCase
+                    ? (game.keyboard[j] || '⨯').toLocaleUpperCase()
+                    : game.keyboard[j] || '⨯',
                 callback_data: JSON.stringify(['guess', j]),
-            };
-
-            if (allLower) {
-                key.text = key.text.toLocaleUpperCase();
-            }
-
-            matrix[i].push(key);
+            });
         }
     }
+
+    // game history
 
     let totLives = 9;
     let lives = 9;
@@ -145,7 +147,11 @@ const messageUpdate = (msg, game, win) => {
         text += lmr[0] + lmr[1] + lmr[2];
 
         if (guess) {
-            text += ' [ ' + guess + ' ]';
+            text += ' [ ' + (
+                dictInfo.upperCase
+                    ? guess.toLocaleUpperCase()
+                    : guess
+            ) + ' ]';
         }
 
         text += '\n';
@@ -163,19 +169,15 @@ const messageUpdate = (msg, game, win) => {
 
     appendLine(null, null);
 
-    let dictInfo = null;
-
-    for (const i in config.hangmanDict) {
-        if (config.hangmanDict[i].id === game.dictSettings()[0]) {
-            dictInfo = config.hangmanDict[i];
-
-            break;
-        }
-    }
+    // game info
 
     const limitText = game.dictSettings()[1]
         ? ' - ' + game.dictSettings()[1]
         : '';
+
+    const hint = win
+        ? '<a href="https://google.com/search?q=' + encodeURIComponent(game.answer) + '">' + game.answer + '</a>'
+        : game.hint;
 
     let winText = '';
 
@@ -194,7 +196,7 @@ const messageUpdate = (msg, game, win) => {
     bot.editMessageText(
         '<pre>' + text + '\n'
             + '[ ' + dictInfo.title + limitText + ' ]\n'
-            + '[ ' + game.hint.toLocaleUpperCase() + ' ]\n'
+            + '[ ' + hint + ' ]\n'
             + '[ 剩余生命：' + totLives + ' ]\n'
             + winText
             + '</pre>',

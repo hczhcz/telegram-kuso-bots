@@ -54,6 +54,8 @@ const click = (id, playerId, charIndex, onGameContinue, onGameWin, onNotValid, o
         game.history.push([playerId, char, game.hint !== oldHint]);
 
         if (game.hint === game.answer) {
+            delete game.hint;
+
             delete games[id];
 
             return onGameWin(game);
