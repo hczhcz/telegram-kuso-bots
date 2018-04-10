@@ -7,7 +7,7 @@ const config = require('./config');
 module.exports = (bot, event, playerEvent, env) => {
     const fd = fs.openSync('log.zao', 'a');
 
-    const ad = [];
+    const zao = [];
 
     bot.onText(/^\/zao(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
         let text = '起床了！';
@@ -29,25 +29,25 @@ module.exports = (bot, event, playerEvent, env) => {
 
         const time = Date.now();
 
-        for (const i in ad) {
-            if (ad[i].from.id === msg.from.id) {
+        for (const i in zao) {
+            if (zao[i].from.id === msg.from.id) {
                 const cstNow = new Date(time + 8 * 3600 * 1000);
-                const cstTime = new Date(ad[i].time + 8 * 3600 * 1000);
+                const cstTime = new Date(zao[i].time + 8 * 3600 * 1000);
 
                 if (
                     cstNow.getUTCFullYear() === cstTime.getUTCFullYear()
                     && cstNow.getUTCMonth() === cstTime.getUTCMonth()
                     && cstNow.getUTCDate() === cstTime.getUTCDate()
                 ) {
-                    ad[i].text = text;
+                    zao[i].text = text;
 
                     return;
                 }
             }
         }
 
-        if (ad.length >= config.zaoCount) {
-            ad.shift();
+        if (zao.length >= config.zaoCount) {
+            zao.shift();
         }
 
         const obj = {
@@ -56,7 +56,7 @@ module.exports = (bot, event, playerEvent, env) => {
             text: text,
         };
 
-        ad.push(obj);
+        zao.push(obj);
 
         fs.write(fd, JSON.stringify(obj) + '\n', () => {
             // nothing
@@ -68,8 +68,8 @@ module.exports = (bot, event, playerEvent, env) => {
 
         let lastDate = '';
 
-        for (const i in ad) {
-            const cstTime = new Date(ad[i].time + 8 * 3600 * 1000);
+        for (const i in zao) {
+            const cstTime = new Date(zao[i].time + 8 * 3600 * 1000);
             const date = cstTime.getUTCMonth() + 1 + '/' + cstTime.getUTCDate();
 
             if (lastDate !== date) {
@@ -77,9 +77,9 @@ module.exports = (bot, event, playerEvent, env) => {
                 resultText += date + '\n';
             }
 
-            resultText += (ad[i].from.username || ad[i].from.first_name) + ' '
+            resultText += (zao[i].from.username || zao[i].from.first_name) + ' '
                 + cstTime.getUTCHours() + ':' + cstTime.getUTCMinutes() + '\n'
-                + ad[i].text + '\n';
+                + zao[i].text + '\n';
         }
 
         if (resultText) {
