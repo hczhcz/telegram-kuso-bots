@@ -44,6 +44,16 @@ const messageUpdate = (msg, game, win) => {
         delete game.update;
     };
 
+    let allLower = true;
+
+    for (const i in game.keyboard) {
+        if (game.keyboard[i] && game.keyboard[i].toLocaleLowerCase() !== game.keyboard[i]) {
+            allLower = false;
+
+            break;
+        }
+    }
+
     const matrix = [];
     const lineCount = Math.floor((game.keyboard.length - 1) / 8) + 1;
 
@@ -57,10 +67,16 @@ const messageUpdate = (msg, game, win) => {
         const end = (i + 1) * keyPerLine + Math.min(i + 1, keyRemain);
 
         for (let j = begin; j < end; j += 1) {
-            matrix[i].push({
-                text: (game.keyboard[j] || '⨯').toLocaleUpperCase(),
+            const key = {
+                text: game.keyboard[j] || '⨯',
                 callback_data: JSON.stringify(['guess', j]),
-            });
+            };
+
+            if (allLower) {
+                key.text = key.text.toLocaleUpperCase();
+            }
+
+            matrix[i].push(key);
         }
     }
 
@@ -68,8 +84,6 @@ const messageUpdate = (msg, game, win) => {
     let lives = 9;
     let first = true;
     let text = '';
-
-    // '(  ・＿・)╰||╯\n';
 
     const appendLine = (guess, correct) => {
         const face = [' ', 'ｗ', '・'];
@@ -101,7 +115,7 @@ const messageUpdate = (msg, game, win) => {
                 face[0] = '!';
                 face[2] = '☆';
             } else if (game.history.length === game.keyboard.length) {
-                face[0] = '*'
+                face[0] = '*';
                 face[2] = '◉';
             }
         }
@@ -131,7 +145,7 @@ const messageUpdate = (msg, game, win) => {
         text += lmr[0] + lmr[1] + lmr[2];
 
         if (guess) {
-            text += ' [ ' + guess.toLocaleUpperCase() + ' ]';
+            text += ' [ ' + guess + ' ]';
         }
 
         text += '\n';
@@ -197,7 +211,7 @@ const messageUpdate = (msg, game, win) => {
         setTimeout(() => {
             game.update();
         }, config.hangmanUpdateDelay);
-    });;
+    });
 };
 
 bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {
