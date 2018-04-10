@@ -380,7 +380,16 @@ bot.on('callback_query', (query) => {
 });
 
 bot.on('inline_query', (query) => {
-    if (config.ban[query.from.id]) {
+    if (!query.query) {
+        bot.answerInlineQuery(
+            query.id,
+            [],
+            {
+                cache_time: 0,
+                is_personal: true,
+            }
+        );
+    } else if (config.ban[query.from.id]) {
         bot.answerInlineQuery(
             query.id,
             [{

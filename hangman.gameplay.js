@@ -20,7 +20,7 @@ const init = (id, meowId, dict, keyboardSize, onGameInit, onGameExist) => {
 
     let answer = null;
 
-    if (meows[meowId]) {
+    if (meows[meowId] && core.length(meows[meowId]) <= keyboardSize) {
         answer = meows[meowId];
 
         delete meows[meowId];
