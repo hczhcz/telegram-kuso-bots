@@ -30,7 +30,7 @@ const event = (handler) => {
 };
 
 const messageUpdate = (msg, game, win) => {
-    if (game.update && !win) {
+    if (game.update) {
         game.update = () => {
             delete game.update;
 
@@ -224,7 +224,6 @@ bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {
     for (const i in config.hangmanDict) {
         const dictInfo = config.hangmanDict[i];
 
-        // note: default dict size limit is 1m
         lines.push([{
             text: dictInfo.title,
             callback_data: JSON.stringify(['dict', dictInfo.id, null, keyboardSize]),
