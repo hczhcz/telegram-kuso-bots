@@ -166,10 +166,95 @@ const click = (map, targetI, targetJ) => {
     return false;
 };
 
+const analysis = (map) => {
+    let open = 0;
+    let island = 0;
+    let bbbv = 0;
+
+    const visited = [];
+
+    const scanOpen = (targetI, targetJ) => {
+        visited[targetI][targetJ] = true;
+
+        for (let i = targetI - 1; i <= targetI + 1; i += 1) {
+            for (let j = targetJ - 1; j <= targetJ + 1; j += 1) {
+                if (
+                    (i !== targetI || j !== targetJ)
+                    && i >= 0 && i < map.length
+                    && j >= 0 && j < map[i].length
+                    && !visited[i][j]
+                ) {
+                    if (map[i][j] === 0) {
+                        scanOpen(i, j);
+                    } else if (map[i][j] >= 1 && map[i][j] <= 8) {
+                        visited[i][j] = true;
+                    }
+                }
+            }
+        }
+    };
+
+    const scanIsland = (targetI, targetJ) => {
+        bbbv += 1;
+        visited[targetI][targetJ] = true;
+
+        for (let i = targetI - 1; i <= targetI + 1; i += 1) {
+            for (let j = targetJ - 1; j <= targetJ + 1; j += 1) {
+                if (
+                    (i !== targetI || j !== targetJ)
+                    && i >= 0 && i < map.length
+                    && j >= 0 && j < map[i].length
+                    && !visited[i][j]
+                ) {
+                    if (map[i][j] >= 1 && map[i][j] <= 8) {
+                        scanIsland(i, j);
+                    }
+                }
+            }
+        }
+    };
+
+    for (let i = 0; i < map.length; i += 1) {
+        visited.push([]);
+
+        for (let j = 0; j < map[i].length; j += 1) {
+            visited[i].push(false);
+        }
+    }
+
+    for (let i = 0; i < map.length; i += 1) {
+        for (let j = 0; j < map[i].length; j += 1) {
+            if (!visited[i][j] && map[i][j] === 0) {
+                open += 1;
+                bbbv += 1;
+
+                scanOpen(i, j);
+            }
+        }
+    }
+
+    for (let i = 0; i < map.length; i += 1) {
+        for (let j = 0; j < map[i].length; j += 1) {
+            if (!visited[i][j] && map[i][j] >= 1 && map[i][j] <= 8) {
+                island += 1;
+
+                scanIsland(i, j);
+            }
+        }
+    }
+
+    return {
+        open: open,
+        island: island,
+        bbbv: bbbv,
+    };
+};
+
 module.exports = {
     verify: verify,
     init: init,
     status: status,
     flag: flag,
     click: click,
+    analysis: analysis,
 };

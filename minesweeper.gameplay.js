@@ -16,6 +16,7 @@ const init = (id, rows, columns, mines, onGameInit, onNotValid, onGameExist) => 
             mines: mines,
             map: null,
             history: [],
+            analysis: null,
         };
 
         return onGameInit(game);
@@ -37,6 +38,8 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGame
 
     if (core.click(game.map, targetI, targetJ)) {
         game.history.push([playerId, targetI, targetJ]);
+
+        game.analysis = core.analysis(game.map);
 
         const result = core.status(game.map);
 

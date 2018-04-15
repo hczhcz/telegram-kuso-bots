@@ -95,11 +95,15 @@ const messageUpdate = (msg, game) => {
 const gameStat = (msg, game, title, last) => {
     const stat = {};
 
+    let text = title + '\n\n'
+        + '地图：\n'
+        + 'Op ' + game.analysis.open + ' / Is ' + game.analysis.island + ' / 3bv ' + game.analysis.bbbv + '\n'
+        + '操作总数 ' + game.history.length + '\n\n'
+        + '统计：\n';
+
     for (const i in game.history) {
         stat[game.history[i][0]] = stat[game.history[i][0]] + 1 || 1;
     }
-
-    let text = title + '\n\n统计：\n';
 
     for (const i in stat) {
         text += game.nameMap()[i] + ' - ' + stat[i] + '项操作\n';
