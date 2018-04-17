@@ -75,15 +75,14 @@ const messageUpdate = (msg, game) => {
         }
     }
 
-    bot.editMessageText(
-        '路过的大爷～来扫个雷嘛～',
+    bot.editMessageReplyMarkup(
+        {
+            inline_keyboard: matrix,
+        },
         {
             chat_id: msg.chat.id,
             message_id: msg.message_id,
             reply_to_message_id: msg.reply_to_message.message_id,
-            reply_markup: {
-                inline_keyboard: matrix,
-            },
         }
     ).finally(() => {
         setTimeout(() => {
@@ -123,7 +122,7 @@ const gameStat = (msg, game, title, last) => {
 bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
-        '一大波地雷正在赶来……',
+        '路过的大爷～来扫个雷嘛～',
         {
             reply_to_message_id: msg.message_id,
         }
