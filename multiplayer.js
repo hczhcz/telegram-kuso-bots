@@ -14,7 +14,7 @@ const get = (id) => {
     return null;
 };
 
-const add = (id, player, onDone, onPlayerExist) => {
+const add = (id, player, onDone, onPlayerExist, onListFull) => {
     const list = lists[id] = lists[id] || [];
 
     for (const i in list) {
@@ -25,6 +25,8 @@ const add = (id, player, onDone, onPlayerExist) => {
 
     if (list.length < config.abMaxPlayer) {
         list.push(player);
+    } else {
+        return onListFull();
     }
 
     return onDone(list);
@@ -38,6 +40,10 @@ const remove = (id, player, onDone, onPlayerNotExist) => {
             if (list[i].id === player.id) {
                 list.splice(i, 1);
 
+                if (!list.length) {
+                    delete lists[id];
+                }
+
                 return onDone(list);
             }
         }
@@ -46,14 +52,14 @@ const remove = (id, player, onDone, onPlayerNotExist) => {
     return onPlayerNotExist();
 };
 
-const clear = (id, onDone, onNotMultiplater) => {
+const clear = (id, onDone, onNotMultiplayer) => {
     if (lists[id]) {
         delete lists[id];
 
         return onDone();
     }
 
-    return onNotMultiplater();
+    return onNotMultiplayer();
 };
 
 const verify = (id, player, onValid, onNotValid) => {

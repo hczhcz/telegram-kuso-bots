@@ -257,6 +257,17 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
                     reply_to_message_id: msg.message_id,
                 }
             );
+        },
+        () => {
+            // list full
+
+            bot.sendMessage(
+                msg.chat.id,
+                '玩家列表满啦',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
         }
     );
 }));
@@ -333,6 +344,11 @@ bot.on('callback_query', (query) => {
             },
             () => {
                 // player exist
+
+                bot.answerCallbackQuery(query.id).catch((err) => {});
+            },
+            () => {
+                // list full
 
                 bot.answerCallbackQuery(query.id).catch((err) => {});
             }
