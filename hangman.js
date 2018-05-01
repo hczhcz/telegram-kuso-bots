@@ -215,7 +215,8 @@ const messageUpdate = (msg, game, win) => {
 bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {
     const lines = [];
 
-    const keyboardSize = Math.min(parseInt(match[2], 10) || 32, config.hangmanMaxButton);
+    // note: telegram's limit
+    const keyboardSize = Math.min(parseInt(match[2], 10) || 32, 100);
 
     for (const i in config.hangmanDict) {
         const dictInfo = config.hangmanDict[i];
