@@ -26,7 +26,7 @@ const init = (list) => {
         }
     }
 
-    let map = [];
+    const map = [];
 
     for (let i = top; i <= bottom; i += 1) {
         map.push([]);
@@ -51,8 +51,8 @@ const win = (map) => {
 
     for (let i = 0; i < map.length; i += 1) {
         for (let j = 0; j < map[i].length; j += 1) {
-            goal |= map[i][j] === '.' || map[i][j] === '+';
-            box |= map[i][j] === '$';
+            goal = goal || map[i][j] === '.' || map[i][j] === '+';
+            box = box || map[i][j] === '$';
         }
     }
 
@@ -123,9 +123,9 @@ const findPath = (map, playerI, playerJ, targetI, targetJ) => {
                 || i + 1 < map.length && dfs(i + 1, j)
                 || j - 1 >= 0 && dfs(i, j - 1)
                 || j + 1 < map[i].length && dfs(i, j + 1);
-        } else {
-            return false;
         }
+
+        return false;
     };
 
     return dfs(playerI, playerJ);
@@ -146,16 +146,16 @@ const move = (map, targetI, targetJ) => {
         pushPlayer(targetI, targetJ);
 
         return true;
-    } else {
-        pushPlayer(playerI, playerJ);
-
-        return false;
     }
+
+    pushPlayer(playerI, playerJ);
+
+    return false;
 };
 
 const push = (map, boxI, boxJ, targetI, targetJ) => {
-    let deltaI;
-    let deltaJ;
+    let deltaI = null;
+    let deltaJ = null;
 
     if (targetJ === boxJ && targetI < boxI) {
         deltaI = -1;
@@ -176,7 +176,7 @@ const push = (map, boxI, boxJ, targetI, targetJ) => {
     let scanI = boxI;
     let scanJ = boxJ;
 
-    while (scanI != targetI && scanJ != targetJ) {
+    while (scanI !== targetI && scanJ !== targetJ) {
         scanI += deltaI;
         scanJ += deltaJ;
 
@@ -197,11 +197,11 @@ const push = (map, boxI, boxJ, targetI, targetJ) => {
         pushPlayer(targetI - deltaI, targetJ - deltaJ);
 
         return true;
-    } else {
-        pushPlayer(playerI, playerJ);
-
-        return false;
     }
+
+    pushPlayer(playerI, playerJ);
+
+    return false;
 };
 
 module.exports = {
