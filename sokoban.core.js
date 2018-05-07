@@ -39,7 +39,11 @@ const init = (list) => {
             }
         }
     }
-}
+};
+
+const isBox = (map, i, j) => {
+    return map[i][j] === '$' || map[i][j] === '*';
+};
 
 const win = (map) => {
     let goal = false;
@@ -132,6 +136,10 @@ const move = (map, targetI, targetJ) => {
     const playerI = player[0];
     const playerJ = player[1];
 
+    if (targetI === playerI && targetJ === playerJ) {
+        return false;
+    }
+
     popPlayer(playerI, playerJ);
 
     if (findPath(map, playerI, playerJ, targetI, targetJ)) {
@@ -198,6 +206,7 @@ const push = (map, boxI, boxJ, targetI, targetJ) => {
 
 module.exports = {
     init: init,
+    isBox: isBox,
     win: win,
     move: move,
     push: push,

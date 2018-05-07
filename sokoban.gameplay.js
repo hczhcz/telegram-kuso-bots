@@ -25,6 +25,19 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotC
 
     const game = games[id];
 
+    if (
+        core.isBox(game.map, targetI, targetJ)
+        && (
+            !game.active
+            || game.active[0] !== targetI
+            || game.active[1] !== targetJ
+        )
+    ) {
+        game.active = [targetI, targetJ];
+
+        return onGameContinue(game);
+    }
+
     if (game.active) {
         const boxI = game.active[0];
         const boxJ = game.active[1];
@@ -32,19 +45,17 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotC
         game.active = null;
 
         if (core.push(game.map, boxI, boxJ, targetI, targetJ)) {
-            game.history.push([playerId, targetI, targetJ]);
+            game.history.push([playerId, boxI, boxJ, targetI, targetJ]);
 
             if (core.win(game.map)) {
                 return onGameWin(game);
-            } else {
-                return onGameContinue(game);
             }
-        } else {
-            game.history.push([playerId, targetI, targetJ]);
-
-            return onGameContinue(game);
         }
-    } else if (core.move(game.map, targetI, targetJ)) {
+
+        return onGameContinue(game);
+    }
+
+    if (core.move(game.map, targetI, targetJ)) {
         game.history.push([playerId, targetI, targetJ]);
 
         return onGameContinue(game);
