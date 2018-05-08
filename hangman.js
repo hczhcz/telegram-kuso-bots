@@ -226,13 +226,13 @@ bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {
             callback_data: JSON.stringify(['dict', dictInfo.id, null, keyboardSize]),
         }]);
 
-        if (dictInfo.limits.length) {
+        if (dictInfo.limit.length) {
             const line = [];
 
-            for (const j in dictInfo.limits) {
+            for (const j in dictInfo.limit) {
                 line.push({
-                    text: dictInfo.limits[j],
-                    callback_data: JSON.stringify(['dict', dictInfo.id, dictInfo.limits[j], keyboardSize]),
+                    text: dictInfo.limit[j],
+                    callback_data: JSON.stringify(['dict', dictInfo.id, dictInfo.limit[j], keyboardSize]),
                 });
             }
 

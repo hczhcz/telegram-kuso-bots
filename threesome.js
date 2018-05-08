@@ -381,8 +381,8 @@ setInterval(() => {
     }
 }, 490);
 
-for (const i in config.threesomePlugins) {
-    require('./plugin.' + config.threesomePlugins[i])(
+for (const i in config.threesomePlugin) {
+    require('./plugin.' + config.threesomePlugin[i])(
         bot,
         event,
         playerEvent,
@@ -400,6 +400,6 @@ for (const i in config.threesomePlugins) {
     );
 }
 
-for (const i in config.threesomeExtraBots) {
-    require('./' + config.threesomeExtraBots[i]);
+for (const i in config.threesomeExtraBot) {
+    require('./' + config.threesomeExtraBot[i]);
 }
