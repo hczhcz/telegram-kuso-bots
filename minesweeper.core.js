@@ -44,8 +44,8 @@ const status = (map) => {
     let lose = false;
     let normal = false;
 
-    for (let i = 0; i < map.length; i += 1) {
-        for (let j = 0; j < map[i].length; j += 1) {
+    for (const i in map) {
+        for (const j in map[i]) {
             if (map[i][j] === 'S' || map[i][j] === 's') {
                 normal = true;
             } else if (map[i][j] === '*') {
@@ -215,16 +215,16 @@ const analysis = (map) => {
         }
     };
 
-    for (let i = 0; i < map.length; i += 1) {
+    for (const i in map) {
         visited.push([]);
 
-        for (let j = 0; j < map[i].length; j += 1) {
+        for (const j in map[i]) {
             visited[i].push(false);
         }
     }
 
-    for (let i = 0; i < map.length; i += 1) {
-        for (let j = 0; j < map[i].length; j += 1) {
+    for (const i in map) {
+        for (const j in map[i]) {
             if (!visited[i][j] && map[i][j] === 0) {
                 open += 1;
                 bbbv += 1;
@@ -234,8 +234,8 @@ const analysis = (map) => {
         }
     }
 
-    for (let i = 0; i < map.length; i += 1) {
-        for (let j = 0; j < map[i].length; j += 1) {
+    for (const i in map) {
+        for (const j in map[i]) {
             if (!visited[i][j] && map[i][j] >= 1 && map[i][j] <= 8) {
                 island += 1;
 

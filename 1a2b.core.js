@@ -30,7 +30,7 @@ const extraChar = (str, str2) => {
     const arr = splitter.splitGraphemes(str);
     const arr2 = splitter.splitGraphemes(str2);
 
-    for (let i = 0; i < arr2.length; i += 1) {
+    for (const i in arr2) {
         const j = arr.indexOf(arr2[i]);
 
         if (j >= 0) {
@@ -47,7 +47,7 @@ const reveal = (str, strH, strC) => {
     const arrH = splitter.splitGraphemes(strH);
     const arrC = splitter.splitGraphemes(strC);
 
-    for (let i = 0; i < arrC.length; i += 1) {
+    for (const i in arrC) {
         const j = arr.indexOf(arrC[i]);
 
         if (j >= 0) {
@@ -66,7 +66,7 @@ const getA = (str, str2) => {
 
     let result = 0;
 
-    for (let i = 0; i < arr2.length; i += 1) {
+    for (const i in arr2) {
         if (arr2[i] === arr[i]) {
             result += 1;
         }

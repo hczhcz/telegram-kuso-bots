@@ -10,28 +10,12 @@
 // '*' = box on a goal square
 
 const init = (level) => {
-    let top = Infinity;
-    let bottom = 0;
-    let left = Infinity;
-    let right = 0;
-
-    for (let i = 0; i < level.length; i += 1) {
-        for (let j = 0; j < level[i].length; j += 1) {
-            if ('# .@+$*'.indexOf(level[i][j]) >= 0) {
-                top = Math.min(top, i);
-                bottom = Math.max(bottom, i);
-                left = Math.min(left, j);
-                right = Math.max(right, j);
-            }
-        }
-    }
-
     const map = [];
 
-    for (let i = top; i <= bottom; i += 1) {
+    for (const i in level) {
         map.push([]);
 
-        for (let j = left; j <= right; j += 1) {
+        for (const j in level[i]) {
             if ('# .@+$*'.indexOf(level[i][j]) >= 0) {
                 map[i].push(level[i][j]);
             } else {
@@ -49,8 +33,8 @@ const win = (map) => {
     let goal = false;
     let box = false;
 
-    for (let i = 0; i < map.length; i += 1) {
-        for (let j = 0; j < map[i].length; j += 1) {
+    for (const i in map) {
+        for (const j in map[i]) {
             goal = goal || map[i][j] === '.' || map[i][j] === '+';
             box = box || map[i][j] === '$';
         }
@@ -63,8 +47,8 @@ const findPlayer = (map) => {
     let playerI = null;
     let playerJ = null;
 
-    for (let i = 0; i < map.length; i += 1) {
-        for (let j = 0; j < map[i].length; j += 1) {
+    for (const i in map) {
+        for (const j in map[i]) {
             if (map[i][j] === '@' || map[i][j] === '+') {
                 playerI = i;
                 playerJ = j;

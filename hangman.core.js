@@ -76,7 +76,7 @@ const guess = (str, strH, char) => {
     const arr = splitter.splitGraphemes(str);
     const arrH = splitter.splitGraphemes(strH);
 
-    for (let i = 0; i < arr.length; i += 1) {
+    for (const i in arr) {
         if (arr[i] === char) {
             arrH[i] = char;
         }
