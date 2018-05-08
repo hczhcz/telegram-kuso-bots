@@ -1,5 +1,7 @@
 'use strict';
 
+const config = require('./config');
+
 const core = require('./sokoban.core');
 
 const games = {};
@@ -44,7 +46,10 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotC
 
         game.active = null;
 
-        if (core.push(game.map, boxI, boxJ, targetI, targetJ)) {
+        if (
+            game.history.length < config.sokobanMaxStep
+            && core.push(game.map, boxI, boxJ, targetI, targetJ)
+        ) {
             game.history.push([playerId, boxI, boxJ, targetI, targetJ]);
 
             if (core.win(game.map)) {
@@ -55,7 +60,10 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotC
         return onGameContinue(game);
     }
 
-    if (core.move(game.map, targetI, targetJ)) {
+    if (
+        game.history.length < config.sokobanMaxStep
+        && core.move(game.map, targetI, targetJ)
+    ) {
         game.history.push([playerId, targetI, targetJ]);
 
         return onGameContinue(game);
