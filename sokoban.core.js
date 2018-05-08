@@ -9,15 +9,15 @@
 // '$' = box
 // '*' = box on a goal square
 
-const init = (list) => {
+const init = (level) => {
     let top = Infinity;
     let bottom = 0;
     let left = Infinity;
     let right = 0;
 
-    for (let i = 0; i < list.length; i += 1) {
-        for (let j = 0; j < list[i].length; j += 1) {
-            if ('# .@+$*'.indexOf(list[i][j]) >= 0) {
+    for (let i = 0; i < level.length; i += 1) {
+        for (let j = 0; j < level[i].length; j += 1) {
+            if ('# .@+$*'.indexOf(level[i][j]) >= 0) {
                 top = Math.min(top, i);
                 bottom = Math.max(bottom, i);
                 left = Math.min(left, j);
@@ -32,8 +32,8 @@ const init = (list) => {
         map.push([]);
 
         for (let j = left; j <= right; j += 1) {
-            if ('# .@+$*'.indexOf(list[i][j]) >= 0) {
-                map[i].push(list[i][j]);
+            if ('# .@+$*'.indexOf(level[i][j]) >= 0) {
+                map[i].push(level[i][j]);
             } else {
                 map[i].push(' ');
             }

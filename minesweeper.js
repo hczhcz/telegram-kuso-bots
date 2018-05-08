@@ -143,7 +143,7 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
 
                 game.nameMap()[msg.from.id] = msg.from.username || msg.from.first_name;
 
-                return messageUpdate(
+                messageUpdate(
                     sentmsg,
                     game
                 );

@@ -5,7 +5,7 @@ const fs = require('fs');
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.sokobanToken);
 
-// const ??? = require('./sokoban.???');
+const level = require('./sokoban.level');
 const gameplay = require('./sokoban.gameplay');
 
 const fd = fs.openSync('log_sokoban', 'a');
@@ -115,7 +115,7 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
             (game) => {
                 // game init
 
-                return messageUpdate(
+                messageUpdate(
                     sentmsg,
                     game,
                     false

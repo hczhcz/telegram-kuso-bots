@@ -6,13 +6,13 @@ const core = require('./sokoban.core');
 
 const games = {};
 
-const init = (id, list, onGameInit, onGameExist) => {
+const init = (id, level, onGameInit, onGameExist) => {
     if (games[id]) {
         return onGameExist();
     }
 
     const game = games[id] = {
-        map: core.init(list),
+        map: core.init(level),
         active: null,
         history: [],
     };
