@@ -43,10 +43,6 @@ const init = (level) => {
     return map;
 };
 
-const isBox = (map, i, j) => {
-    return map[i][j] === '$' || map[i][j] === '*';
-};
-
 const win = (map) => {
     let goal = false;
     let box = false;
@@ -65,10 +61,14 @@ const findPlayer = (map) => {
     for (let i = 0; i < map.length; i += 1) {
         for (let j = 0; j < map[i].length; j += 1) {
             if (map[i][j] === '@' || map[i][j] === '+') {
-                return [i, j]
+                return [i, j];
             }
         }
     }
+};
+
+const isBox = (map, i, j) => {
+    return map[i][j] === '$' || map[i][j] === '*';
 };
 
 const pushPlayer = (map, i, j) => {
@@ -202,8 +202,9 @@ const push = (map, boxI, boxJ, targetI, targetJ) => {
 
 module.exports = {
     init: init,
-    isBox: isBox,
     win: win,
+    findPlayer: findPlayer,
+    isBox: isBox,
     move: move,
     push: push,
 };

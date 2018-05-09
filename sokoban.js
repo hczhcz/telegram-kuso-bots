@@ -50,6 +50,9 @@ const messageUpdate = (msg, game, win) => {
         matrix.push([]);
 
         for (let j = 0; j < Math.min(game.map[i].length, 8); j += 1) {
+            const globalI = i + game.viewport[0];
+            const globalJ = j + game.viewport[1];
+
             let display = {
                 '#': '\u2b1b',
                 ' ': ' ',
@@ -60,7 +63,7 @@ const messageUpdate = (msg, game, win) => {
                 '*': '\ud83c\udf15',
             };
 
-            if (game.active && game.active[0] === i && game.active[1] === j) {
+            if (game.active && game.active[0] === globalI && game.active[1] === globalJ) {
                 display = {
                     '$': '\ud83c\udf1a',
                     '*': '\ud83c\udf1d',
@@ -68,10 +71,8 @@ const messageUpdate = (msg, game, win) => {
             }
 
             matrix[i].push({
-                text: display[
-                    game.map[i][j] // TODO: camera
-                ],
-                callback_data: JSON.stringify([i, j]),
+                text: display[game.map[globalI][globalJ]],
+                callback_data: JSON.stringify([globalI, globalJ]),
             });
         }
     }
