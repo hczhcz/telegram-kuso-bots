@@ -62,19 +62,13 @@ const win = (map) => {
 };
 
 const findPlayer = (map) => {
-    let playerI = null;
-    let playerJ = null;
-
     for (let i = 0; i < map.length; i += 1) {
         for (let j = 0; j < map[i].length; j += 1) {
             if (map[i][j] === '@' || map[i][j] === '+') {
-                playerI = i;
-                playerJ = j;
+                return [i, j]
             }
         }
     }
-
-    return [playerI, playerJ];
 };
 
 const pushPlayer = (map, i, j) => {

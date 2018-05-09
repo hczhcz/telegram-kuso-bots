@@ -50,16 +50,25 @@ const messageUpdate = (msg, game, win) => {
         matrix.push([]);
 
         for (let j = 0; j < Math.min(game.map[i].length, 8); j += 1) {
+            let display = {
+                '#': '\u2b1b',
+                ' ': ' ',
+                '.': '\ud83d\udd36',
+                '@': '\ud83d\udc34',
+                '+': '\ud83e\udd84',
+                '$': '\ud83c\udf11',
+                '*': '\ud83c\udf15',
+            };
+
+            if (game.active && game.active[0] === i && game.active[1] === j) {
+                display = {
+                    '$': '\ud83c\udf1a',
+                    '*': '\ud83c\udf1d',
+                };
+            }
+
             matrix[i].push({
-                text: {
-                    '#': '\u2588',
-                    ' ': ' ',
-                    '.': '[ ]',
-                    '@': '@',
-                    '+': '[@]',
-                    '$': '$',
-                    '*': '[$]', // TODO
-                }[
+                text: display[
                     game.map[i][j] // TODO: camera
                 ],
                 callback_data: JSON.stringify([i, j]),
@@ -67,12 +76,13 @@ const messageUpdate = (msg, game, win) => {
         }
     }
 
-    if (!win && game.history.length) {
-        matrix.push([{
-            text: '撤销',
-            callback_data: 'undo',
-        }]);
-    }
+    // TODO
+    // if (!win) {
+    //     matrix.push([{
+    //         text: '撤销',
+    //         callback_data: 'undo',
+    //     }]);
+    // }
 
     bot.editMessageReplyMarkup(
         {
@@ -132,6 +142,8 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
 }));
 
 bot.on('callback_query', (query) => {
+    // TODO: undo
+
     const msg = query.message;
     const info = JSON.parse(query.data);
 
