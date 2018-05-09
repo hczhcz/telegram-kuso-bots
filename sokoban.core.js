@@ -130,9 +130,6 @@ const findPath = (map, playerI, playerJ, targetI, targetJ) => {
         return false;
     };
 
-    console.error([playerI, playerJ, targetI, targetJ])
-    console.error(visited)
-
     return dfs(playerI, playerJ);
 };
 
@@ -140,9 +137,6 @@ const move = (map, targetI, targetJ) => {
     const player = findPlayer(map);
     const playerI = player[0];
     const playerJ = player[1];
-
-    console.error(map)
-    console.error(player)
 
     if (targetI === playerI && targetJ === playerJ) {
         return false;

@@ -53,6 +53,8 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotC
             game.history.push([playerId, boxI, boxJ, targetI, targetJ]);
 
             if (core.win(game.map)) {
+                delete games[id];
+
                 return onGameWin(game);
             }
         }
