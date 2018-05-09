@@ -10,12 +10,28 @@
 // '*' = box on a goal square
 
 const init = (level) => {
-    const map = [];
+    let top = Infinity;
+    let bottom = 0;
+    let left = Infinity;
+    let right = 0;
 
     for (const i in level) {
+        for (const j in level[i]) {
+            if ('#.@+$*'.indexOf(level[i][j]) >= 0) {
+                top = Math.min(top, i);
+                bottom = Math.max(bottom, i);
+                left = Math.min(left, j);
+                right = Math.max(right, j);
+            }
+        }
+    }
+
+    const map = [];
+
+    for (let i = top; i <= bottom; i += 1) {
         map.push([]);
 
-        for (const j in level[i]) {
+        for (let j = left; j <= right; j += 1) {
             if ('# .@+$*'.indexOf(level[i][j]) >= 0) {
                 map[i].push(level[i][j]);
             } else {
@@ -23,6 +39,8 @@ const init = (level) => {
             }
         }
     }
+
+    return map;
 };
 
 const isBox = (map, i, j) => {
@@ -60,14 +78,6 @@ const findPlayer = (map) => {
 };
 
 const pushPlayer = (map, i, j) => {
-    if (map[i][j] === '@') {
-        map[i][j] = ' ';
-    } else if (map[i][j] === '+') {
-        map[i][j] = '.';
-    }
-};
-
-const popPlayer = (map, i, j) => {
     if (map[i][j] === ' ') {
         map[i][j] = '@';
     } else if (map[i][j] === '.') {
@@ -75,19 +85,27 @@ const popPlayer = (map, i, j) => {
     }
 };
 
-const pushBox = (map, i, j) => {
-    if (map[i][j] === '$') {
+const popPlayer = (map, i, j) => {
+    if (map[i][j] === '@') {
         map[i][j] = ' ';
-    } else if (map[i][j] === '*') {
+    } else if (map[i][j] === '+') {
         map[i][j] = '.';
     }
 };
 
-const popBox = (map, i, j) => {
+const pushBox = (map, i, j) => {
     if (map[i][j] === ' ') {
         map[i][j] = '$';
     } else if (map[i][j] === '.') {
         map[i][j] = '*';
+    }
+};
+
+const popBox = (map, i, j) => {
+    if (map[i][j] === '$') {
+        map[i][j] = ' ';
+    } else if (map[i][j] === '*') {
+        map[i][j] = '.';
     }
 };
 
@@ -112,6 +130,9 @@ const findPath = (map, playerI, playerJ, targetI, targetJ) => {
         return false;
     };
 
+    console.error([playerI, playerJ, targetI, targetJ])
+    console.error(visited)
+
     return dfs(playerI, playerJ);
 };
 
@@ -120,19 +141,22 @@ const move = (map, targetI, targetJ) => {
     const playerI = player[0];
     const playerJ = player[1];
 
+    console.error(map)
+    console.error(player)
+
     if (targetI === playerI && targetJ === playerJ) {
         return false;
     }
 
-    popPlayer(playerI, playerJ);
+    popPlayer(map, playerI, playerJ);
 
     if (findPath(map, playerI, playerJ, targetI, targetJ)) {
-        pushPlayer(targetI, targetJ);
+        pushPlayer(map, targetI, targetJ);
 
         return true;
     }
 
-    pushPlayer(playerI, playerJ);
+    pushPlayer(map, playerI, playerJ);
 
     return false;
 };
@@ -173,17 +197,17 @@ const push = (map, boxI, boxJ, targetI, targetJ) => {
     const playerI = player[0];
     const playerJ = player[1];
 
-    popPlayer(playerI, playerJ);
+    popPlayer(map, playerI, playerJ);
 
     if (findPath(map, playerI, playerJ, boxI - deltaI, boxJ - deltaJ)) {
-        popBox(boxI, boxJ);
-        pushBox(targetI, targetJ);
-        pushPlayer(targetI - deltaI, targetJ - deltaJ);
+        popBox(map, boxI, boxJ);
+        pushBox(map, targetI, targetJ);
+        pushPlayer(map, targetI - deltaI, targetJ - deltaJ);
 
         return true;
     }
 
-    pushPlayer(playerI, playerJ);
+    pushPlayer(map, playerI, playerJ);
 
     return false;
 };
