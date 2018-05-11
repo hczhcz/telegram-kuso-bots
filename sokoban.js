@@ -44,10 +44,6 @@ const messageUpdate = (msg, game, win) => {
         delete game.update;
     };
 
-    if (game.updateExport) {
-        game.updateExport();
-    }
-
     const matrix = [];
 
     for (let i = 0; i < Math.min(game.map.length, 12); i += 1) {
@@ -189,6 +185,10 @@ bot.on('callback_query', (query) => {
                         false
                     );
 
+                    if (game.updateExport) {
+                        game.updateExport();
+                    }
+
                     bot.answerCallbackQuery(query.id).catch((err) => {});
                 },
                 () => {
@@ -271,6 +271,21 @@ bot.on('callback_query', (query) => {
                 bot.answerCallbackQuery(query.id).catch((err) => {});
             },
             (game) => {
+                // game step
+
+                messageUpdate(
+                    msg,
+                    game,
+                    false
+                );
+
+                if (game.updateExport) {
+                    game.updateExport();
+                }
+
+                bot.answerCallbackQuery(query.id).catch((err) => {});
+            },
+            (game) => {
                 // game win
 
                 fs.write(fd, JSON.stringify(game) + '\n', () => {
@@ -282,6 +297,10 @@ bot.on('callback_query', (query) => {
                     game,
                     true
                 );
+
+                if (game.updateExport) {
+                    game.updateExport();
+                }
 
                 bot.answerCallbackQuery(query.id).catch((err) => {});
             },

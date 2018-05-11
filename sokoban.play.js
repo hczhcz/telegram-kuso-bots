@@ -56,8 +56,8 @@ const doReplay = (game, history) => {
     for (const i in history) {
         if (history[i].length === 3) {
             if (
-                !typeof history[i][1] !== 'number'
-                || !typeof history[i][2] !== 'number'
+                typeof history[i][1] !== 'number'
+                || typeof history[i][2] !== 'number'
                 || !doMove(
                     game,
                     history[i][0],
@@ -69,10 +69,10 @@ const doReplay = (game, history) => {
             }
         } else if (history[i].length === 5) {
             if (
-                !typeof history[i][1] !== 'number'
-                || !typeof history[i][2] !== 'number'
-                || !typeof history[i][3] !== 'number'
-                || !typeof history[i][4] !== 'number'
+                typeof history[i][1] !== 'number'
+                || typeof history[i][2] !== 'number'
+                || typeof history[i][3] !== 'number'
+                || typeof history[i][4] !== 'number'
                 || !doPush(
                     game,
                     history[i][0],
@@ -124,7 +124,7 @@ const get = (id, onDone, onGameNotExist) => {
     return onDone(game);
 };
 
-const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotChanged, onGameNotExist) => {
+const click = (id, playerId, targetI, targetJ, onGameContinue, onGameStep, onGameWin, onNotChanged, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
@@ -159,7 +159,7 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotC
                 return onGameWin(game);
             }
 
-            return onGameContinue(game);
+            return onGameStep(game);
         }
 
         if (
@@ -175,7 +175,7 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotC
     if (doMove(game, playerId, targetI, targetJ)) {
         setViewport(game);
 
-        return onGameContinue(game);
+        return onGameStep(game);
     }
 
     return onNotChanged(game);
@@ -193,6 +193,8 @@ const undo = (id, onDone, onNotValid, onGameNotExist) => {
     }
 
     const history = game.history;
+
+    history.length -= 1;
 
     game.map = core.init(game.level);
     game.active = null;
