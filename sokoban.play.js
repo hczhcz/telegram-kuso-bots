@@ -114,6 +114,16 @@ const init = (id, level, levelId, levelIndex, history, onGameInit, onGameExist) 
     return onGameInit(game);
 };
 
+const get = (id, onDone, onGameNotExist) => {
+    if (!games[id]) {
+        return onGameNotExist();
+    }
+
+    const game = games[id];
+
+    return onDone(game);
+};
+
 const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotChanged, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
@@ -198,6 +208,7 @@ const undo = (id, onDone, onNotValid, onGameNotExist) => {
 
 module.exports = {
     init: init,
+    get: get,
     click: click,
     undo: undo,
 };

@@ -44,6 +44,10 @@ const messageUpdate = (msg, game, win) => {
         delete game.update;
     };
 
+    if (game.updateExport) {
+        game.updateExport();
+    }
+
     const matrix = [];
 
     for (let i = 0; i < Math.min(game.map.length, 12); i += 1) {
@@ -77,13 +81,17 @@ const messageUpdate = (msg, game, win) => {
         }
     }
 
-    // TODO
-    // if (!win) {
-    //     matrix.push([{
-    //         text: '撤销',
-    //         callback_data: 'undo',
-    //     }]);
-    // }
+    if (!win) {
+        matrix.push([{
+            text: '撤销',
+            callback_data: 'undo',
+        }]);
+
+        matrix.push([{
+            text: '导出',
+            callback_data: 'export',
+        }]);
+    }
 
     bot.editMessageReplyMarkup(
         {
@@ -162,57 +170,131 @@ bot.on('callback_query', (query) => {
     // TODO: undo
 
     const msg = query.message;
-    const info = JSON.parse(query.data);
 
-    if (typeof info[0] !== 'number' || typeof info[1] !== 'number') {
-        throw Error(JSON.stringify(query));
-    }
+    if (query.data.match(/^\w+$/)) {
+        log(
+            msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            query.data
+        );
 
-    log(
-        msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
-        info[0] + ' ' + info[1]
-    );
+        if (query.data === 'undo') {
+            play.undo(
+                msg.chat.id + '_' + msg.message_id,
+                (game) => {
+                    // undo finished
 
-    play.click(
-        msg.chat.id + '_' + msg.message_id,
-        query.from.id,
-        info[0],
-        info[1],
-        (game) => {
-            // game continue
+                    messageUpdate(
+                        msg,
+                        game,
+                        false
+                    );
 
-            messageUpdate(
-                msg,
-                game,
-                false
+                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                },
+                () => {
+                    // not valid
+
+                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                },
+                () => {
+                    // game not exist
+
+                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                }
             );
+        } else if (query.data === 'export') {
+            play.get(
+                msg.chat.id + '_' + msg.message_id,
+                (game) => {
+                    // got
 
-            bot.answerCallbackQuery(query.id).catch((err) => {});
-        },
-        (game) => {
-            // game win
+                    if (game.updateExport) {
+                        return;
+                    }
 
-            fs.write(fd, JSON.stringify(game) + '\n', () => {
-                // nothing
-            });
+                    game.updateExport = () => {};
 
-            messageUpdate(
-                msg,
-                game,
-                true
+                    bot.sendMessage(
+                        msg.chat.id,
+                        JSON.stringify(game.history),
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    ).then((sentmsg) => {
+                        game.updateExport = () => {
+                            bot.editMessageText(
+                                JSON.stringify(game.history),
+                                {
+                                    chat_id: sentmsg.chat.id,
+                                    message_id: sentmsg.message_id,
+                                    reply_to_message_id: msg.message_id,
+                                }
+                            );
+                        };
+                    });
+
+                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                },
+                () => {
+                    // game not exist
+
+                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                }
             );
-
-            bot.answerCallbackQuery(query.id).catch((err) => {});
-        },
-        (game) => {
-            // not changed
-
-            bot.answerCallbackQuery(query.id).catch((err) => {});
-        },
-        () => {
-            // game not exist
-
-            bot.answerCallbackQuery(query.id).catch((err) => {});
         }
-    );
+    } else {
+        const info = JSON.parse(query.data);
+
+        if (typeof info[0] !== 'number' || typeof info[1] !== 'number') {
+            throw Error(JSON.stringify(query));
+        }
+
+        log(
+            msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            info[0] + ' ' + info[1]
+        );
+
+        play.click(
+            msg.chat.id + '_' + msg.message_id,
+            query.from.id,
+            info[0],
+            info[1],
+            (game) => {
+                // game continue
+
+                messageUpdate(
+                    msg,
+                    game,
+                    false
+                );
+
+                bot.answerCallbackQuery(query.id).catch((err) => {});
+            },
+            (game) => {
+                // game win
+
+                fs.write(fd, JSON.stringify(game) + '\n', () => {
+                    // nothing
+                });
+
+                messageUpdate(
+                    msg,
+                    game,
+                    true
+                );
+
+                bot.answerCallbackQuery(query.id).catch((err) => {});
+            },
+            (game) => {
+                // not changed
+
+                bot.answerCallbackQuery(query.id).catch((err) => {});
+            },
+            () => {
+                // game not exist
+
+                bot.answerCallbackQuery(query.id).catch((err) => {});
+            }
+        );
+    }
 });
