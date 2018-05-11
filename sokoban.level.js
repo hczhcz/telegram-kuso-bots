@@ -5,13 +5,14 @@ const readline = require('readline');
 
 const config = require('./config');
 
+const levelNames = fs.readdirSync('sokoban');
 const levels = {};
 
 const load = (id, index, onDone, onNotValid) => {
     let found = false;
 
-    for (const i in config.sokobanLevel) {
-        if (config.sokobanLevel[i] === id) {
+    for (const i in levelNames) {
+        if (levelNames[i] === id + '.txt') {
             found = true;
 
             break;
