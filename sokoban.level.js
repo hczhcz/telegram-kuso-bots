@@ -3,8 +3,6 @@
 const fs = require('fs');
 const readline = require('readline');
 
-const config = require('./config');
-
 const levelNames = fs.readdirSync('sokoban');
 const levels = {};
 
@@ -21,12 +19,14 @@ const load = (id, index, onDone, onNotValid) => {
 
     if (found) {
         const choose = () => {
-            if (index === null) {
-                index = Math.floor(Math.random() * levelInfo.list.length);
+            let i = index;
+
+            if (i === null) {
+                i = Math.floor(Math.random() * levels[id].length);
             }
 
-            if (index >= 0 && index < levels[id].length) {
-                onDone(levels[id][index]);
+            if (i >= 0 && i < levels[id].length) {
+                onDone(levels[id][i]);
             } else {
                 onNotValid();
             }
@@ -39,7 +39,7 @@ const load = (id, index, onDone, onNotValid) => {
                 input: fs.createReadStream('sokoban/' + id + '.txt'),
             });
 
-            const buffer = [];
+            let buffer = [];
             const levelList = [];
 
             rl.on('line', (str) => {

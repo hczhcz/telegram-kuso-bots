@@ -215,10 +215,10 @@ const analysis = (map) => {
         }
     };
 
-    for (const i in map) {
+    for (let i = 0; i < map.length; i += 1) {
         visited.push([]);
 
-        for (const j in map[i]) {
+        for (let j = 0; j < map[i].length; j += 1) {
             visited[i].push(false);
         }
     }
