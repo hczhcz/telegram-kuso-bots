@@ -109,34 +109,45 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
             reply_to_message_id: msg.message_id,
         }
     ).then((sentmsg) => {
-        gameplay.init(
-            sentmsg.chat.id + '_' + sentmsg.message_id,
-            [
-                '########',
-                '# ..#  #',
-                '# ..# $###',
-                '#  ##    #',
-                '## $   $ #',
-                ' # ##  ###',
-                ' #   $##',
-                ' ###  #',
-                '   #@ #',
-                '   ####',
-            ], // TODO: sample level
-            (game) => {
-                // game init
+        level.load(
+            match[1],
+            parseInt(match[2], 10),
+            (level, levelId, levelIndex) => {
+                // loaded
 
-                messageUpdate(
-                    sentmsg,
-                    game,
-                    false
+                gameplay.init(
+                    sentmsg.chat.id + '_' + sentmsg.message_id,
+                    level,
+                    levelId,
+                    levelIndex,
+                    (game) => {
+                        // game init
+
+                        messageUpdate(
+                            sentmsg,
+                            game,
+                            false
+                        );
+                    },
+                    () => {
+                        // game exist
+
+                        // never reach
+                        throw Error(JSON.stringify(sentmsg));
+                    }
                 );
             },
             () => {
-                // game exist
+                // not valid
 
-                // never reach
-                throw Error(JSON.stringify(sentmsg));
+                bot.editMessageText(
+                    '你…要带我去哪里？',
+                    {
+                        chat_id: sentmsg.chat.id,
+                        message_id: sentmsg.message_id,
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
             }
         );
     });

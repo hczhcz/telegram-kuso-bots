@@ -19,14 +19,14 @@ const load = (id, index, onDone, onNotValid) => {
 
     if (found) {
         const choose = () => {
-            let i = index;
+            let levelIndex = index;
 
-            if (i === null) {
-                i = Math.floor(Math.random() * levels[id].length);
+            if (levelIndex === null) {
+                levelIndex = Math.floor(Math.random() * levels[id].length);
             }
 
-            if (i >= 0 && i < levels[id].length) {
-                onDone(levels[id][i]);
+            if (levelIndex >= 0 && levelIndex < levels[id].length) {
+                onDone(levels[id][levelIndex], id, levelIndex);
             } else {
                 onNotValid();
             }
