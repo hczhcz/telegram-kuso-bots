@@ -110,8 +110,10 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
         }
     ).then((sentmsg) => {
         resource.load(
-            match[1],
-            parseInt(match[2], 10),
+            match[2],
+            match[3]
+                ? parseInt(match[3], 10)
+                : null,
             (level, levelId, levelIndex) => {
                 // loaded
 

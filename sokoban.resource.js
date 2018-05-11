@@ -7,36 +7,43 @@ const levelNames = fs.readdirSync('sokoban');
 const levels = {};
 
 const load = (id, index, onDone, onNotValid) => {
-    let found = false;
+    let levelId = null;
+    let levelIndex = null;
 
-    for (const i in levelNames) {
-        if (levelNames[i] === id + '.txt') {
-            found = true;
+    if (id) {
+        for (const i in levelNames) {
+            if (levelNames[i] === id + '.txt') {
+                levelId = id;
 
-            break;
+                break;
+            }
         }
+    } else {
+        levelId = levelNames[Math.floor(Math.random() * levelNames.length)];
     }
 
-    if (found) {
+    if (levelId) {
         const choose = () => {
-            let levelIndex = index;
-
-            if (levelIndex === null) {
-                levelIndex = Math.floor(Math.random() * levels[id].length);
+            if (index) {
+                if (index >= 0 && index < levels[levelId].length) {
+                    levelIndex = index;
+                }
+            } else {
+                levelIndex = Math.floor(Math.random() * levels[levelId].length);
             }
 
-            if (levelIndex >= 0 && levelIndex < levels[id].length) {
-                onDone(levels[id][levelIndex], id, levelIndex);
-            } else {
+            if (levelIndex === null) {
                 onNotValid();
+            } else {
+                onDone(levels[levelId][levelIndex], levelId, levelIndex);
             }
         };
 
-        if (levels[id]) {
+        if (levels[levelId]) {
             choose();
         } else {
             const rl = readline.createInterface({
-                input: fs.createReadStream('sokoban/' + id + '.txt'),
+                input: fs.createReadStream('sokoban/' + levelId + '.txt'),
             });
 
             let buffer = [];
@@ -58,7 +65,7 @@ const load = (id, index, onDone, onNotValid) => {
                     levelList.push(buffer);
                 }
 
-                levels[id] = levelList;
+                levels[levelId] = levelList;
 
                 choose();
             });
