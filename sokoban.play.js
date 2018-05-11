@@ -159,6 +159,8 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameStep, onGam
                 return onGameWin(game);
             }
 
+            game.active = [targetI, targetJ];
+
             return onGameStep(game);
         }
 

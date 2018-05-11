@@ -44,7 +44,10 @@ const messageUpdate = (msg, game, win) => {
         delete game.update;
     };
 
-    const matrix = [];
+    const matrix = [[{
+        text: game.levelId + ' - ' + game.levelIndex,
+        callback_data: 'title',
+    }]];
 
     for (let i = 0; i < Math.min(game.map.length, 12); i += 1) {
         matrix.push([]);
@@ -70,7 +73,7 @@ const messageUpdate = (msg, game, win) => {
                 };
             }
 
-            matrix[i].push({
+            matrix[i + 1].push({
                 text: display[game.map[globalI][globalJ]],
                 callback_data: JSON.stringify([globalI, globalJ]),
             });
@@ -79,7 +82,7 @@ const messageUpdate = (msg, game, win) => {
 
     if (!win) {
         matrix.push([{
-            text: '撤销',
+            text: '撤销 (' + game.history.length + ')',
             callback_data: 'undo',
         }]);
 
