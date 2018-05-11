@@ -122,6 +122,9 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
                     level,
                     levelId,
                     levelIndex,
+                    msg.reply_to_message && msg.reply_to_message.text
+                        ? JSON.parse(msg.reply_to_message.text)
+                        : null,
                     (game) => {
                         // game init
 
