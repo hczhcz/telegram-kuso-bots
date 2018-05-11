@@ -6,13 +6,20 @@ const readline = require('readline');
 const levelNames = fs.readdirSync('sokoban');
 const levels = {};
 
+for (const i in levelNames) {
+    if (levelNames[i].slice(levelNames[i].length - 4) !== '.txt') {
+        throw Error();
+    }
+    levelNames[i] = levelNames[i].slice(0, levelNames[i].length - 4);
+}
+
 const load = (id, index, onDone, onNotValid) => {
     let levelId = null;
     let levelIndex = null;
 
     if (id) {
         for (const i in levelNames) {
-            if (levelNames[i] === id + '.txt') {
+            if (levelNames[i] === id) {
                 levelId = id;
 
                 break;
@@ -50,7 +57,7 @@ const load = (id, index, onDone, onNotValid) => {
             const levelList = [];
 
             rl.on('line', (str) => {
-                const match = str.match(/^([# .@+$*]+)(?: *;.*)?$/);
+                const match = str.match(/^([# .@+$*]+)(?: *;.*)?\r?$/);
 
                 if (match) {
                     buffer.push(match[1]);
