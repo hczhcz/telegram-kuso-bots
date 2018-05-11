@@ -10,19 +10,19 @@ const setViewport = (game) => {
     const player = core.findPlayer(game.map);
 
     if (player[0] < game.viewport[0] + 2) {
-        game.viewport[0] = Math.max(player[0] - 6, 0);
+        game.viewport[0] = Math.max(player[0] - 12 / 2, 0);
     }
 
-    if (player[0] >= game.viewport[0] + 10) {
-        game.viewport[0] = Math.min(player[0] - 5, game.map.length - 12);
+    if (player[0] >= game.viewport[0] + 12 - 2) {
+        game.viewport[0] = Math.min(player[0] - 12 / 2 + 1, game.map.length - 12);
     }
 
     if (player[1] < game.viewport[1] + 2) {
-        game.viewport[1] = Math.max(player[1] - 4, 0);
+        game.viewport[1] = Math.max(player[1] - 8 / 2, 0);
     }
 
-    if (player[1] >= game.viewport[1] + 6) {
-        game.viewport[1] = Math.min(player[1] - 3, game.map[player[0]].length - 8);
+    if (player[1] >= game.viewport[1] + 8 - 2) {
+        game.viewport[1] = Math.min(player[1] - 8 / 2 + 1, game.map[player[0]].length - 8);
     }
 };
 
