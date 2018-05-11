@@ -26,12 +26,14 @@ const setViewport = (game) => {
     }
 };
 
-const init = (id, level, onGameInit, onGameExist) => {
+const init = (id, level, levelId, levelIndex, onGameInit, onGameExist) => {
     if (games[id]) {
         return onGameExist();
     }
 
     const game = games[id] = {
+        levelId: levelId,
+        levelIndex: levelIndex,
         map: core.init(level),
         active: null,
         viewport: [0, 0],

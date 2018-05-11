@@ -6,7 +6,7 @@ const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.abToken);
 const multiplayer = require('./multiplayer');
 
-const gameplay = require('./1a2b.gameplay');
+const play = require('./1a2b.play');
 
 const fd = fs.openSync('log_1a2b', 'a');
 
@@ -109,7 +109,7 @@ const playerUpdate = (msg, list) => {
 };
 
 const gameEvent = event((msg, match) => {
-    gameplay.guess(
+    play.guess(
         msg.chat.id,
         match[0],
         (game) => {
@@ -167,7 +167,7 @@ const gameEvent = event((msg, match) => {
 });
 
 bot.onText(/^[^\n\r\s]+$/, (msg, match) => {
-    gameplay.verify(
+    play.verify(
         msg.chat.id,
         match[0],
         () => {
@@ -196,7 +196,7 @@ bot.onText(/^[^\n\r\s]+$/, (msg, match) => {
 });
 
 bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
-    gameplay.init(
+    play.init(
         msg.chat.id,
         match[2] || msg.reply_to_message && msg.reply_to_message.text || '',
         msg.from.id,
@@ -273,7 +273,7 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
 }));
 
 bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
-    gameplay.end(
+    play.end(
         msg.chat.id,
         (game) => {
             // game end
@@ -450,6 +450,6 @@ bot.on('chosen_inline_result', (chosen) => {
     );
 
     if (chosen.result_id === 'playmeow') {
-        gameplay.meowInit(chosen.from.id, chosen.query);
+        play.meowInit(chosen.from.id, chosen.query);
     }
 });

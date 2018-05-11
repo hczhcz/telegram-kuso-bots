@@ -5,8 +5,8 @@ const fs = require('fs');
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.sokobanToken);
 
-const level = require('./sokoban.level');
-const gameplay = require('./sokoban.gameplay');
+const resource = require('./sokoban.resource');
+const play = require('./sokoban.play');
 
 const fd = fs.openSync('log_sokoban', 'a');
 
@@ -109,13 +109,13 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
             reply_to_message_id: msg.message_id,
         }
     ).then((sentmsg) => {
-        level.load(
+        resource.load(
             match[1],
             parseInt(match[2], 10),
             (level, levelId, levelIndex) => {
                 // loaded
 
-                gameplay.init(
+                play.init(
                     sentmsg.chat.id + '_' + sentmsg.message_id,
                     level,
                     levelId,
@@ -168,7 +168,7 @@ bot.on('callback_query', (query) => {
         info[0] + ' ' + info[1]
     );
 
-    gameplay.click(
+    play.click(
         msg.chat.id + '_' + msg.message_id,
         query.from.id,
         info[0],

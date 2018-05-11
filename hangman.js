@@ -5,8 +5,8 @@ const fs = require('fs');
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.hangmanToken);
 
-const dictionary = require('./hangman.dictionary');
-const gameplay = require('./hangman.gameplay');
+const resource = require('./hangman.resource');
+const play = require('./hangman.play');
 
 const fd = fs.openSync('log_hangman', 'a');
 
@@ -266,13 +266,13 @@ bot.on('callback_query', (query) => {
             'dict ' + info[1] + ' ' + info[2] + ' ' + info[3]
         );
 
-        dictionary.load(
+        resource.load(
             info[1],
             info[2],
             (dict) => {
                 // loaded
 
-                gameplay.init(
+                play.init(
                     msg.chat.id + '_' + msg.message_id,
                     query.from.id,
                     dict,
@@ -316,7 +316,7 @@ bot.on('callback_query', (query) => {
             'guess ' + info[1]
         );
 
-        gameplay.click(
+        play.click(
             msg.chat.id + '_' + msg.message_id,
             query.from.id,
             info[1],
@@ -413,6 +413,6 @@ bot.on('chosen_inline_result', (chosen) => {
     );
 
     if (chosen.result_id === 'playmeow') {
-        gameplay.meowInit(chosen.from.id, chosen.query);
+        play.meowInit(chosen.from.id, chosen.query);
     }
 });

@@ -5,7 +5,7 @@ const fs = require('fs');
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.minesweeperToken);
 
-const gameplay = require('./minesweeper.gameplay');
+const play = require('./minesweeper.play');
 
 const fd = fs.openSync('log_minesweeper', 'a');
 
@@ -127,7 +127,7 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
             reply_to_message_id: msg.message_id,
         }
     ).then((sentmsg) => {
-        gameplay.init(
+        play.init(
             sentmsg.chat.id + '_' + sentmsg.message_id,
             parseInt(match[2], 10) || 8,
             parseInt(match[3], 10) || 8,
@@ -183,7 +183,7 @@ bot.on('callback_query', (query) => {
         info[0] + ' ' + info[1]
     );
 
-    gameplay.click(
+    play.click(
         msg.chat.id + '_' + msg.message_id,
         query.from.id,
         info[0],
