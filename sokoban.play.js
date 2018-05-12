@@ -124,7 +124,7 @@ const get = (id, onDone, onGameNotExist) => {
     return onDone(game);
 };
 
-const click = (id, playerId, targetI, targetJ, onGameContinue, onGameStep, onGameWin, onNotChanged, onGameNotExist) => {
+const click = (id, playerId, targetI, targetJ, onGameContinue, onGameStep, onGameWin, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
@@ -164,14 +164,7 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameStep, onGam
             return onGameStep(game);
         }
 
-        if (
-            boxI >= game.viewport[0]
-            && boxI < game.viewport[0] + 12
-            && boxJ >= game.viewport[1]
-            && boxJ < game.viewport[1] + 8
-        ) {
-            return onGameContinue(game);
-        }
+        return onGameContinue(game);
     }
 
     if (doMove(game, playerId, targetI, targetJ)) {
@@ -180,7 +173,7 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameStep, onGam
         return onGameStep(game);
     }
 
-    return onNotChanged(game);
+    return onGameContinue(game);
 };
 
 const undo = (id, onDone, onNotValid, onGameNotExist) => {

@@ -92,20 +92,30 @@ const messageUpdate = (msg, game, win) => {
         }]);
     }
 
-    bot.editMessageReplyMarkup(
-        {
-            inline_keyboard: matrix,
-        },
-        {
-            chat_id: msg.chat.id,
-            message_id: msg.message_id,
-            reply_to_message_id: msg.reply_to_message.message_id,
-        }
-    ).finally(() => {
-        setTimeout(() => {
-            game.update();
-        }, config.sokobanUpdateDelay);
-    });
+    const matrixStr = JSON.stringify(matrix);
+
+    if (!game.lastMatrix || game.lastMatrix() !== matrixStr) {
+        game.lastMatrix = () => {
+            return matrixStr;
+        };
+
+        bot.editMessageReplyMarkup(
+            {
+                inline_keyboard: matrix,
+            },
+            {
+                chat_id: msg.chat.id,
+                message_id: msg.message_id,
+                reply_to_message_id: msg.reply_to_message.message_id,
+            }
+        ).finally(() => {
+            setTimeout(() => {
+                game.update();
+            }, config.sokobanUpdateDelay);
+        });
+    } else {
+        game.update();
+    }
 };
 
 bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
@@ -304,11 +314,6 @@ bot.on('callback_query', (query) => {
                 if (game.updateExport) {
                     game.updateExport();
                 }
-
-                bot.answerCallbackQuery(query.id).catch((err) => {});
-            },
-            (game) => {
-                // not changed
 
                 bot.answerCallbackQuery(query.id).catch((err) => {});
             },
