@@ -169,23 +169,25 @@ const push = (map, boxI, boxJ, targetI, targetJ) => {
         return false;
     }
 
-    let scanI = boxI;
-    let scanJ = boxJ;
-
-    while (scanI !== targetI && scanJ !== targetJ) {
-        scanI += deltaI;
-        scanJ += deltaJ;
-
-        if (map[scanI][scanJ] !== ' ' && map[scanI][scanJ] !== '.') {
-            return false;
-        }
-    }
-
     const player = findPlayer(map);
     const playerI = player[0];
     const playerJ = player[1];
 
     popPlayer(map, playerI, playerJ);
+
+    let scanI = boxI;
+    let scanJ = boxJ;
+
+    while (scanI !== targetI || scanJ !== targetJ) {
+        scanI += deltaI;
+        scanJ += deltaJ;
+
+        if (map[scanI][scanJ] !== ' ' && map[scanI][scanJ] !== '.') {
+            pushPlayer(map, playerI, playerJ);
+
+            return false;
+        }
+    }
 
     if (findPath(map, playerI, playerJ, boxI - deltaI, boxJ - deltaJ)) {
         popBox(map, boxI, boxJ);
