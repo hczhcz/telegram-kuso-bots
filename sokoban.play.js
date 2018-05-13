@@ -90,7 +90,7 @@ const doReplay = (game, history) => {
     }
 };
 
-const init = (id, level, levelId, levelIndex, history, onGameInit, onGameExist) => {
+const init = (id, level, levelId, levelIndex, history, onGameInit, onGameWin, onGameExist) => {
     if (games[id]) {
         return onGameExist();
     }
@@ -110,6 +110,12 @@ const init = (id, level, levelId, levelIndex, history, onGameInit, onGameExist) 
     }
 
     setViewport(game);
+
+    if (core.win(game.map)) {
+        delete games[id];
+
+        return onGameWin(game);
+    }
 
     return onGameInit(game);
 };

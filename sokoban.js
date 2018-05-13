@@ -151,6 +151,19 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
                             false
                         );
                     },
+                    (game) => {
+                        // game win
+
+                        fs.write(fd, JSON.stringify(game) + '\n', () => {
+                            // nothing
+                        });
+
+                        messageUpdate(
+                            sentmsg,
+                            game,
+                            true
+                        );
+                    },
                     () => {
                         // game exist
 
