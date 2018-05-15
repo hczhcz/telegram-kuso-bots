@@ -31,7 +31,7 @@ const load = (id, index, onDone, onNotValid) => {
 
     if (levelId) {
         const choose = () => {
-            if (index) {
+            if (index !== null) {
                 if (index >= 0 && index < levels[levelId].length) {
                     levelIndex = index;
                 }
