@@ -31,12 +31,10 @@ const load = (id, index, onDone, onNotValid) => {
 
     if (levelId) {
         const choose = () => {
-            if (index !== null) {
-                if (index >= 0 && index < levels[levelId].length) {
-                    levelIndex = index;
-                }
-            } else {
+            if (index === null) {
                 levelIndex = Math.floor(Math.random() * levels[levelId].length);
+            } else if (index >= 0 && index < levels[levelId].length) {
+                levelIndex = index;
             }
 
             if (levelIndex === null) {

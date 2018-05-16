@@ -250,25 +250,25 @@ bot.on('callback_query', (query) => {
                             game.levelId,
                             game.levelIndex,
                             game.history,
-                            (game) => {
+                            (newGame) => {
                                 // game init
 
                                 messageUpdate(
                                     sentmsg,
-                                    game,
+                                    newGame,
                                     false
                                 );
                             },
-                            (game) => {
+                            (newGame) => {
                                 // game win
 
-                                fs.write(fd, JSON.stringify(game) + '\n', () => {
+                                fs.write(fd, JSON.stringify(newGame) + '\n', () => {
                                     // nothing
                                 });
 
                                 messageUpdate(
                                     sentmsg,
-                                    game,
+                                    newGame,
                                     true
                                 );
                             },
