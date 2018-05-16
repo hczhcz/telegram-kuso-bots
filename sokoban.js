@@ -87,6 +87,9 @@ const messageUpdate = (msg, game, win) => {
         }]);
 
         matrix.push([{
+            text: '克隆',
+            callback_data: 'clone',
+        }, {
             text: '导出',
             callback_data: 'export',
         }]);
@@ -219,6 +222,64 @@ bot.on('callback_query', (query) => {
                 },
                 () => {
                     // not valid
+
+                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                },
+                () => {
+                    // game not exist
+
+                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                }
+            );
+        } else if (query.data === 'clone') {
+            play.get(
+                msg.chat.id + '_' + msg.message_id,
+                (game) => {
+                    // got
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '仓库play什么的最棒' + msg.text.slice('仓库play什么的最'.length),
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    ).then((sentmsg) => {
+                        play.init(
+                            sentmsg.chat.id + '_' + sentmsg.message_id,
+                            game.level,
+                            game.levelId,
+                            game.levelIndex,
+                            game.history,
+                            (game) => {
+                                // game init
+
+                                messageUpdate(
+                                    sentmsg,
+                                    game,
+                                    false
+                                );
+                            },
+                            (game) => {
+                                // game win
+
+                                fs.write(fd, JSON.stringify(game) + '\n', () => {
+                                    // nothing
+                                });
+
+                                messageUpdate(
+                                    sentmsg,
+                                    game,
+                                    true
+                                );
+                            },
+                            () => {
+                                // game exist
+
+                                // never reach
+                                throw Error(JSON.stringify(sentmsg));
+                            }
+                        );
+                    });
 
                     bot.answerCallbackQuery(query.id).catch((err) => {});
                 },
