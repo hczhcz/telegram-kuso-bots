@@ -137,7 +137,6 @@ module.exports = (bot, games, commands, writeCommand) => {
                                 } else if (entry.text.slice(j).startsWith('$MODE')) {
                                     if (game) {
                                         text += game.modename;
-                                        match.mode = 1;
                                         j += 4;
                                     } else {
                                         match = null;
