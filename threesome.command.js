@@ -250,7 +250,15 @@ module.exports = (bot, games, commands, writeCommand) => {
                 const args = [];
 
                 let userbase = game.usercount;
-                let userneed = Math.min(Math.floor(Math.random() * (game.usercount + 1)), 3);
+                let userneed = 0;
+
+                if (game.usercount >= 3 && Math.random() < 1 / 3) {
+                    userneed = 3;
+                } else if (game.usercount >= 2 && Math.random() < 1 / 2) {
+                    userneed = 2;
+                } else if (game.usercount >= 1 && Math.random() < 2 / 3) {
+                    userneed = 1;
+                }
 
                 for (const i in game.users) {
                     if (Math.random() < userneed / userbase) {
