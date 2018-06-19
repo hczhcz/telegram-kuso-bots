@@ -218,17 +218,23 @@ bot.on('callback_query', (query) => {
                         game.updateExport();
                     }
 
-                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                    bot.answerCallbackQuery(query.id).catch((err) => {
+                        // nothing
+                    });
                 },
                 () => {
                     // not valid
 
-                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                    bot.answerCallbackQuery(query.id).catch((err) => {
+                        // nothing
+                    });
                 },
                 () => {
                     // game not exist
 
-                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                    bot.answerCallbackQuery(query.id).catch((err) => {
+                        // nothing
+                    });
                 }
             );
         } else if (query.data === 'clone') {
@@ -281,12 +287,16 @@ bot.on('callback_query', (query) => {
                         );
                     });
 
-                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                    bot.answerCallbackQuery(query.id).catch((err) => {
+                        // nothing
+                    });
                 },
                 () => {
                     // game not exist
 
-                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                    bot.answerCallbackQuery(query.id).catch((err) => {
+                        // nothing
+                    });
                 }
             );
         } else if (query.data === 'export') {
@@ -299,7 +309,9 @@ bot.on('callback_query', (query) => {
                         return;
                     }
 
-                    game.updateExport = () => {};
+                    game.updateExport = () => {
+                        // nothing
+                    };
 
                     bot.sendMessage(
                         msg.chat.id,
@@ -320,12 +332,16 @@ bot.on('callback_query', (query) => {
                         };
                     });
 
-                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                    bot.answerCallbackQuery(query.id).catch((err) => {
+                        // nothing
+                    });
                 },
                 () => {
                     // game not exist
 
-                    bot.answerCallbackQuery(query.id).catch((err) => {});
+                    bot.answerCallbackQuery(query.id).catch((err) => {
+                        // nothing
+                    });
                 }
             );
         }
@@ -355,7 +371,9 @@ bot.on('callback_query', (query) => {
                     false
                 );
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             },
             (game) => {
                 // game step
@@ -370,7 +388,9 @@ bot.on('callback_query', (query) => {
                     game.updateExport();
                 }
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             },
             (game) => {
                 // game win
@@ -389,12 +409,16 @@ bot.on('callback_query', (query) => {
                     game.updateExport();
                 }
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             },
             () => {
                 // game not exist
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             }
         );
     }

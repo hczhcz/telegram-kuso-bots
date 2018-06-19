@@ -340,17 +340,23 @@ bot.on('callback_query', (query) => {
                     list
                 );
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             },
             () => {
                 // player exist
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             },
             () => {
                 // list full
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             }
         );
     } else if (query.data === 'flee') {
@@ -365,12 +371,16 @@ bot.on('callback_query', (query) => {
                     list
                 );
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             },
             () => {
                 // player not exist
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             }
         );
     } else if (query.data === 'clear') {
@@ -384,12 +394,16 @@ bot.on('callback_query', (query) => {
                     []
                 );
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             },
             () => {
                 // not multiplayer
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             }
         );
     }

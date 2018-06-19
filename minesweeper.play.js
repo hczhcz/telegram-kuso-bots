@@ -10,7 +10,7 @@ const init = (id, rows, columns, mines, onGameInit, onNotValid, onGameExist) => 
     }
 
     if (core.verify(rows, columns, mines)) {
-        const game = games[id] = {
+        games[id] = {
             rows: rows,
             columns: columns,
             mines: mines,
@@ -19,7 +19,7 @@ const init = (id, rows, columns, mines, onGameInit, onNotValid, onGameExist) => 
             analysis: null,
         };
 
-        return onGameInit(game);
+        return onGameInit(games[id]);
     }
 
     return onNotValid();

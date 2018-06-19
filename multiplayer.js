@@ -15,7 +15,11 @@ const get = (id) => {
 };
 
 const add = (id, player, onDone, onPlayerExist, onListFull) => {
-    const list = lists[id] = lists[id] || [];
+    if (!lists[id]) {
+        lists[id] = [];
+    }
+
+    const list = lists[id];
 
     for (const i in list) {
         if (list[i].id === player.id) {

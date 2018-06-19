@@ -303,12 +303,16 @@ bot.on('callback_query', (query) => {
                             false
                         );
 
-                        bot.answerCallbackQuery(query.id).catch((err) => {});
+                        bot.answerCallbackQuery(query.id).catch((err) => {
+                            // nothing
+                        });
                     },
                     () => {
                         // game exist
 
-                        bot.answerCallbackQuery(query.id).catch((err) => {});
+                        bot.answerCallbackQuery(query.id).catch((err) => {
+                            // nothing
+                        });
                     }
                 );
             },
@@ -342,7 +346,9 @@ bot.on('callback_query', (query) => {
                     false
                 );
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             },
             (game) => {
                 // game win
@@ -357,17 +363,23 @@ bot.on('callback_query', (query) => {
                     true
                 );
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             },
             () => {
                 // not valid
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             },
             () => {
                 // game not exist
 
-                bot.answerCallbackQuery(query.id).catch((err) => {});
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
             }
         );
     }

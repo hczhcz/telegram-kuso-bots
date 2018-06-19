@@ -53,13 +53,15 @@ const init = (id, text, meowId, onGameInit, onGameExist) => {
         return onGameExist();
     }
 
-    const game = games[id] = {
+    games[id] = {
         charset: null,
         answer: null,
         hint: null,
         active: true,
         guess: {},
     };
+
+    const game = games[id];
 
     const ok = () => {
         return game.charset && core.length(game.charset) <= config.abMaxLength;

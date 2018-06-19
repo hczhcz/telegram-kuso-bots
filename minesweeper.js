@@ -198,7 +198,9 @@ bot.on('callback_query', (query) => {
                 game
             );
 
-            bot.answerCallbackQuery(query.id).catch((err) => {});
+            bot.answerCallbackQuery(query.id).catch((err) => {
+                // nothing
+            });
         },
         (game) => {
             // game win
@@ -221,7 +223,9 @@ bot.on('callback_query', (query) => {
                 '你要对人家负责哟/// ///'
             );
 
-            bot.answerCallbackQuery(query.id).catch((err) => {});
+            bot.answerCallbackQuery(query.id).catch((err) => {
+                // nothing
+            });
         },
         (game) => {
             // game lose
@@ -244,17 +248,23 @@ bot.on('callback_query', (query) => {
                 '是我们中出的叛徒！'
             );
 
-            bot.answerCallbackQuery(query.id).catch((err) => {});
+            bot.answerCallbackQuery(query.id).catch((err) => {
+                // nothing
+            });
         },
         (game) => {
             // not changed
 
-            bot.answerCallbackQuery(query.id).catch((err) => {});
+            bot.answerCallbackQuery(query.id).catch((err) => {
+                // nothing
+            });
         },
         () => {
             // game not exist
 
-            bot.answerCallbackQuery(query.id).catch((err) => {});
+            bot.answerCallbackQuery(query.id).catch((err) => {
+                // nothing
+            });
         }
     );
 });

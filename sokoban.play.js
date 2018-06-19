@@ -95,7 +95,7 @@ const init = (id, level, levelId, levelIndex, history, onGameInit, onGameWin, on
         return onGameExist();
     }
 
-    const game = games[id] = {
+    games[id] = {
         level: level,
         levelId: levelId,
         levelIndex: levelIndex,
@@ -104,6 +104,8 @@ const init = (id, level, levelId, levelIndex, history, onGameInit, onGameWin, on
         viewport: [0, 0],
         history: [],
     };
+
+    const game = games[id];
 
     if (history) {
         doReplay(game, history);

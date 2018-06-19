@@ -28,14 +28,14 @@ const init = (id, meowId, dict, keyboardSize, onGameInit, onGameExist) => {
         answer = core.dictSelect(dict);
     }
 
-    const game = games[id] = {
+    games[id] = {
         answer: answer,
         hint: hint(answer),
         keyboard: core.makeKeyboard(dict, answer, keyboardSize),
         history: [],
     };
 
-    return onGameInit(game);
+    return onGameInit(games[id]);
 };
 
 const click = (id, playerId, charIndex, onGameContinue, onGameWin, onNotValid, onGameNotExist) => {
