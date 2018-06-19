@@ -86,6 +86,7 @@ module.exports = (bot, stats) => {
                     user: {},
                     pair: {},
                 };
+
                 const commandStat = stats.command[msg.chat.id] || {
                     chat: {},
                     user: {},
@@ -93,6 +94,7 @@ module.exports = (bot, stats) => {
                     reply: {},
                     replyPair: {},
                 };
+
                 const inlineStat = stats.inline[player.id] || {};
 
                 const gameUserStat = statSize(gameStat.user[player.id]);
@@ -158,6 +160,7 @@ module.exports = (bot, stats) => {
                 user: {},
                 pair: {},
             };
+
             const commandStat = stats.command[msg.chat.id] || {
                 chat: {},
                 user: {},

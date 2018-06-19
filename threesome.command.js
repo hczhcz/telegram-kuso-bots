@@ -106,104 +106,104 @@ module.exports = (bot, games, commands, writeCommand) => {
             let tot = [];
             let level = 0;
 
+            const genText = (entry) => {
+                let text = '';
+                const match = {};
+
+                for (let i = 0; i < entry.text.length; i += 1) {
+                    const head = entry.text.slice(i);
+
+                    if (head.startsWith('$ME')) {
+                        // notice: protection for mock objects
+                        if (msg.from) {
+                            text += msg.from.first_name
+                                || msg.from.last_name;
+                            i += 2;
+                        } else {
+                            return;
+                        }
+                    } else if (head.startsWith('$YOU')) {
+                        if (msg.reply_to_message) {
+                            text += msg.reply_to_message.from.first_name
+                                || msg.reply_to_message.from.last_name;
+                            match.you = 1;
+                            i += 3;
+                        } else {
+                            return;
+                        }
+                    } else if (head.startsWith('$MODE')) {
+                        if (game) {
+                            text += game.modename;
+                            i += 4;
+                        } else {
+                            return;
+                        }
+                    } else if (head.startsWith('$1')) {
+                        if (args[0]) {
+                            text += args[0];
+                            match.args = Math.max(match.args || 0, 1);
+                            i += 1;
+                        } else {
+                            return;
+                        }
+                    } else if (head.startsWith('$2')) {
+                        if (args[1]) {
+                            text += args[1];
+                            match.args = Math.max(match.args || 0, 2);
+                            i += 1;
+                        } else {
+                            return;
+                        }
+                    } else if (head.startsWith('$3')) {
+                        if (args[2]) {
+                            text += args[2];
+                            match.args = Math.max(match.args || 0, 3);
+                            i += 1;
+                        } else {
+                            return;
+                        }
+                    } else {
+                        text += entry.text[i];
+                    }
+                }
+
+                let newLevel = 0;
+
+                for (const i in match) {
+                    newLevel += match[i];
+                }
+
+                if (level <= newLevel) {
+                    if (level < newLevel) {
+                        tot = [];
+                        level = newLevel;
+                    }
+
+                    tot.push({
+                        entry: entry,
+                        text: text,
+                    });
+                }
+            };
+
+            const genForward = (entry) => {
+                if (allowForward && level === 0) {
+                    tot.push({
+                        entry: entry,
+                        chat_id: entry.chat_id,
+                        forward: entry.forward,
+                    });
+                }
+            };
+
             for (const i in command['/' + key]) {
                 const entry = command['/' + key][i];
 
                 if (!entry.used || Math.random() < (now - entry.used) / 30000 - 1) {
                     if (entry.text) {
-                        let text = '';
-                        let match = {};
-
-                        for (let j = 0; j < entry.text.length; j += 1) {
-                            if (entry.text[j] === '$') {
-                                if (entry.text.slice(j).startsWith('$ME')) {
-                                    // notice: protection for mock objects
-                                    if (msg.from) {
-                                        text += msg.from.first_name || msg.from.last_name;
-                                        j += 2;
-                                    } else {
-                                        match = null;
-                                        break;
-                                    }
-                                } else if (entry.text.slice(j).startsWith('$YOU')) {
-                                    if (msg.reply_to_message) {
-                                        text += msg.reply_to_message.from.first_name || msg.reply_to_message.from.last_name;
-                                        match.you = 1;
-                                        j += 3;
-                                    } else {
-                                        match = null;
-                                        break;
-                                    }
-                                } else if (entry.text.slice(j).startsWith('$MODE')) {
-                                    if (game) {
-                                        text += game.modename;
-                                        j += 4;
-                                    } else {
-                                        match = null;
-                                        break;
-                                    }
-                                } else if (entry.text.slice(j).startsWith('$1')) {
-                                    if (args[0]) {
-                                        text += args[0];
-                                        match.args = Math.max(match.args || 0, 1);
-                                        j += 1;
-                                    } else {
-                                        match = null;
-                                        break;
-                                    }
-                                } else if (entry.text.slice(j).startsWith('$2')) {
-                                    if (args[1]) {
-                                        text += args[1];
-                                        match.args = Math.max(match.args || 0, 2);
-                                        j += 1;
-                                    } else {
-                                        match = null;
-                                        break;
-                                    }
-                                } else if (entry.text.slice(j).startsWith('$3')) {
-                                    if (args[2]) {
-                                        text += args[2];
-                                        match.args = Math.max(match.args || 0, 3);
-                                        j += 1;
-                                    } else {
-                                        match = null;
-                                        break;
-                                    }
-                                } else {
-                                    text += entry.text[j];
-                                }
-                            } else {
-                                text += entry.text[j];
-                            }
-                        }
-
-                        if (match) {
-                            let newLevel = 0;
-
-                            for (const j in match) {
-                                newLevel += match[j];
-                            }
-
-                            if (level <= newLevel) {
-                                if (level < newLevel) {
-                                    tot = [];
-                                    level = newLevel;
-                                }
-
-                                tot.push({
-                                    entry: entry,
-                                    text: text,
-                                });
-                            }
-                        }
+                        genText(entry);
                     } else if (entry.forward) {
-                        if (allowForward && level === 0) {
-                            tot.push({
-                                entry: entry,
-                                chat_id: entry.chat_id,
-                                forward: entry.forward,
-                            });
-                        }
+                        genForward(entry);
                     } else {
                         // never reach
                         throw Error(JSON.stringify(entry));

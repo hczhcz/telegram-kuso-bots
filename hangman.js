@@ -87,12 +87,8 @@ const messageUpdate = (msg, game, win) => {
     let first = true;
     let text = '';
 
-    const appendLine = (guess, correct) => {
+    const createFace = (guess, correct) => {
         const face = [' ', 'ｗ', '・'];
-
-        if (!correct) {
-            lives -= 1;
-        }
 
         if (lives < 3 && lives >= 0) {
             face[0] = '!';
@@ -122,8 +118,10 @@ const messageUpdate = (msg, game, win) => {
             }
         }
 
-        text += '( ' + face[0] + face[2] + face[1] + face[2] + ')';
+        return face;
+    };
 
+    const createLMR = (guess, correct) => {
         const lmr = ['　', '||', '　'];
 
         if (!guess) {
@@ -133,16 +131,29 @@ const messageUpdate = (msg, game, win) => {
         if (first) {
             lmr[0] = '╰';
             lmr[2] = '╯';
-
-            first = false;
         }
 
         if (lives === -1 && !correct) {
             lmr[0] = '✄';
+
             if (guess) {
                 lmr[1] = '██';
             }
         }
+
+        return lmr;
+    };
+
+    const appendLine = (guess, correct) => {
+        if (!correct) {
+            lives -= 1;
+        }
+
+        const face = createFace(guess, correct);
+
+        text += '( ' + face[0] + face[2] + face[1] + face[2] + ')';
+
+        const lmr = createLMR(guess, correct);
 
         text += lmr[0] + lmr[1] + lmr[2];
 
@@ -155,6 +166,8 @@ const messageUpdate = (msg, game, win) => {
         }
 
         text += '\n';
+
+        first = false;
     };
 
     for (const i in game.history) {
