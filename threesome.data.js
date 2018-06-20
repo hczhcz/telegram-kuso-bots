@@ -29,7 +29,9 @@ module.exports = (pathActions, pathCommands) => {
                 replyPair: {},
             };
 
-            const match = msg.text.match(/^\/(?!_)\w+/);
+            const match = msg.text
+                ? msg.text.match(/^\/(?!_)\w+/)
+                : null;
 
             if (match) {
                 const commandStat = self.stats.command[msg.chat.id];
