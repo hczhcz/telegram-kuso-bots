@@ -18,12 +18,7 @@ module.exports = (bot, event, playerEvent, env) => {
             const chosen = env.command.tryGet(msg, 'zao', [], false);
 
             if (chosen) {
-                if (chosen.text) {
-                    text = chosen.text;
-                } else {
-                    // never reach
-                    throw Error(JSON.stringify(chosen));
-                }
+                text = chosen.text;
             }
         }
 

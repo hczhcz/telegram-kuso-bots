@@ -6,7 +6,7 @@ module.exports = (bot, event, playerEvent, env) => {
     bot.on('message', (msg) => {
         if (msg.new_chat_members) {
             for (const i in msg.new_chat_members) {
-                const name1 = msg.new_chat_members[i].username
+                const name1 = '@' + msg.new_chat_members[i].username
                     || msg.new_chat_members[i].first_name;
 
                 if (pairs[msg.chat.id]) {
@@ -14,27 +14,20 @@ module.exports = (bot, event, playerEvent, env) => {
 
                     delete pairs[msg.chat.id];
 
-                    bot.sendMessage(
-                        msg.chat.id,
-                        '让我们祝福这对新人！\n'
-                            + name2 + ' ' + name1,
-                        {
-                            parse_mode: 'HTML',
-                        }
-                    );
+                    env.command.get(msg, 'welcome', [name1, name2]);
                 } else {
                     pairs[msg.chat.id] = name1;
 
-                    bot.sendMessage(
-                        msg.chat.id,
-                        '欢迎新人！\n'
-                            + name1,
-                        {
-                            parse_mode: 'HTML',
-                        }
-                    );
+                    env.command.get(msg, 'welcome', [name1]);
                 }
             }
+        }
+
+        if (msg.left_chat_member) {
+            const name1 = '@' + msg.left_chat_member.username
+                || msg.left_chat_member.first_name;
+
+            env.command.get(msg, 'leave', [name1]);
         }
     });
 };
