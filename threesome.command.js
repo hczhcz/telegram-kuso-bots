@@ -68,6 +68,8 @@ module.exports = (bot, games, commands, writeCommand) => {
                 );
             }
 
+            entry.chat_id = msg.chat.id;
+
             for (const i in command['/' + key]) {
                 if (
                     entry.text && command['/' + key][i].text === entry.text
