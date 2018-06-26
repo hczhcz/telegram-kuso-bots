@@ -341,7 +341,7 @@ setInterval(() => {
         const mockMsg = {
             date: Date.now(),
             chat: {
-                id: i,
+                id: parseInt(i, 10),
             },
         };
 
