@@ -345,24 +345,24 @@ setInterval(() => {
             },
         };
 
+        if (game.time === 0) {
+            fs.write(fd, i + ':' + util.inspect(game) + '\n', () => {
+                // nothing
+            });
+
+            data.writeGame(
+                mockMsg,
+                game
+            );
+        }
+
         if (config.threesomeChatMap[i]) {
             mockMsg.chat.mapped = config.threesomeChatMap[i];
         } else {
-            mockMsg.chat.mapped = i;
+            mockMsg.chat.mapped = mockMsg.chat.id;
         }
 
         if (game.time <= 0) {
-            if (game.time === 0) {
-                fs.write(fd, i + ':' + util.inspect(game) + '\n', () => {
-                    // nothing
-                });
-
-                data.writeGame(
-                    mockMsg,
-                    game
-                );
-            }
-
             gather.tick(mockMsg);
         } else {
             play.tick(mockMsg);
