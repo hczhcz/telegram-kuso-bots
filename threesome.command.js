@@ -3,12 +3,20 @@
 module.exports = (bot, games, commands, writeCommand) => {
     const self = {
         all: (msg) => {
-            const command = commands[msg.chat.mapped] || {};
-
             let text = '';
 
-            for (const i in command) {
-                text += (i.slice(1) || '<bot自言自语>') + '\n';
+            for (const i in commands) {
+                for (const j in commands[i]) {
+                    const command = commands[i][j];
+
+                    if (command.mapped && command.mapped !== msg.chat.mapped) {
+                        continue;
+                    }
+
+                    text += (i.slice(1) || '<bot自言自语>') + '\n';
+
+                    break;
+                }
             }
 
             return bot.sendMessage(
@@ -21,20 +29,22 @@ module.exports = (bot, games, commands, writeCommand) => {
         },
 
         list: (msg, key) => {
-            const command = commands[msg.chat.mapped] || {};
-
             let text = '';
 
-            for (const i in command['/' + key]) {
-                const entry = command['/' + key][i];
+            for (const i in commands['/' + key]) {
+                const command = commands['/' + key][i];
 
-                if (entry.text) {
-                    text += entry.text + '\n';
-                } else if (entry.forward) {
+                if (command.mapped && command.mapped !== msg.chat.mapped) {
+                    continue;
+                }
+
+                if (command.text) {
+                    text += command.text + '\n';
+                } else if (command.forward) {
                     text += '<转发消息>\n';
                 } else {
                     // never reach
-                    throw Error(JSON.stringify(entry));
+                    throw Error(JSON.stringify(command));
                 }
             }
 
@@ -48,10 +58,6 @@ module.exports = (bot, games, commands, writeCommand) => {
         },
 
         add: (msg, key, value) => {
-            commands[msg.chat.mapped] = commands[msg.chat.mapped] || {};
-
-            const command = commands[msg.chat.mapped];
-
             const entry = {};
 
             if (value) {
@@ -68,12 +74,16 @@ module.exports = (bot, games, commands, writeCommand) => {
                 );
             }
 
-            entry.chat_id = msg.chat.id;
+            for (const i in commands['/' + key]) {
+                const command = commands['/' + key][i];
 
-            for (const i in command['/' + key]) {
+                if (command.mapped && command.mapped !== msg.chat.mapped) {
+                    continue;
+                }
+
                 if (
-                    entry.text && command['/' + key][i].text === entry.text
-                    || entry.forward && command['/' + key][i].forward === entry.forward
+                    entry.text && command.text === entry.text
+                    || entry.forward && command.forward === entry.forward
                 ) {
                     return bot.sendMessage(
                         msg.chat.id,
@@ -102,18 +112,17 @@ module.exports = (bot, games, commands, writeCommand) => {
 
         tryGet: (msg, key, args, allowForward) => {
             const game = games[msg.chat.id];
-            const command = commands[msg.chat.mapped] || {};
             const now = Date.now();
 
             let tot = [];
             let level = 0;
 
-            const genText = (entry) => {
+            const genText = (command) => {
                 let text = '';
                 const match = {};
 
-                for (let i = 0; i < entry.text.length; i += 1) {
-                    const head = entry.text.slice(i);
+                for (let i = 0; i < command.text.length; i += 1) {
+                    const head = command.text.slice(i);
 
                     if (head.startsWith('$ME')) {
                         // notice: protection for mock objects
@@ -165,7 +174,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                             return;
                         }
                     } else {
-                        text += entry.text[i];
+                        text += command.text[i];
                     }
                 }
 
@@ -182,33 +191,37 @@ module.exports = (bot, games, commands, writeCommand) => {
                     }
 
                     tot.push({
-                        entry: entry,
+                        used: command.used,
                         text: text,
                     });
                 }
             };
 
-            const genForward = (entry) => {
+            const genForward = (command) => {
                 if (allowForward && level === 0) {
                     tot.push({
-                        entry: entry,
-                        chat_id: entry.chat_id,
-                        forward: entry.forward,
+                        used: command.used,
+                        chat_id: command.chat_id,
+                        forward: command.forward,
                     });
                 }
             };
 
-            for (const i in command['/' + key]) {
-                const entry = command['/' + key][i];
+            for (const i in commands['/' + key]) {
+                const command = commands['/' + key][i];
 
-                if (!entry.used || Math.random() < (now - entry.used) / 30000 - 1) {
-                    if (entry.text) {
-                        genText(entry);
-                    } else if (entry.forward) {
-                        genForward(entry);
+                if (command.mapped && command.mapped !== msg.chat.mapped) {
+                    continue;
+                }
+
+                if (!command.used || Math.random() < (now - command.used) / 30000 - 1) {
+                    if (command.text) {
+                        genText(command);
+                    } else if (command.forward) {
+                        genForward(command);
                     } else {
                         // never reach
-                        throw Error(JSON.stringify(entry));
+                        throw Error(JSON.stringify(command));
                     }
                 }
             }
@@ -216,7 +229,7 @@ module.exports = (bot, games, commands, writeCommand) => {
             if (tot.length > 0) {
                 const choice = Math.floor(Math.random() * tot.length);
 
-                tot[choice].entry.used = now;
+                tot[choice].used = now;
 
                 return tot[choice];
             }

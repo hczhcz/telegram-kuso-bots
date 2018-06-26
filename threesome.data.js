@@ -154,12 +154,22 @@ module.exports = (pathActions, pathCommands) => {
         },
 
         loadCommand: (chat, key, entry) => {
-            self.commands[chat.mapped] = self.commands[chat.mapped] || {};
+            const command = {};
 
-            const command = self.commands[chat.mapped];
+            if (entry.text) {
+                command.text = entry.text;
+            } else if (entry.forward) {
+                command.forward = entry.forward;
+            } else {
+                // never reach
+                throw Error(JSON.stringify(entry));
+            }
 
-            command['/' + key] = command['/' + key] || [];
-            command['/' + key].push(entry);
+            command.chat_id = chat.id;
+            command.mapped = chat.mapped;
+
+            self.commands['/' + key] = self.commands['/' + key] || [];
+            self.commands['/' + key].push(command);
         },
 
         writeCommand: (chat, key, entry) => {
