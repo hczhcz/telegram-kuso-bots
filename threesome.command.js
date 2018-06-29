@@ -77,21 +77,25 @@ module.exports = (bot, games, commands, writeCommand) => {
             for (const i in commands['/' + key]) {
                 const command = commands['/' + key][i];
 
-                if (command.mapped && command.mapped !== msg.chat.mapped) {
-                    continue;
-                }
+                // if (command.mapped && command.mapped !== msg.chat.mapped) {
+                //     continue;
+                // }
 
                 if (
                     entry.text && command.text === entry.text
                     || entry.forward && command.forward === entry.forward
                 ) {
-                    return bot.sendMessage(
-                        msg.chat.id,
-                        '已经加过了啦！',
-                        {
-                            reply_to_message_id: msg.message_id,
-                        }
-                    );
+                    if (command.mapped && command.mapped !== msg.chat.mapped) {
+                        command.mapped = 0;
+                    } else {
+                        return bot.sendMessage(
+                            msg.chat.id,
+                            '已经加过了啦！',
+                            {
+                                reply_to_message_id: msg.message_id,
+                            }
+                        );
+                    }
                 }
             }
 
