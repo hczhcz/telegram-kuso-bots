@@ -170,7 +170,7 @@ module.exports = (bot, games, commands, writeCommand) => {
             if (!found) {
                 return bot.sendMessage(
                     msg.chat.id,
-                    '已经加过了啦！',
+                    '并不能删掉哟！',
                     {
                         reply_to_message_id: msg.message_id,
                     }
@@ -186,7 +186,7 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '已加入 ' + (key || 'bot自言自语') + ' 套餐！',
+                '已从 ' + (key || 'bot自言自语') + ' 移除！',
                 {
                     reply_to_message_id: msg.message_id,
                 }
