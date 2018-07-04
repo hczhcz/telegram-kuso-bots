@@ -2,21 +2,45 @@
 
 module.exports = (bot, games, commands, writeCommand) => {
     const self = {
+        fetchKey: (msg) => {
+            const result = {};
+
+            for (const i in commands[0]) {
+                result[i] = true;
+            }
+
+            for (const i in commands[msg.chat.mapped]) {
+                result[i] = true;
+            }
+
+            return result;
+        },
+
+        fetchCommand: (msg, key) => {
+            const result = {};
+
+            for (const i in commands[0]['/' + key]) {
+                const command = commands[0]['/' + key][i];
+
+                result[command.content] = command;
+            }
+
+            for (const i in commands[msg.chat.mapped]['/' + key]) {
+                const command = commands[msg.chat.mapped]['/' + key][i];
+
+                result[command.content] = command;
+            }
+
+            return result;
+        },
+
         all: (msg) => {
             let text = '';
 
-            for (const i in commands) {
-                for (const j in commands[i]) {
-                    const command = commands[i][j];
+            const fetched = self.fetchKey(msg);
 
-                    if (command.mapped && command.mapped !== msg.chat.mapped) {
-                        continue;
-                    }
-
-                    text += (i.slice(1) || '<bot自言自语>') + '\n';
-
-                    break;
-                }
+            for (const i in fetched) {
+                text += (i.slice(1) || '<bot自言自语>') + '\n';
             }
 
             return bot.sendMessage(
@@ -31,12 +55,10 @@ module.exports = (bot, games, commands, writeCommand) => {
         list: (msg, key) => {
             let text = '';
 
-            for (const i in commands['/' + key]) {
-                const command = commands['/' + key][i];
+            const fetched = self.fetchCommand(msg, key);
 
-                if (command.mapped && command.mapped !== msg.chat.mapped) {
-                    continue;
-                }
+            for (const i in fetched) {
+                const command = fetched[i];
 
                 if (command.text) {
                     text += command.text + '\n';
@@ -74,35 +96,92 @@ module.exports = (bot, games, commands, writeCommand) => {
                 );
             }
 
-            for (const i in commands['/' + key]) {
-                const command = commands['/' + key][i];
+            const fetched = self.fetchCommand(msg, key);
 
-                // if (command.mapped && command.mapped !== msg.chat.mapped) {
-                //     continue;
-                // }
+            // note: can be optimized, but not necessary
+            for (const i in fetched) {
+                const command = fetched[i];
 
                 if (
                     entry.text && command.text === entry.text
                     || entry.forward && command.forward === entry.forward
                 ) {
-                    if (command.mapped && command.mapped !== msg.chat.mapped) {
-                        command.mapped = 0;
-                    } else {
-                        return bot.sendMessage(
-                            msg.chat.id,
-                            '已经加过了啦！',
-                            {
-                                reply_to_message_id: msg.message_id,
-                            }
-                        );
-                    }
+                    return bot.sendMessage(
+                        msg.chat.id,
+                        '已经加过了啦！',
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
                 }
             }
 
             writeCommand(
                 msg.chat,
                 key,
-                entry
+                entry,
+                false
+            );
+
+            return bot.sendMessage(
+                msg.chat.id,
+                '已加入 ' + (key || 'bot自言自语') + ' 套餐！',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        },
+
+        del: (msg, key, value) => {
+            const entry = {};
+
+            if (value) {
+                entry.text = value;
+            } else if (msg.reply_to_message) {
+                entry.forward = msg.reply_to_message.message_id;
+            } else {
+                return bot.sendMessage(
+                    msg.chat.id,
+                    '什么都没有呢！',
+                    {
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
+            }
+
+            let found = false;
+
+            // note: can be optimized, but not necessary
+            for (const i in commands[msg.chat.mapped]['/' + key]) {
+                const command = commands[msg.chat.mapped]['/' + key][i];
+
+                if (
+                    command.chat_id === msg.chat.id && (
+                        entry.text && command.text === entry.text
+                        || entry.forward && command.forward === entry.forward
+                    )
+                ) {
+                    found = true;
+
+                    break;
+                }
+            }
+
+            if (!found) {
+                return bot.sendMessage(
+                    msg.chat.id,
+                    '已经加过了啦！',
+                    {
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
+            }
+
+            writeCommand(
+                msg.chat,
+                key,
+                entry,
+                true
             );
 
             return bot.sendMessage(
@@ -211,12 +290,10 @@ module.exports = (bot, games, commands, writeCommand) => {
                 }
             };
 
-            for (const i in commands['/' + key]) {
-                const command = commands['/' + key][i];
+            const fetched = self.fetchCommand(msg, key);
 
-                if (command.mapped && command.mapped !== msg.chat.mapped) {
-                    continue;
-                }
+            for (const i in fetched) {
+                const command = fetched[i];
 
                 if (!command.used || Math.random() < (now - command.used) / 30000 - 1) {
                     if (command.text) {

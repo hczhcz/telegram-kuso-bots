@@ -153,32 +153,52 @@ module.exports = (pathActions, pathCommands) => {
             });
         },
 
-        loadCommand: (chat, key, entry) => {
-            const command = {};
+        loadCommand: (chat, key, entry, del) => {
+            self.commands[chat.mapped] = self.commands[chat.mapped] || {};
 
-            if (entry.text) {
-                command.text = entry.text;
-            } else if (entry.forward) {
-                command.forward = entry.forward;
+            if (del) {
+                for (const i in self.commands[chat.mapped]['/' + key]) {
+                    const command = self.commands[chat.mapped]['/' + key][i];
+
+                    if (
+                        command.chat_id === chat.id && (
+                            entry.text && command.text === entry.text
+                            || entry.forward && command.forward === entry.forward
+                        )
+                    ) {
+                        delete self.commands[chat.mapped]['/' + key][i];
+                    }
+                }
             } else {
-                // never reach
-                throw Error(JSON.stringify(entry));
+                const command = {};
+
+                if (entry.text) {
+                    command.text = entry.text;
+                    command.content = 'text:' + entry.text;
+                } else if (entry.forward) {
+                    command.forward = entry.forward;
+                    command.content = 'forward:' + entry.forward;
+                } else {
+                    // never reach
+                    throw Error(JSON.stringify(entry));
+                }
+
+                command.chat_id = chat.id;
+                command.mapped = chat.mapped;
+
+                self.commands[chat.mapped]['/' + key] = self.commands[chat.mapped]['/' + key] || [];
+                self.commands[chat.mapped]['/' + key].push(command);
             }
-
-            command.chat_id = chat.id;
-            command.mapped = chat.mapped;
-
-            self.commands['/' + key] = self.commands['/' + key] || [];
-            self.commands['/' + key].push(command);
         },
 
-        writeCommand: (chat, key, entry) => {
-            self.loadCommand(chat, key, entry);
+        writeCommand: (chat, key, entry, del) => {
+            self.loadCommand(chat, key, entry, del);
 
             fs.write(fdCommands, JSON.stringify({
                 chat: chat,
                 key: key,
                 entry: entry,
+                del: del,
             }) + '\n', () => {
                 // nothing
             });
