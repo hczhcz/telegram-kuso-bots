@@ -309,6 +309,16 @@ bot.onText(/^\/adds(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
     command.add(msg, match[2], match[3]);
 }, 1));
 
+bot.onText(/^\/del(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
+    command.del(msg, match[2], match[3]);
+}, 1));
+
+bot.onText(/^\/dels(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
+    msg.chat.mapped = 0;
+
+    command.del(msg, match[2], match[3]);
+}, 1));
+
 bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
     let args = [];
 

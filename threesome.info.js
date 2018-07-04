@@ -39,7 +39,9 @@ module.exports = (bot) => {
                     + '/listall 列出全部 trigger 命令\n'
                     + '/list <trigger> 列出 trigger 内容\n'
                     + '/add <trigger>@<content> 添加本地 trigger\n'
-                    + '/adds <trigger>@<content> 添加全网共享 trigger',
+                    + '/adds <trigger>@<content> 添加全网共享 trigger\n'
+                    + '/del <trigger>@<content> 删除本地 trigger\n'
+                    + '/dels <trigger>@<content> 删除全网共享 trigger',
                 {
                     reply_to_message_id: msg.message_id,
                 }
