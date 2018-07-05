@@ -3,6 +3,9 @@
 module.exports = (bot, games, commands, writeCommand) => {
     const self = {
         fetchKey: (msg) => {
+            commands[0] = commands[0] || {};
+            commands[msg.chat.mapped] = commands[msg.chat.mapped] || {};
+
             const result = {};
 
             for (const i in commands[0]) {
@@ -17,6 +20,9 @@ module.exports = (bot, games, commands, writeCommand) => {
         },
 
         fetchCommand: (msg, key) => {
+            commands[0] = commands[0] || {};
+            commands[msg.chat.mapped] = commands[msg.chat.mapped] || {};
+
             const result = {};
 
             for (const i in commands[0]['/' + key]) {
