@@ -5,7 +5,7 @@ module.exports = (bot, event, playerEvent, env) => {
     const leavePairs = {};
 
     const gen = (command, pairs, msg, user) => {
-        const name1 = '@' + user.username || user.first_name;
+        const name1 = '@' + (user.username || user.first_name);
 
         if (pairs[msg.chat.id] && pairs[msg.chat.id] !== name1) {
             const name2 = pairs[msg.chat.id];
