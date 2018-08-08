@@ -14,7 +14,7 @@ module.exports = (bot, games) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                (msg.from.first_name || msg.from.last_name) + ' 决定自己撸一炮！',
+                msg.from.first_name + ' 决定自己撸一炮！',
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -33,7 +33,7 @@ module.exports = (bot, games) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                (msg.from.first_name || msg.from.last_name) + ' 已经启动了一场约炮！'
+                msg.from.first_name + ' 已经启动了一场约炮！'
                     + '输入指令 /join 来参加这场床单盛宴...'
                     + '不排除有怀孕的可能 :P',
                 {
@@ -54,7 +54,7 @@ module.exports = (bot, games) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '在 ' + (msg.from.first_name || msg.from.last_name) + ' 的带领下，'
+                '在 ' + msg.from.first_name + ' 的带领下，'
                     + '3P 模式正式启动！'
                     + '输入 /join，群里的禽兽们将会全面进场！',
                 {
@@ -75,7 +75,7 @@ module.exports = (bot, games) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '在 ' + (msg.from.first_name || msg.from.last_name) + ' 的带领下，'
+                '在 ' + msg.from.first_name + ' 的带领下，'
                     + '群P 模式正式启动！'
                     + '输入 /join，群里的禽兽们将会全面进场！',
                 {
@@ -96,7 +96,7 @@ module.exports = (bot, games) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '在 ' + (msg.from.first_name || msg.from.last_name) + ' 的带领下，'
+                '在 ' + msg.from.first_name + ' 的带领下，'
                     + '百人斩模式正式启动！'
                     + '输入 /join，成为这场豪华盛宴的百分之一！',
                 {

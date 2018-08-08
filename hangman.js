@@ -419,7 +419,11 @@ bot.on('inline_query', (query) => {
                 id: 'playmeow',
                 title: 'hang喵',
                 input_message_content: {
-                    message_text: ('@' + query.from.username || query.from.first_name) + ' 喵喵模式已装载！\n\n'
+                    message_text: (
+                        query.from.username
+                            ? '@' + query.from.username
+                            : query.from.first_name
+                    ) + ' 喵喵模式已装载！\n\n'
                         + '/hang 开始新游戏',
                 },
             }],

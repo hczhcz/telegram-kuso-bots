@@ -15,7 +15,7 @@ module.exports = (bot, games) => {
 
                 return bot.sendMessage(
                     msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 加入了' + game.modename + '，'
+                    msg.from.first_name + ' 加入了' + game.modename + '，'
                         + game.usercount + ' 名禽兽参加，'
                         + '最少 ' + game.modemin + ' 人参加，'
                         + '最多 ' + game.modemax + ' 人参加'
@@ -40,7 +40,7 @@ module.exports = (bot, games) => {
 
                 return bot.sendMessage(
                     msg.chat.id,
-                    (msg.from.first_name || msg.from.last_name) + ' 逃离了' + game.modename + '，'
+                    msg.from.first_name + ' 逃离了' + game.modename + '，'
                         + '不再与大家啪啪\n\n'
                         + '剩余 ' + game.usercount + ' 人'
                 );
@@ -61,8 +61,8 @@ module.exports = (bot, games) => {
 
                     return bot.sendMessage(
                         msg.chat.id,
-                        (msg.from.first_name || msg.from.last_name) + ' 给 '
-                            + (player.first_name || player.last_name) + ' 灌下了春药，'
+                        msg.from.first_name + ' 给 '
+                            + player.first_name + ' 灌下了春药，'
                             + game.usercount + ' 名禽兽参加，'
                             + '最少 ' + game.modemin + ' 人参加，'
                             + '最多 ' + game.modemax + ' 人参加'
@@ -89,8 +89,8 @@ module.exports = (bot, games) => {
 
                     return bot.sendMessage(
                         msg.chat.id,
-                        (msg.from.first_name || msg.from.last_name) + ' 把 '
-                            + (player.first_name || player.last_name) + ' 踢下了床，'
+                        msg.from.first_name + ' 把 '
+                            + player.first_name + ' 踢下了床，'
                             + '剩余 ' + game.usercount + ' 人'
                     );
                 }

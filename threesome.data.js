@@ -15,7 +15,6 @@ module.exports = (pathActions, pathCommands) => {
         genName: (user) => {
             if (user.id) {
                 self.stats.name[user.id] = user.first_name
-                    || user.last_name
                     || self.stats.name[user.id];
             }
         },

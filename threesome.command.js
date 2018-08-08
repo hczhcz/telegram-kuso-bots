@@ -216,16 +216,14 @@ module.exports = (bot, games, commands, writeCommand) => {
                     if (head.startsWith('$ME')) {
                         // notice: protection for mock objects
                         if (msg.from) {
-                            text += msg.from.first_name
-                                || msg.from.last_name;
+                            text += msg.from.first_name;
                             i += 2;
                         } else {
                             return;
                         }
                     } else if (head.startsWith('$YOU')) {
                         if (msg.reply_to_message) {
-                            text += msg.reply_to_message.from.first_name
-                                || msg.reply_to_message.from.last_name;
+                            text += msg.reply_to_message.from.first_name;
                             match.you = 1;
                             i += 3;
                         } else {
@@ -363,7 +361,7 @@ module.exports = (bot, games, commands, writeCommand) => {
 
                 for (const i in game.users) {
                     if (Math.random() < userneed / userbase) {
-                        args.push(game.users[i].first_name || game.users[i].last_name);
+                        args.push(game.users[i].first_name);
                         userneed -= 1;
                     }
 

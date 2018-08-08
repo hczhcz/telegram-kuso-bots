@@ -63,7 +63,11 @@ const gameEnd = (game) => {
 const playerLine = (player) => {
     if (player) {
         return '\n\n'
-            + ('@' + player.username || player.first_name) + ' 轮到你啦';
+            + (
+                player.username
+                    ? '@' + player.username
+                    : player.first_name
+            ) + ' 轮到你啦';
     }
 
     return '';
@@ -74,7 +78,7 @@ const playerInfo = (list) => {
     let total = 0;
 
     for (const i in list) {
-        info += ('@' + list[i].username || list[i].first_name) + '\n';
+        info += (list[i].username || list[i].first_name) + '\n';
         total += 1;
     }
 
@@ -443,7 +447,11 @@ bot.on('inline_query', (query) => {
                 id: 'playmeow',
                 title: '喵a喵b',
                 input_message_content: {
-                    message_text: ('@' + query.from.username || query.from.first_name) + ' 喵喵模式已装载！\n\n'
+                    message_text: (
+                        query.from.username
+                            ? '@' + query.from.username
+                            : query.from.first_name
+                    ) + ' 喵喵模式已装载！\n\n'
                         + '/1a2b 开始新游戏\n'
                         + '/3a4b 多人模式\n'
                         + '/0a0b 结束游戏',
