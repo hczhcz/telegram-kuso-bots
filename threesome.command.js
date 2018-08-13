@@ -66,6 +66,10 @@ module.exports = (bot, games, commands, writeCommand) => {
             for (const i in fetched) {
                 const command = fetched[i];
 
+                if (command.mapped === 0) {
+                    text += '*';
+                }
+
                 if (command.text) {
                     text += command.text + '\n';
                 } else if (command.forward) {
