@@ -85,12 +85,12 @@ module.exports = (bot, games, commands, writeCommand) => {
             );
         },
 
-        add: (msg, key, value) => {
+        add: (msg, key, value, allowForward) => {
             const entry = {};
 
             if (value) {
                 entry.text = value;
-            } else if (msg.reply_to_message) {
+            } else if (allowForward && msg.reply_to_message) {
                 entry.forward = msg.reply_to_message.message_id;
             } else {
                 return bot.sendMessage(
@@ -138,12 +138,12 @@ module.exports = (bot, games, commands, writeCommand) => {
             );
         },
 
-        del: (msg, key, value) => {
+        del: (msg, key, value, allowForward) => {
             const entry = {};
 
             if (value) {
                 entry.text = value;
-            } else if (msg.reply_to_message) {
+            } else if (allowForward && msg.reply_to_message) {
                 entry.forward = msg.reply_to_message.message_id;
             } else {
                 return bot.sendMessage(
