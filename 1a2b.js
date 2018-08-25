@@ -324,6 +324,16 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
     );
 }));
 
+bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
+    bot.sendMessage(
+        msg.chat.id,
+        '当前活跃游戏 ' + play.count(),
+        {
+            reply_to_message_id: msg.message_id,
+        }
+    );
+}));
+
 bot.on('callback_query', (query) => {
     const msg = query.message;
 

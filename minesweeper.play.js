@@ -66,7 +66,12 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGame
     return onNotChanged(game);
 };
 
+const count = () => {
+    return Object.keys(games).length;
+};
+
 module.exports = {
     init: init,
     click: click,
+    count: count,
 };

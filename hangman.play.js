@@ -67,8 +67,13 @@ const click = (id, playerId, charIndex, onGameContinue, onGameWin, onNotValid, o
     return onNotValid();
 };
 
+const count = () => {
+    return Object.keys(games).length;
+};
+
 module.exports = {
     meowInit: meowInit,
     init: init,
     click: click,
+    count: count,
 };

@@ -159,10 +159,15 @@ const guess = (id, str, onGuess, onGameEnd, onGuessDuplicated, onGameNotExist) =
     return onGuess(game);
 };
 
+const count = () => {
+    return Object.keys(games).length;
+};
+
 module.exports = {
     meowInit: meowInit,
     init: init,
     end: end,
     verify: verify,
     guess: guess,
+    count: count,
 };

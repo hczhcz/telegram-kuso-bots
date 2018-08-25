@@ -35,13 +35,14 @@ module.exports = (bot) => {
                     + '/forcestart 人家迫不及待了啦\n'
                     + '/forcefallback 不管多少人都要啪\n'
                     + '/forceorgasm 强 制 高 潮\n'
-                    + '/stat 统计信息\n'
+                    + '/stat 查看统计信息\n'
                     + '/listall 列出全部 trigger 命令\n'
                     + '/list <trigger> 列出 trigger 内容\n'
                     + '/add <trigger>@<content> 添加本地 trigger\n'
                     + '/adds <trigger>@<content> 添加全网共享 trigger\n'
                     + '/del <trigger>@<content> 删除本地 trigger\n'
-                    + '/dels <trigger>@<content> 删除全网共享 trigger',
+                    + '/dels <trigger>@<content> 删除全网共享 trigger\n'
+                    + '/status 查看 bot 状态',
                 {
                     reply_to_message_id: msg.message_id,
                 }

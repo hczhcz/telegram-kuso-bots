@@ -333,6 +333,16 @@ bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
     command.get(msg, match[1], args);
 }, 2));
 
+bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
+    bot.sendMessage(
+        msg.chat.id,
+        '当前活跃啪啪 ' + Object.keys(data.games).length,
+        {
+            reply_to_message_id: msg.message_id,
+        }
+    );
+}));
+
 bot.on('inline_query', (query) => {
     if (config.ban[query.from.id]) {
         inline.banned(query);

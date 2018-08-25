@@ -211,9 +211,14 @@ const undo = (id, onDone, onNotValid, onGameNotExist) => {
     return onDone(game);
 };
 
+const count = () => {
+    return Object.keys(games).length;
+};
+
 module.exports = {
     init: init,
     get: get,
     click: click,
     undo: undo,
+    count: count,
 };
