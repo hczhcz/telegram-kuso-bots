@@ -1,5 +1,7 @@
 'use strict';
 
+const config = require('./config');
+
 module.exports = (bot, event, playerEvent, env) => {
     const welcomePairs = {};
     const leavePairs = {};
@@ -16,7 +18,17 @@ module.exports = (bot, event, playerEvent, env) => {
 
             env.command.get(msg, command, [name1, name2]);
         } else {
+            delete pairs[msg.chat.id];
+
             pairs[msg.chat.id] = name1;
+
+            if (Object.keys(pairs).length > config.welcomeMaxEntry) {
+                for (const i in pairs) {
+                    delete pairs[i];
+
+                    break;
+                }
+            }
 
             env.command.get(msg, command, [name1]);
         }
