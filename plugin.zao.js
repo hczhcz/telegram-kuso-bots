@@ -9,13 +9,13 @@ module.exports = (bot, event, playerEvent, env) => {
 
     const zao = [];
 
-    bot.onText(/^\/zao(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
+    bot.onText(/^\/zao(\w*)(?<!\/zaog[au]ys)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
         let text = '起床了！';
 
-        if (match[2]) {
-            text = match[2].slice(0, config.zaoMaxLength);
+        if (match[3]) {
+            text = match[3].slice(0, config.zaoMaxLength);
         } else {
-            const chosen = env.command.tryGet(msg, 'zao', [], false);
+            const chosen = env.command.tryGet(msg, 'zao' + match[1], [], false);
 
             if (chosen) {
                 text = chosen.text;
