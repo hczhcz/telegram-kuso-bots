@@ -10,8 +10,6 @@ module.exports = (bot, event, playerEvent, env) => {
             return;
         }
 
-        console.error(lastText[msg.chat.id])
-
         if (!lastText[msg.chat.id]) {
             lastText[msg.chat.id] = [msg.text, 1];
 
