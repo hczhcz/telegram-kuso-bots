@@ -21,8 +21,8 @@ module.exports = (bot, event, playerEvent, env) => {
     const addChar = (obj) => {
         for (const i in chars) {
             if (
-                obj.chat_id === chars[i].chat_id
-                && obj.message_id === chars[i].message_id
+                obj.text === chars[i].text
+                && obj.from_id === chars[i].from_id
             ) {
                 return;
             }
@@ -43,12 +43,14 @@ module.exports = (bot, event, playerEvent, env) => {
         if (msg.forward_from) {
             addChar({
                 text: msg.text,
-                chat_id: msg.forward_from_chat.id,
-                message_id: msg.forward_from_message_id,
+                from_id: msg.forward_from.id,
+                chat_id: msg.chat.id,
+                message_id: msg.message_id,
             });
         } else {
             addChar({
                 text: msg.text,
+                from_id: msg.from.id,
                 chat_id: msg.chat.id,
                 message_id: msg.message_id,
             });
