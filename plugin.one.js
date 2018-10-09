@@ -50,15 +50,23 @@ module.exports = (bot, event, playerEvent, env) => {
                 }
             }
 
-            selected.push(options[Math.floor(Math.random() * options.length)]);
+            if (options.length) {
+                selected.push(options[Math.floor(Math.random() * options.length)]);
+            }
         }
 
-        for (const i in selected) {
-            bot.forwardMessage(
-                msg.chat.id,
-                selected[i].chat_id,
-                selected[i].message_id
-            );
-        }
+        const send = () => {
+            if (selected.length) {
+                const option = selected.shift();
+
+                bot.forwardMessage(
+                    msg.chat.id,
+                    option.chat_id,
+                    option.message_id
+                ).then(send);
+            }
+        };
+
+        send();
     }, 1));
 };
