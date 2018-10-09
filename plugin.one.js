@@ -19,6 +19,15 @@ module.exports = (bot, event, playerEvent, env) => {
     const fdChars = fs.openSync(config.onePathChars, 'a');
 
     const addChar = (obj) => {
+        for (const i in chars) {
+            if (
+                obj.chat_id === chars[i].chat_id
+                && obj.message_id === chars[i].message_id
+            ) {
+                return;
+            }
+        }
+
         chars.push(obj);
 
         fs.write(fdChars, JSON.stringify(obj) + '\n', () => {
@@ -31,11 +40,19 @@ module.exports = (bot, event, playerEvent, env) => {
             return;
         }
 
-        addChar({
-            text: msg.text,
-            chat_id: msg.chat.id,
-            message_id: msg.message_id,
-        });
+        if (msg.forward_from) {
+            addChar({
+                text: msg.text,
+                chat_id: msg.forward_from_chat.id,
+                message_id: msg.forward_from_message_id,
+            });
+        } else {
+            addChar({
+                text: msg.text,
+                chat_id: msg.chat.id,
+                message_id: msg.message_id,
+            });
+        }
     }, -1));
 
     bot.onText(/^\/one(@\w+)? (.+)$/, event((msg, match) => {
