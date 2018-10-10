@@ -38,7 +38,7 @@ module.exports = (bot, event, playerEvent, env) => {
         });
     };
 
-    bot.onText(/^.$/, event((msg, match) => {
+    bot.onText(/^.{1,4}$/, event((msg, match) => {
         if (splitter.splitGraphemes(msg.text).length !== 1) {
             return;
         }
@@ -61,7 +61,7 @@ module.exports = (bot, event, playerEvent, env) => {
     }, -1));
 
     bot.onText(/^\/one(@\w+)?(?: (.+))?$/, event((msg, match) => {
-        const text = splitter.splitGraphemes(match[2] || msg.reply_to_message && msg.reply_to_message.text);
+        const text = splitter.splitGraphemes(match[2] || msg.reply_to_message && msg.reply_to_message.text || '');
         const selected = [];
 
         for (const i in text) {
