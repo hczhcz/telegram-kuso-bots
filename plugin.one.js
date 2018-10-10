@@ -64,6 +64,10 @@ module.exports = (bot, event, playerEvent, env) => {
         const text = splitter.splitGraphemes(match[2] || msg.reply_to_message && msg.reply_to_message.text || '');
         const selected = [];
 
+        if (text.length > config.oneMaxLength) {
+            return;
+        }
+
         for (const i in text) {
             const options = [];
 
