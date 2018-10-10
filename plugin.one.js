@@ -2,8 +2,11 @@
 
 const fs = require('fs');
 const readline = require('readline');
+const GraphemeSplitter = require('grapheme-splitter');
 
 const config = require('./config');
+
+const splitter = new GraphemeSplitter();
 
 module.exports = (bot, event, playerEvent, env) => {
     const chars = [];
@@ -36,7 +39,7 @@ module.exports = (bot, event, playerEvent, env) => {
     };
 
     bot.onText(/^.$/, event((msg, match) => {
-        if (msg.text.length !== 1) {
+        if (splitter.splitGraphemes(msg.text).length !== 1) {
             return;
         }
 
@@ -57,14 +60,15 @@ module.exports = (bot, event, playerEvent, env) => {
         }
     }, -1));
 
-    bot.onText(/^\/one(@\w+)? (.+)$/, event((msg, match) => {
+    bot.onText(/^\/one(@\w+)?(?: (.+))?$/, event((msg, match) => {
+        const text = splitter.splitGraphemes(match[2] || msg.reply_to_message && msg.reply_to_message.text);
         const selected = [];
 
-        for (const i in match[2]) {
+        for (const i in text) {
             const options = [];
 
             for (const j in chars) {
-                if (chars[j].text === match[2][i]) {
+                if (chars[j].text === text[i]) {
                     options.push(chars[j]);
                 }
             }
