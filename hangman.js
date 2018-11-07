@@ -192,18 +192,21 @@ const messageUpdate = (msg, game, win) => {
 
     if (win) {
         if (totLives > 0) {
-            winText = '回答正确～撒花～';
+            winText = '回答正确～撒花～\n';
         } else if (totLives === 0) {
-            winText = '回答正确～真是好险呢～';
+            winText = '回答正确～真是好险呢～\n';
         } else if (game.history.length === game.keyboard.length) {
-            winText = '卧…卧槽？！';
+            winText = '卧…卧槽？！\n';
         } else {
-            winText = '虽然 JJ 已经被 bot 切掉了，但是回答正确～';
+            winText = '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n';
         }
+
+        winText += '/hang@' + config.hangmanUsername + ' 开始新游戏\n';
     }
 
     bot.editMessageText(
-        '<pre>' + text + '\n'
+        '<pre>\n'
+            + text + '\n'
             + '[ ' + dictInfo.title + ' - ' + game.dictSettings()[1] + ' ]\n'
             + '[ ' + hint + ' ]\n'
             + '[ 剩余生命：' + totLives + ' ]\n'
@@ -434,7 +437,7 @@ bot.on('inline_query', (query) => {
                             ? '@' + query.from.username
                             : query.from.first_name
                     ) + ' 喵喵模式已装载！\n\n'
-                        + '/hang 开始新游戏',
+                        + '/hang@' + config.hangmanUsername + ' 开始新游戏',
                 },
             }],
             {

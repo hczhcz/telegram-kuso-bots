@@ -108,7 +108,9 @@ const gameStat = (msg, game, title, last) => {
         text += game.nameMap()[i] + ' - ' + stat[i] + '项操作\n';
     }
 
-    text += '\n' + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last;
+    text += '\n'
+        + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last + '\n'
+        + '/mine@' + config.minesweeperUsername + ' 开始新游戏';
 
     bot.sendMessage(
         msg.chat.id,

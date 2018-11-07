@@ -166,6 +166,15 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
                             game,
                             true
                         );
+
+                        bot.sendMessage(
+                            msg.chat.id,
+                            '好耶～箱子都被推到正确的地方了！\n'
+                                + '/sokoban@' + config.sokobanUsername + ' 开始新游戏',
+                            {
+                                reply_to_message_id: sentmsg.message_id,
+                            }
+                        );
                     },
                     () => {
                         // game exist
