@@ -109,7 +109,7 @@ const gameStat = (msg, game, title, last) => {
     }
 
     text += '\n'
-        + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last + '\n'
+        + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last + '\n\n'
         + '/mine@' + config.minesweeperUsername + ' 开始新游戏';
 
     bot.sendMessage(
