@@ -121,6 +121,31 @@ const messageUpdate = (msg, game, win) => {
     }
 };
 
+const gameStat = (msg, game) => {
+    let move = 0;
+    let push = 0;
+
+    for (const i in game.history) {
+        if (game.history[i].length === 3) {
+            move += 1;
+        } else if (game.history[i].length === 5) {
+            push += 1;
+        }
+    }
+
+    bot.sendMessage(
+        msg.chat.id,
+        '好耶～箱子都被推到正确的地方了！\n\n'
+            + '总共 ' + game.history.length + ' 项操作\n'
+            + '其中 ' + move + ' 次移动\n'
+            + push + ' 次推动箱子\n\n'
+            + '/sokoban@' + config.sokobanUsername + ' 开始新游戏',
+        {
+            reply_to_message_id: msg.message_id,
+        }
+    );
+};
+
 bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
@@ -167,13 +192,9 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
                             true
                         );
 
-                        bot.sendMessage(
-                            sentmsg.chat.id,
-                            '好耶～箱子都被推到正确的地方了！\n\n'
-                                + '/sokoban@' + config.sokobanUsername + ' 开始新游戏',
-                            {
-                                reply_to_message_id: sentmsg.message_id,
-                            }
+                        gameStat(
+                            sentmsg,
+                            game
                         );
                     },
                     () => {
@@ -295,6 +316,11 @@ bot.on('callback_query', (query) => {
                                     sentmsg,
                                     newGame,
                                     true
+                                );
+
+                                gameStat(
+                                    sentmsg,
+                                    game
                                 );
                             },
                             () => {
@@ -422,6 +448,11 @@ bot.on('callback_query', (query) => {
                     msg,
                     game,
                     true
+                );
+
+                gameStat(
+                    msg,
+                    game
                 );
 
                 if (game.updateExport) {
