@@ -191,27 +191,29 @@ const messageUpdate = (msg, game, win) => {
     let winText = '';
 
     if (win) {
+        winText = '\n\n';
+
         if (totLives > 0) {
-            winText = '回答正确～撒花～\n\n';
+            winText += '回答正确～撒花～\n\n';
         } else if (totLives === 0) {
-            winText = '回答正确～真是好险呢～\n\n';
+            winText += '回答正确～真是好险呢～\n\n';
         } else if (game.history.length === game.keyboard.length) {
-            winText = '卧…卧槽？！\n\n';
+            winText += '卧…卧槽？！\n\n';
         } else {
-            winText = '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n\n';
+            winText += '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n\n';
         }
 
-        winText += '/hang@' + config.hangmanUsername + ' 开始新游戏\n';
+        winText += '/hang@' + config.hangmanUsername + ' 开始新游戏';
     }
 
     bot.editMessageText(
-        '<pre>\n'
+        '<pre>'
             + text + '\n'
             + '[ ' + dictInfo.title + ' - ' + game.dictSettings()[1] + ' ]\n'
             + '[ ' + hint + ' ]\n'
-            + '[ 剩余生命：' + totLives + ' ]\n'
-            + winText
-            + '</pre>',
+            + '[ 剩余生命：' + totLives + ' ]'
+            + '</pre>'
+            + winText,
         {
             chat_id: msg.chat.id,
             message_id: msg.message_id,
