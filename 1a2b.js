@@ -30,36 +30,6 @@ const event = (handler) => {
     };
 };
 
-const gameInfo = (guess, hint) => {
-    let info = '猜测历史：\n';
-    let total = 0;
-
-    for (const i in guess) {
-        info += i.slice(1) + ' ' + guess[i][0] + 'A' + guess[i][1] + 'B\n';
-        total += 1;
-    }
-
-    info += '（总共' + total + '次）\n\n'
-        + '猜测目标：\n'
-        + hint;
-
-    return info;
-};
-
-const gameEnd = (game) => {
-    for (const i in game.guess) {
-        const sentmsg = game.guess[i].msg;
-
-        if (sentmsg) {
-            bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
-        }
-    }
-
-    fs.write(fd, JSON.stringify(game) + '\n', () => {
-        // nothing
-    });
-};
-
 const playerLine = (player) => {
     if (player) {
         return '\n\n'
@@ -110,6 +80,36 @@ const playerUpdate = (msg, list) => {
             },
         }
     );
+};
+
+const gameInfo = (guess, hint) => {
+    let info = '猜测历史：\n';
+    let total = 0;
+
+    for (const i in guess) {
+        info += i.slice(1) + ' ' + guess[i][0] + 'A' + guess[i][1] + 'B\n';
+        total += 1;
+    }
+
+    info += '（总共' + total + '次）\n\n'
+        + '猜测目标：\n'
+        + hint;
+
+    return info;
+};
+
+const gameEnd = (game) => {
+    for (const i in game.guess) {
+        const sentmsg = game.guess[i].msg;
+
+        if (sentmsg) {
+            bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
+        }
+    }
+
+    fs.write(fd, JSON.stringify(game) + '\n', () => {
+        // nothing
+    });
 };
 
 const gameEvent = event((msg, match) => {
@@ -337,12 +337,12 @@ bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
 bot.on('callback_query', (query) => {
     const msg = query.message;
 
-    log(
-        msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
-        query.data
-    );
-
     if (query.data === 'join') {
+        log(
+            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            'join'
+        );
+
         multiplayer.add(
             msg.chat.id,
             query.from,
@@ -374,6 +374,11 @@ bot.on('callback_query', (query) => {
             }
         );
     } else if (query.data === 'flee') {
+        log(
+            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            'flee'
+        );
+
         multiplayer.remove(
             msg.chat.id,
             query.from,
@@ -398,6 +403,11 @@ bot.on('callback_query', (query) => {
             }
         );
     } else if (query.data === 'clear') {
+        log(
+            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            'clear'
+        );
+
         multiplayer.clear(
             msg.chat.id,
             () => {

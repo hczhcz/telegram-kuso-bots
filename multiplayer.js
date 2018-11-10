@@ -27,7 +27,7 @@ const add = (id, player, onDone, onPlayerExist, onListFull) => {
         }
     }
 
-    if (list.length < config.abMaxPlayer) {
+    if (list.length < config.multiplayerMaxPlayer) {
         list.push(player);
     } else {
         return onListFull();
