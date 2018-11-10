@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.hangmanToken);
+const multiplayer = require('./multiplayer');
 
 const resource = require('./hangman.resource');
 const play = require('./hangman.play');
@@ -27,6 +28,57 @@ const event = (handler) => {
             handler(msg, match);
         }
     };
+};
+
+const playerLine = (player) => {
+    if (player) {
+        return '\n\n'
+            + (
+                player.username
+                    ? '@' + player.username
+                    : player.first_name
+            ) + ' 轮到你啦';
+    }
+
+    return '';
+};
+
+const playerInfo = (list) => {
+    let info = '玩家列表：\n';
+    let total = 0;
+
+    for (const i in list) {
+        info += (list[i].username || list[i].first_name) + '\n';
+        total += 1;
+    }
+
+    info += '（总共' + total + '人）';
+
+    return info;
+};
+
+const playerUpdate = (msg, list) => {
+    bot.editMessageText(
+        playerInfo(list) + '\n\n'
+            + '/hang@' + config.hangmanUsername + ' 开始新游戏',
+        {
+            chat_id: msg.chat.id,
+            message_id: msg.message_id,
+            reply_to_message_id: msg.reply_to_message.message_id,
+            reply_markup: {
+                inline_keyboard: [[{
+                    text: '加入',
+                    callback_data: JSON.stringify(['join']),
+                }, {
+                    text: '离开',
+                    callback_data: JSON.stringify(['flee']),
+                }, {
+                    text: '清空',
+                    callback_data: JSON.stringify(['clear']),
+                }]],
+            },
+        }
+    );
 };
 
 const messageUpdate = (msg, game, win) => {
@@ -188,22 +240,25 @@ const messageUpdate = (msg, game, win) => {
         ? (game.hint || game.answer).toLocaleUpperCase()
         : game.hint || game.answer;
 
-    let winText = '';
+    let endText = '';
 
     if (win) {
-        winText = '\n\n';
+        endText = '\n\n';
 
         if (totLives > 0) {
-            winText += '回答正确～撒花～\n\n';
+            endText += '回答正确～撒花～\n\n';
         } else if (totLives === 0) {
-            winText += '回答正确～真是好险呢～\n\n';
+            endText += '回答正确～真是好险呢～\n\n';
         } else if (game.history.length === game.keyboard.length) {
-            winText += '卧…卧槽？！\n\n';
+            endText += '卧…卧槽？！\n\n';
         } else {
-            winText += '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n\n';
+            endText += '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n\n';
         }
 
-        winText += '/hang@' + config.hangmanUsername + ' 开始新游戏';
+        endText += '/hang@' + config.hangmanUsername + ' 开始新游戏\n'
+            + '/diao@' + config.hangmanUsername + ' 多人模式';
+    } else {
+        endText = playerLine(multiplayer.get(msg.chat.id));
     }
 
     bot.editMessageText(
@@ -213,7 +268,7 @@ const messageUpdate = (msg, game, win) => {
             + '[ ' + hint + ' ]\n'
             + '[ 剩余生命：' + totLives + ' ]'
             + '</pre>'
-            + winText,
+            + endText,
         {
             chat_id: msg.chat.id,
             message_id: msg.message_id,
@@ -270,6 +325,51 @@ bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {
     );
 }));
 
+bot.onText(/^\/diao(@\w+)?$/, event((msg, match) => {
+    multiplayer.add(
+        msg.chat.id,
+        msg.from,
+        (list) => {
+            // added
+
+            bot.sendMessage(
+                msg.chat.id,
+                '一大波玩家正在赶来……',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            ).then((sentmsg) => {
+                playerUpdate(
+                    sentmsg,
+                    list
+                );
+            });
+        },
+        () => {
+            // player exist
+
+            bot.sendMessage(
+                msg.chat.id,
+                '你已经加入过啦',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        },
+        () => {
+            // list full
+
+            bot.sendMessage(
+                msg.chat.id,
+                '玩家列表满啦',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        }
+    );
+}));
+
 bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
@@ -284,7 +384,100 @@ bot.on('callback_query', (query) => {
     const msg = query.message;
     const info = JSON.parse(query.data);
 
-    if (info[0] === 'dict') {
+    if (info[0] === 'join') {
+        log(
+            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            'join'
+        );
+
+        multiplayer.add(
+            msg.chat.id,
+            query.from,
+            (list) => {
+                // added
+
+                playerUpdate(
+                    msg,
+                    list
+                );
+
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
+            },
+            () => {
+                // player exist
+
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
+            },
+            () => {
+                // list full
+
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
+            }
+        );
+    } else if (info[0] === 'flee') {
+        log(
+            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            'flee'
+        );
+
+        multiplayer.remove(
+            msg.chat.id,
+            query.from,
+            (list) => {
+                // removed
+
+                playerUpdate(
+                    msg,
+                    list
+                );
+
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
+            },
+            () => {
+                // player not exist
+
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
+            }
+        );
+    } else if (info[0] === 'clear') {
+        log(
+            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            'clear'
+        );
+
+        multiplayer.clear(
+            msg.chat.id,
+            () => {
+                // cleared
+
+                playerUpdate(
+                    msg,
+                    []
+                );
+
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
+            },
+            () => {
+                // not multiplayer
+
+                bot.answerCallbackQuery(query.id).catch((err) => {
+                    // nothing
+                });
+            }
+        );
+    } else if (info[0] === 'dict') {
         if (typeof info[2] !== 'number' && info[2] !== null || typeof info[3] !== 'number') {
             throw Error(JSON.stringify(query));
         }
@@ -348,49 +541,64 @@ bot.on('callback_query', (query) => {
             'guess ' + info[1]
         );
 
-        play.click(
-            msg.chat.id + '_' + msg.message_id,
-            query.from.id,
-            info[1],
-            (game) => {
-                // game continue
+        multiplayer.verify(
+            msg.chat.id,
+            query.from,
+            () => {
+                // valid
 
-                messageUpdate(
-                    msg,
-                    game,
-                    false
+                play.click(
+                    msg.chat.id + '_' + msg.message_id,
+                    query.from.id,
+                    info[1],
+                    (game) => {
+                        // game continue
+
+                        messageUpdate(
+                            msg,
+                            game,
+                            false
+                        );
+
+                        bot.answerCallbackQuery(query.id).catch((err) => {
+                            // nothing
+                        });
+                    },
+                    (game) => {
+                        // game win
+
+                        fs.write(fd, JSON.stringify(game) + '\n', () => {
+                            // nothing
+                        });
+
+                        messageUpdate(
+                            msg,
+                            game,
+                            true
+                        );
+
+                        bot.answerCallbackQuery(query.id).catch((err) => {
+                            // nothing
+                        });
+                    },
+                    () => {
+                        // not valid
+
+                        bot.answerCallbackQuery(query.id).catch((err) => {
+                            // nothing
+                        });
+                    },
+                    () => {
+                        // game not exist
+
+                        bot.answerCallbackQuery(query.id).catch((err) => {
+                            // nothing
+                        });
+                    }
                 );
-
-                bot.answerCallbackQuery(query.id).catch((err) => {
-                    // nothing
-                });
-            },
-            (game) => {
-                // game win
-
-                fs.write(fd, JSON.stringify(game) + '\n', () => {
-                    // nothing
-                });
-
-                messageUpdate(
-                    msg,
-                    game,
-                    true
-                );
-
-                bot.answerCallbackQuery(query.id).catch((err) => {
-                    // nothing
-                });
             },
             () => {
                 // not valid
-
-                bot.answerCallbackQuery(query.id).catch((err) => {
-                    // nothing
-                });
-            },
-            () => {
-                // game not exist
 
                 bot.answerCallbackQuery(query.id).catch((err) => {
                     // nothing
@@ -439,7 +647,8 @@ bot.on('inline_query', (query) => {
                             ? '@' + query.from.username
                             : query.from.first_name
                     ) + ' 喵喵模式已装载！\n\n'
-                        + '/hang@' + config.hangmanUsername + ' 开始新游戏',
+                        + '/hang@' + config.hangmanUsername + ' 开始新游戏\n'
+                        + '/diao@' + config.hangmanUsername + ' 多人模式',
                 },
             }],
             {
