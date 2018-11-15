@@ -236,9 +236,11 @@ const messageUpdate = (msg, game, win) => {
 
     // game info
 
-    const hint = dictInfo.upperCase
-        ? (game.hint || game.answer).toLocaleUpperCase()
-        : game.hint || game.answer;
+    const hint = (
+        dictInfo.upperCase
+            ? (game.hint || game.answer).toLocaleUpperCase()
+            : game.hint || game.answer
+    ).replace('\x01', '.');
 
     let endText = '';
 

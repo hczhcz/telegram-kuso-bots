@@ -10,7 +10,7 @@ const meowInit = (meowId, answer) => {
 };
 
 const hint = (answer) => {
-    return '.'.repeat(core.length(answer));
+    return '\x01'.repeat(core.length(answer));
 };
 
 const init = (id, meowId, dict, keyboardSize, onGameInit, onGameExist) => {
