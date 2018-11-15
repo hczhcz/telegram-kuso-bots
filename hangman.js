@@ -240,7 +240,7 @@ const messageUpdate = (msg, game, win) => {
         dictInfo.upperCase
             ? (game.hint || game.answer).toLocaleUpperCase()
             : game.hint || game.answer
-    ).replace('\x01', '.');
+    ).split('\x01').join('.');
 
     let endText = '';
 
