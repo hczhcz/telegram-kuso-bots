@@ -246,23 +246,21 @@ const messageUpdate = (msg, game, win) => {
                 : game.answer
         ).split('\x01').join('.');
 
-        if (dictInfo.url) {
-            hint = '</pre><a href="' + encodeURI(dictInfo.url + hint) + '">' + hint + '</a><pre>';
-        }
-
-        endText = '\n\n';
-
         if (totLives > 0) {
-            endText += '回答正确～撒花～\n\n';
+            endText = '\n\n回答正确～撒花～';
         } else if (totLives === 0) {
-            endText += '回答正确～真是好险呢～\n\n';
+            endText = '\n\n回答正确～真是好险呢～';
         } else if (game.history.length === game.keyboard.length) {
-            endText += '卧…卧槽？！\n\n';
+            endText = '\n\n卧…卧槽？！';
         } else {
-            endText += '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n\n';
+            endText = '\n\n虽然 JJ 已经被 bot 切掉了，但是回答正确～';
         }
 
-        endText += '/hang@' + config.hangmanUsername + ' 开始新游戏\n'
+        if (dictInfo.url) {
+            endText += '\n所以…<a href="' + encodeURI(dictInfo.url + game.answer) + '">' + hint + '是什么呢？好吃吗？</a>';
+        }
+
+        endText += '\n\n/hang@' + config.hangmanUsername + ' 开始新游戏\n'
             + '/diao@' + config.hangmanUsername + ' 多人模式';
     } else {
         hint = (
