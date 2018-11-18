@@ -236,15 +236,20 @@ const messageUpdate = (msg, game, win) => {
 
     // game info
 
-    const hint = (
-        dictInfo.upperCase
-            ? (game.hint || game.answer).toLocaleUpperCase()
-            : game.hint || game.answer
-    ).split('\x01').join('.');
-
-    let endText = '';
+    let hint = null;
+    let endText = null;
 
     if (win) {
+        hint = (
+            dictInfo.upperCase
+                ? game.answer.toLocaleUpperCase()
+                : game.answer
+        ).split('\x01').join('.');
+
+        if (dictInfo.url) {
+            hint = '</pre><a href="' + encodeURI(dictInfo.url + hint) + '">' + hint + '</a><pre>';
+        }
+
         endText = '\n\n';
 
         if (totLives > 0) {
@@ -260,6 +265,12 @@ const messageUpdate = (msg, game, win) => {
         endText += '/hang@' + config.hangmanUsername + ' 开始新游戏\n'
             + '/diao@' + config.hangmanUsername + ' 多人模式';
     } else {
+        hint = (
+            dictInfo.upperCase
+                ? game.hint.toLocaleUpperCase()
+                : game.hint
+        ).split('\x01').join('.');
+
         endText = playerLine(multiplayer.get(msg.chat.id));
     }
 
