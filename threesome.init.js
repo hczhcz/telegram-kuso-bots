@@ -9,7 +9,7 @@ module.exports = (bot, games) => {
                 modename: '撸管',
                 modemin: 1,
                 modemax: 1,
-                time: -120,
+                time: -180,
             };
 
             return bot.sendMessage(
@@ -28,7 +28,7 @@ module.exports = (bot, games) => {
                 modename: '滚床单活动',
                 modemin: 2,
                 modemax: 2,
-                time: -180,
+                time: -240,
             };
 
             return bot.sendMessage(

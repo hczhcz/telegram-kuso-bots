@@ -168,7 +168,7 @@ bot.onText(/^\/start100kills(@\w+)?$/, event((msg, match) => {
 }, 1));
 
 bot.onText(/^\/extend(@\w+)?(?: ([+-]?\d+)\w*)?$/, event((msg, match) => {
-    let time = parseInt(match[2] || '30', 10);
+    let time = parseInt(match[2] || '120', 10);
 
     if (time < -300) {
         time = -300;
