@@ -124,4 +124,32 @@ module.exports = (bot, event, playerEvent, env) => {
 
         send();
     }, 1));
+
+    bot.onText(/^\/one((?!_)\w+)(@\w+)?(?: (.+))?$/, event((msg, match) => {
+        const text = splitter.splitGraphemes(match[3] || msg.reply_to_message && msg.reply_to_message.text || '');
+        const selected = [];
+
+        if (text.length > config.oneMaxLength) {
+            return;
+        }
+
+        for (const i in text) {
+            selected.push(env.command.tryGet(msg, match[1], [text[i]], false));
+        }
+
+        const send = () => {
+            if (selected.length) {
+                const option = selected.shift();
+
+                bot.sendMessage(
+                    msg.chat.id,
+                    option.text
+                ).catch((err) => {
+                    send();
+                }).then(send);
+            }
+        };
+
+        send();
+    }, 2));
 };
