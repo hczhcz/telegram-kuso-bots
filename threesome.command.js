@@ -282,7 +282,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                     }
 
                     tot.push({
-                        used: command.used,
+                        command: command,
                         text: text,
                     });
                 }
@@ -291,7 +291,7 @@ module.exports = (bot, games, commands, writeCommand) => {
             const genForward = (command) => {
                 if (allowForward && level === 0) {
                     tot.push({
-                        used: command.used,
+                        command: command,
                         chat_id: command.chat_id,
                         forward: command.forward,
                     });
@@ -303,7 +303,7 @@ module.exports = (bot, games, commands, writeCommand) => {
             for (const i in fetched) {
                 const command = fetched[i];
 
-                if (!command.used || Math.random() < (now - command.used) / 30000 - 1) {
+                if (!command[msg.chat.id] || Math.random() < (now - command[msg.chat.id].used) / 30000 - 1) {
                     if (command.text) {
                         genText(command);
                     } else if (command.forward) {
@@ -318,7 +318,11 @@ module.exports = (bot, games, commands, writeCommand) => {
             if (tot.length > 0) {
                 const choice = Math.floor(Math.random() * tot.length);
 
-                tot[choice].used = now;
+                tot[choice].command[msg.chat.id] = {
+                    used: now,
+                    // TODO: storage & recall?
+                    args: args,
+                };
 
                 return tot[choice];
             }
