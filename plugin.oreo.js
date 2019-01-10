@@ -63,6 +63,7 @@ module.exports = (bot, event, playerEvent, env) => {
         const image = canvas.createCanvas(width, height);
         const ctx = image.getContext('2d');
 
+        items = items.slice(0, config.oreoMaxLength);
         items.reverse();
 
         for (const i in items) {
