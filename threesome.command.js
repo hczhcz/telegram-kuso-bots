@@ -92,8 +92,8 @@ module.exports = (bot, games, commands, writeCommand) => {
         add: (msg, key, value, allowForward) => {
             const entry = {};
 
-            if (value) {
-                entry.text = value;
+            if (value && value.trim()) {
+                entry.text = value.trim();
             } else if (allowForward && msg.reply_to_message) {
                 entry.forward = msg.reply_to_message.message_id;
             } else {
@@ -145,8 +145,8 @@ module.exports = (bot, games, commands, writeCommand) => {
         del: (msg, key, value, allowForward) => {
             const entry = {};
 
-            if (value) {
-                entry.text = value;
+            if (value && value.trim()) {
+                entry.text = value.trim();
             } else if (allowForward && msg.reply_to_message) {
                 entry.forward = msg.reply_to_message.message_id;
             } else {

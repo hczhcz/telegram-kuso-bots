@@ -300,23 +300,23 @@ bot.onText(/^\/list(@\w+)?(?: ((?!_)\w*))?$/, event((msg, match) => {
 }, 1));
 
 bot.onText(/^\/add(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
-    command.add(msg, match[2], match[3].trim(), true);
+    command.add(msg, match[2], match[3], true);
 }, 1));
 
 bot.onText(/^\/adds(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
     msg.chat.mapped = 0;
 
-    command.add(msg, match[2], match[3].trim(), false);
+    command.add(msg, match[2], match[3], false);
 }, 1));
 
 bot.onText(/^\/del(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
-    command.del(msg, match[2], match[3].trim(), true);
+    command.del(msg, match[2], match[3], true);
 }, 1));
 
 bot.onText(/^\/dels(@\w+)? ((?!_)\w*)(?:@([^\r\n]*))?$/, event((msg, match) => {
     msg.chat.mapped = 0;
 
-    command.del(msg, match[2], match[3].trim(), false);
+    command.del(msg, match[2], match[3], false);
 }, 1));
 
 bot.onText(/^\/((?!_)\w+)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
