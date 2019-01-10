@@ -60,7 +60,7 @@ module.exports = (bot, event, playerEvent, env) => {
         });
     };
 
-    bot.onText(/^.{1,4}$/, event((msg, match) => {
+    bot.onText(/^.{1,4}$/, (msg, match) => {
         if (splitter.splitGraphemes(msg.text).length !== 1) {
             return;
         }
@@ -82,7 +82,7 @@ module.exports = (bot, event, playerEvent, env) => {
                 del: false,
             });
         }
-    }, -1));
+    });
 
     bot.onText(/^\/one(@\w+)?(?: (.+))?$/, event((msg, match) => {
         const text = splitter.splitGraphemes(match[2] || msg.reply_to_message && msg.reply_to_message.text || '');
