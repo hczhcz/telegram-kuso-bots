@@ -60,29 +60,31 @@ module.exports = (bot, event, playerEvent, env) => {
             }
         }
 
-        const image = canvas.createCanvas(width, height);
-        const ctx = image.getContext('2d');
+        if (width || height) {
+            const image = canvas.createCanvas(width, height);
+            const ctx = image.getContext('2d');
 
-        items.reverse();
+            items.reverse();
 
-        for (const i in items) {
-            if (items[i][0]) {
-                ctx.drawImage(
-                    images[items[i][0]],
-                    (width - items[i][2]) / 2,
-                    items[i][1],
-                    items[i][2],
-                    items[i][3]
-                );
+            for (const i in items) {
+                if (items[i][0]) {
+                    ctx.drawImage(
+                        images[items[i][0]],
+                        (width - items[i][2]) / 2,
+                        items[i][1],
+                        items[i][2],
+                        items[i][3]
+                    );
+                }
             }
+
+            bot.sendPhoto(
+                msg.chat.id,
+                image.toBuffer(),
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
         }
-
-        bot.sendPhoto(
-            msg.chat.id,
-            image.toBuffer(),
-            {
-                reply_to_message_id: msg.message_id,
-            }
-        );
     }, 2));
 };

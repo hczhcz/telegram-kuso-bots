@@ -134,7 +134,11 @@ module.exports = (bot, event, playerEvent, env) => {
         }
 
         for (const i in text) {
-            selected.push(env.command.tryGet(msg, match[1], [text[i]], false, true));
+            const chosen = env.command.tryGet(msg, match[1], [text[i]], false, true);
+
+            if (chosen) {
+                selected.push(chosen);
+            }
         }
 
         const send = () => {
