@@ -15,13 +15,13 @@ module.exports = (bot, event, playerEvent, env) => {
                     let chosen = null;
 
                     if (match[matchIndex]) {
-                        chosen = env.command.tryGet(msg, match[matchIndex], [], false);
+                        chosen = env.command.tryGet(msg, match[matchIndex], [], false, true);
 
                         matchIndex += 1;
                     }
 
                     if (!chosen) {
-                        chosen = env.command.tryGet(msg, title[i].slice(1), [], false);
+                        chosen = env.command.tryGet(msg, title[i].slice(1), [], false, true);
                     }
 
                     if (!chosen) {

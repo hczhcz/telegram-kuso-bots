@@ -203,7 +203,7 @@ module.exports = (bot, games, commands, writeCommand) => {
             );
         },
 
-        tryGet: (msg, key, args, allowForward) => {
+        tryGet: (msg, key, args, allowForward, allowUsed) => {
             const game = games[msg.chat.id];
             const now = Date.now();
 
@@ -303,7 +303,11 @@ module.exports = (bot, games, commands, writeCommand) => {
             for (const i in fetched) {
                 const command = fetched[i];
 
-                if (!command[msg.chat.id] || Math.random() < (now - command[msg.chat.id].used) / 30000 - 1) {
+                if (
+                    allowUsed
+                    || !command[msg.chat.id]
+                    || Math.random() < (now - command[msg.chat.id].used) / 30000 - 1
+                ) {
                     if (command.text) {
                         genText(command);
                     } else if (command.forward) {
@@ -329,7 +333,7 @@ module.exports = (bot, games, commands, writeCommand) => {
         },
 
         get: (msg, key, args) => {
-            const chosen = self.tryGet(msg, key, args, true);
+            const chosen = self.tryGet(msg, key, args, true, false);
 
             if (chosen) {
                 if (chosen.text) {

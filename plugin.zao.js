@@ -15,7 +15,7 @@ module.exports = (bot, event, playerEvent, env) => {
         if (match[3]) {
             text = match[3].slice(0, config.zaoMaxLength);
         } else {
-            const chosen = env.command.tryGet(msg, 'zao' + match[1], [], false);
+            const chosen = env.command.tryGet(msg, 'zao' + match[1], [], false, true);
 
             if (chosen) {
                 text = chosen.text;
