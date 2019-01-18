@@ -104,7 +104,7 @@ bot.onText(/^\/startmasturbate(@\w+)?$/, event((msg, match) => {
         if (game.time <= 0) {
             gather.join(msg);
         }
-    } else {
+    } else if (!config.threesomeSilent[msg.chat.id]) {
         init.masturbate(msg).then(() => {
             gather.join(msg);
         });
@@ -118,7 +118,7 @@ bot.onText(/^\/startsex(@\w+)?$/, event((msg, match) => {
         if (game.time <= 0) {
             gather.join(msg);
         }
-    } else {
+    } else if (!config.threesomeSilent[msg.chat.id]) {
         init.sex(msg).then(() => {
             gather.join(msg);
         });
@@ -132,7 +132,7 @@ bot.onText(/^\/startthreesome(@\w+)?$/, event((msg, match) => {
         if (game.time <= 0) {
             gather.join(msg);
         }
-    } else {
+    } else if (!config.threesomeSilent[msg.chat.id]) {
         init.threesome(msg).then(() => {
             gather.join(msg);
         });
@@ -146,7 +146,7 @@ bot.onText(/^\/startgroupsex(@\w+)?$/, event((msg, match) => {
         if (game.time <= 0) {
             gather.join(msg);
         }
-    } else {
+    } else if (!config.threesomeSilent[msg.chat.id]) {
         init.groupsex(msg).then(() => {
             gather.join(msg);
         });
@@ -160,7 +160,7 @@ bot.onText(/^\/start100kills(@\w+)?$/, event((msg, match) => {
         if (game.time <= 0) {
             gather.join(msg);
         }
-    } else {
+    } else if (!config.threesomeSilent[msg.chat.id]) {
         init.kills(msg).then(() => {
             gather.join(msg);
         });
@@ -398,8 +398,7 @@ setInterval(() => {
             play.tick(mockMsg);
 
             if (
-                !config.threesomeSilent[i]
-                && game.time > 0
+                game.time > 0
                 && game.time - game.total < -15
                 && game.time % 10 === 0
             ) {

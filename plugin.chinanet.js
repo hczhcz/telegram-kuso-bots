@@ -5,7 +5,9 @@ const config = require('./config');
 module.exports = (bot, event, playerEvent, env) => {
     const genEvent = (key) => {
         return (msg, match) => {
-            env.command.get(msg, key, []);
+            if (!config.threesomeSilent[msg.chat.id]) {
+                env.command.get(msg, key, []);
+            }
         };
     };
 

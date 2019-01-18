@@ -45,12 +45,14 @@ module.exports = (bot, event, playerEvent, env) => {
     }, -1);
 
     bot.on('message', (msg) => {
-        if (msg.new_chat_members) {
-            welcomeEvent(msg, []);
-        }
+        if (!config.threesomeSilent[msg.chat.id]) {
+            if (msg.new_chat_members) {
+                welcomeEvent(msg, []);
+            }
 
-        if (msg.left_chat_member) {
-            leaveEvent(msg, []);
+            if (msg.left_chat_member) {
+                leaveEvent(msg, []);
+            }
         }
     });
 };
