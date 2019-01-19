@@ -3,21 +3,19 @@
 const config = require('./config');
 
 module.exports = (bot, event, playerEvent, env) => {
-    bot.onText(/^\/roll(@\w+)?(?: ((?!_)\w*))?$/, event((msg, match) => {
+    bot.onText(/^\/roll(@\w+)?(( (?:(?!_)\w+))*)$/, event((msg, match) => {
         const title = config.rollGroupTitle[msg.chat.id];
+        const args = match[2].split(' ').slice(1);
 
         if (title) {
             let text = '';
-            let matchIndex = 2;
 
             for (const i in title) {
                 if (title[i][0] === '/') {
                     let chosen = null;
 
-                    if (match[matchIndex]) {
-                        chosen = env.command.tryGet(msg, match[matchIndex], [], false, true);
-
-                        matchIndex += 1;
+                    if (args.length) {
+                        chosen = env.command.tryGet(msg, args.shift(), [], false, true);
                     }
 
                     if (!chosen) {
