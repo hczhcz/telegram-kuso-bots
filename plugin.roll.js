@@ -4,7 +4,7 @@ const config = require('./config');
 
 module.exports = (bot, event, playerEvent, env) => {
     bot.onText(/^\/roll(@\w+)?(?: ((?!_)\w*))?$/, event((msg, match) => {
-        const title = config.tutouGroupTitle[msg.chat.id];
+        const title = config.rollGroupTitle[msg.chat.id];
 
         if (title) {
             let text = '';
