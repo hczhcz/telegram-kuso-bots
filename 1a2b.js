@@ -256,11 +256,16 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
 
             bot.sendMessage(
                 msg.chat.id,
-                '你已经加入过啦',
+                '一大波玩家正在赶来……',
                 {
                     reply_to_message_id: msg.message_id,
                 }
-            );
+            ).then((sentmsg) => {
+                playerUpdate(
+                    sentmsg,
+                    list
+                );
+            });
         },
         () => {
             // list full
