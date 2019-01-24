@@ -23,14 +23,14 @@ const add = (id, player, onDone, onPlayerExist, onListFull) => {
 
     for (const i in list) {
         if (list[i].id === player.id) {
-            return onPlayerExist();
+            return onPlayerExist(list);
         }
     }
 
     if (list.length < config.multiplayerMaxPlayer) {
         list.push(player);
     } else {
-        return onListFull();
+        return onListFull(list);
     }
 
     return onDone(list);

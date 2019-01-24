@@ -251,7 +251,7 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
                 );
             });
         },
-        () => {
+        (list) => {
             // player exist
 
             bot.sendMessage(
@@ -267,7 +267,7 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
                 );
             });
         },
-        () => {
+        (list) => {
             // list full
 
             bot.sendMessage(
@@ -363,14 +363,14 @@ bot.on('callback_query', (query) => {
                     // nothing
                 });
             },
-            () => {
+            (list) => {
                 // player exist
 
                 bot.answerCallbackQuery(query.id).catch((err) => {
                     // nothing
                 });
             },
-            () => {
+            (list) => {
                 // list full
 
                 bot.answerCallbackQuery(query.id).catch((err) => {
