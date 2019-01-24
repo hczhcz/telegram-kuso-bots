@@ -156,4 +156,10 @@ module.exports = (bot, event, playerEvent, env) => {
 
         send();
     }, 2));
+
+    env.info.addPluginHelp(
+        'one',
+        '/one <content> 使用语录进行拆字\n'
+            + '/one<trigger> <content> 使用 trigger 进行拆字'
+    );
 };

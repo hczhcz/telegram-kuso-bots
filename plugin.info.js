@@ -12,4 +12,9 @@ module.exports = (bot, event, playerEvent, env) => {
             }
         );
     }, 1));
+
+    env.info.addPluginHelp(
+        'info',
+        '/info 显示当前消息 JSON 数据'
+    );
 };

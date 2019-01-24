@@ -49,4 +49,10 @@ module.exports = (bot, event, playerEvent, env) => {
             // nothing
         });
     }, -1));
+
+    env.info.addPluginHelp(
+        '123',
+        '123<...>人 触发木头人事件\n'
+            + '123不许<...> 触发不许动事件'
+    );
 };

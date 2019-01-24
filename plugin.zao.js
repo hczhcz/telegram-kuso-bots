@@ -87,4 +87,11 @@ module.exports = (bot, event, playerEvent, env) => {
             );
         }
     }, -1));
+
+    env.info.addPluginHelp(
+        'zao',
+        '/zao 签到\n'
+            + '/zaoguys 列出签到者\n'
+            + '/zaogays 列出签到者'
+    );
 };

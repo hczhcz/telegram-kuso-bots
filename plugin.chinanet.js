@@ -30,4 +30,9 @@ module.exports = (bot, event, playerEvent, env) => {
     for (const i in config.chinanetCommandMap) {
         bot.onText(config.chinanetCommandMap[i], event(genEvent(i), -1));
     }
+
+    env.info.addPluginHelp(
+        'chinanet',
+        '/listre 列出正则 trigger 内容'
+    );
 };

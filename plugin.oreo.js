@@ -87,4 +87,10 @@ module.exports = (bot, event, playerEvent, env) => {
             );
         }
     }, 2));
+
+    env.info.addPluginHelp(
+        'oreo',
+        '/oreo 生成奥利奥图片\n'
+            + '/oreandoreoreore 生成奥利和奥利奥利奥利图片'
+    );
 };

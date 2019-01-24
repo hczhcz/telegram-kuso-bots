@@ -40,4 +40,9 @@ module.exports = (bot, event, playerEvent, env) => {
             );
         }
     }, 1));
+
+    env.info.addPluginHelp(
+        'roll',
+        '/roll <trigger(s)> 更换群标题'
+    );
 };

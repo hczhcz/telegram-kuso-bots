@@ -30,4 +30,10 @@ module.exports = (bot, event, playerEvent, env) => {
             }
         }
     });
+
+    env.info.addPluginHelp(
+        'repeat',
+        '插件 repeat\n'
+            + '插件 repeat'
+    );
 };

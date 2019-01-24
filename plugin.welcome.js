@@ -55,4 +55,10 @@ module.exports = (bot, event, playerEvent, env) => {
             }
         }
     });
+
+    env.info.addPluginHelp(
+        'welcome',
+        '<new chat member> 欢迎新人\n'
+            + '<left chat member> 有人跑了'
+    );
 };

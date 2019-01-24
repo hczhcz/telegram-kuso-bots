@@ -95,7 +95,7 @@ module.exports = (pathActions, pathCommands) => {
                     inlineStat[len] = (inlineStat[len] || 0) + 1;
                 }
             } else if (chosen.result_id === 'CONTENT_TMP') {
-                // notice: ignore because of too many duplication records
+                // notice: ignore because of too many duplicate records
             } else {
                 // never reach
                 throw Error(JSON.stringify(chosen));
