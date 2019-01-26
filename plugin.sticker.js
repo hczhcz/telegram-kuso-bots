@@ -1,12 +1,20 @@
 'use strict';
 
 module.exports = (bot, event, playerEvent, env) => {
+    const stickerEvent = event((msg, match) => {
+        bot.sendDocument(
+            msg.chat.id,
+            bot.getFileStream(msg.sticker.file_id),
+            {},
+            {
+                filename: msg.sticker.file_id + '.webp',
+            }
+        );
+    }, -1);
+
     bot.on('message', (msg) => {
         if (msg.chat.id === msg.from.id && msg.sticker) {
-            bot.sendDocument(
-                msg.chat.id,
-                msg.sticker.thumb.file_id
-            );
+            stickerEvent(msg, []);
         }
     });
 
