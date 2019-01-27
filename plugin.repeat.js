@@ -1,8 +1,12 @@
 'use strict';
 
+const fs = require('fs');
+
 const config = require('./config');
 
 module.exports = (bot, event, playerEvent, env) => {
+    const fd = fs.openSync('log.repeat', 'a');
+
     const lastText = {};
 
     bot.on('message', (msg) => {
@@ -21,7 +25,13 @@ module.exports = (bot, event, playerEvent, env) => {
                 lastText[msg.chat.id][1] += 1;
 
                 if (lastText[msg.chat.id][1] === 3) {
+                    const text = lastText[msg.chat.id];
+
                     delete lastText[msg.chat.id];
+
+                    fs.write(fd, JSON.stringify(text) + '\n', () => {
+                        // nothing
+                    });
 
                     env.command.get(msg, 'repeat', []);
                 }
