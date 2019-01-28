@@ -34,9 +34,7 @@ const load = (id, limit, onDone, onNotValid) => {
                 if (!limit || dict.list.length < limit) {
                     core.dictAdd(dict, str);
                 }
-            });
-
-            rl.on('close', () => {
+            }).on('close', () => {
                 dicts[id + '_' + limit] = dict;
 
                 onDone(dict);

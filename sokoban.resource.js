@@ -63,9 +63,7 @@ const load = (id, index, onDone, onNotValid) => {
                     levelList.push(buffer);
                     buffer = [];
                 }
-            });
-
-            rl.on('close', () => {
+            }).on('close', () => {
                 if (buffer.length) {
                     levelList.push(buffer);
                 }
