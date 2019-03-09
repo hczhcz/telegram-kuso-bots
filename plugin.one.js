@@ -34,6 +34,8 @@ module.exports = (bot, event, playerEvent, env) => {
         } else {
             chars.push(obj);
         }
+    }).on('close', () => {
+        // TODO: pause bot?
     });
 
     const fdChars = fs.openSync(config.onePathChars, 'a');

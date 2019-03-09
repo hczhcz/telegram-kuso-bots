@@ -210,6 +210,8 @@ module.exports = (pathActions, pathCommands) => {
                 const obj = JSON.parse(line);
 
                 self.loadCommand(obj.chat, obj.key, obj.entry);
+            }).on('close', () => {
+                // TODO: pause bot?
             });
         },
 
@@ -236,6 +238,8 @@ module.exports = (pathActions, pathCommands) => {
                     // never reach
                     throw Error(JSON.stringify(obj));
                 }
+            }).on('close', () => {
+                // TODO: pause bot?
             });
         },
     };

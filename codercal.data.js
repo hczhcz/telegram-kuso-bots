@@ -385,6 +385,8 @@ module.exports = (pathCals) => {
                 const obj = JSON.parse(line);
 
                 Reflect.apply(self['action' + obj.action], obj.msg, obj.args);
+            }).on('close', () => {
+                // TODO: pause bot?
             });
         },
     };
