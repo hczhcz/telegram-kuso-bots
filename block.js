@@ -27,7 +27,7 @@ bot.on('message', (msg) => {
 });
 
 bot.onText(/^\/ban(@\w+)?$/, (msg, match) => {
-    if (config.blockAdmin[msg.from.id]) {
+    if (config.admin[msg.from.id]) {
         log(
             msg.chat.id + ':' + msg.from.id,
             'ban'
@@ -38,7 +38,7 @@ bot.onText(/^\/ban(@\w+)?$/, (msg, match) => {
 });
 
 bot.onText(/^\/unban(@\w+)?$/, (msg, match) => {
-    if (config.blockAdmin[msg.from.id]) {
+    if (config.admin[msg.from.id]) {
         log(
             msg.chat.id + ':' + msg.from.id,
             'unban'

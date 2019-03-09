@@ -142,7 +142,7 @@ module.exports = (bot, games, commands, writeCommand) => {
             );
         },
 
-        del: (msg, key, value, allowForward) => {
+        del: (msg, key, value, allowForward, force) => {
             const entry = {};
 
             if (value && value.trim()) {
@@ -166,7 +166,10 @@ module.exports = (bot, games, commands, writeCommand) => {
                 const command = commands[msg.chat.mapped]['/' + key][i];
 
                 if (
-                    command.chat_id === msg.chat.id && (
+                    (
+                        force
+                        || command.chat_id === msg.chat.id
+                    ) && (
                         entry.text && command.text === entry.text
                         || entry.forward && command.forward === entry.forward
                     )
