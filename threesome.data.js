@@ -160,10 +160,8 @@ module.exports = (pathActions, pathCommands) => {
                     const command = self.commands[chat.mapped]['/' + key][i];
 
                     if (
-                        command.chat_id === chat.id && (
-                            entry.text && command.text === entry.text
-                            || entry.forward && command.forward === entry.forward
-                        )
+                        entry.text && command.text === entry.text
+                        || entry.forward && command.forward === entry.forward
                     ) {
                         delete self.commands[chat.mapped]['/' + key][i];
                     }
@@ -209,7 +207,7 @@ module.exports = (pathActions, pathCommands) => {
             }).on('line', (line) => {
                 const obj = JSON.parse(line);
 
-                self.loadCommand(obj.chat, obj.key, obj.entry);
+                self.loadCommand(obj.chat, obj.key, obj.entry, obj.del);
             }).on('close', () => {
                 // TODO: pause bot?
             });
