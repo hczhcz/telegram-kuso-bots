@@ -9,7 +9,7 @@ module.exports = (bot, event, playerEvent, env) => {
 
     const zao = [];
 
-    bot.onText(/^\/zao(\w*)(?<!\/zaog[au]ys)(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
+    bot.onText(/^\/zao(\w*)(?<!\/zaog[au]ys)(@\w+)?(?: (.+))?$/, event((msg, match) => {
         let text = '起床了！';
 
         if (match[3]) {
@@ -58,7 +58,7 @@ module.exports = (bot, event, playerEvent, env) => {
         });
     }, -1));
 
-    bot.onText(/^\/zaog[au]ys(@\w+)?(?: ([^\r\n]*))?$/, event((msg, match) => {
+    bot.onText(/^\/zaog[au]ys(@\w+)?(?: (.+))?$/, event((msg, match) => {
         let resultText = '';
 
         let lastDate = '';
