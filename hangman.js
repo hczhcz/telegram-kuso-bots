@@ -24,6 +24,7 @@ const event = (handler) => {
             match[0]
         );
 
+        // notice: take care of the inline query event
         if (!config.ban[msg.from.id]) {
             handler(msg, match);
         }

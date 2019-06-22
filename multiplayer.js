@@ -75,7 +75,17 @@ const verify = (id, player, onValid, onNotValid) => {
         }
 
         if (list[0].id === player.id) {
-            list.push(list.shift());
+            // notice: replaced fixed order by random order
+            // list.push(list.shift());
+
+            for (let i = list.length - 1; i >= 0; i -= 1) {
+                const j = Math.floor(Math.random() * (i + 1));
+                const first = list[i];
+                const second = list[j];
+
+                list[i] = second;
+                list[j] = first;
+            }
 
             return onValid();
         }
