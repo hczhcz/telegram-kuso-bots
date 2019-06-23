@@ -185,6 +185,7 @@ bot.on('message', (msg) => {
     if (msg.sticker) {
         play.verify(
             msg.chat.id,
+            msg.sticker.file_id,
             () => {
                 // valid
 

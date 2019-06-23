@@ -10,7 +10,7 @@ const init = (id, playerId, text, image, onGameInit, onGameExist) => {
     games[id] = {
         text: text,
         image: image,
-        history: [playerId, 30],
+        history: [[playerId, 30]],
     };
 
     return onGameInit(games[id]);
