@@ -92,7 +92,11 @@ bot.onText(/^\/ignite(@\w+)?(?: (.+))?$/, event((msg, match) => {
             msg.chat.id,
             player.id,
             match[2] || config.bombDefaultText,
-            msg.sticker && msg.sticker.file_id || config.bombDefaultImage,
+            (
+                msg.reply_to_message
+                    && msg.reply_to_message.sticker
+                    && msg.reply_to_message.sticker.file_id
+            ) || config.bombDefaultImage,
             (game) => {
                 // game init
 
