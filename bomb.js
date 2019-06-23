@@ -391,4 +391,4 @@ setInterval(() => {
                 + '/ignite@' + config.bombUsername + ' 点火'
         );
     });
-}, 200);
+}, 1000);

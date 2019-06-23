@@ -168,7 +168,7 @@ bot.onText(/^\/start100kills(@\w+)?$/, event((msg, match) => {
 }, 1));
 
 bot.onText(/^\/extend(@\w+)?(?: ([+-]?\d+)\w*)?$/, event((msg, match) => {
-    let time = parseInt(match[2] || '120', 10);
+    let time = parseInt(match[2] || '60', 10);
 
     if (time < -300) {
         time = -300;
@@ -399,8 +399,8 @@ setInterval(() => {
 
             if (
                 game.time > 0
-                && game.time - game.total < -15
-                && game.time % 10 === 0
+                && game.time <= game.total - 10
+                && game.time % 5 === 0
             ) {
                 command.tick(mockMsg);
             }
@@ -408,7 +408,7 @@ setInterval(() => {
 
         game.time += 1;
     }
-}, 200);
+}, 1000);
 
 for (const i in config.threesomePlugin) {
     require('./plugin.' + config.threesomePlugin[i])(
