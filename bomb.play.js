@@ -16,7 +16,7 @@ const init = (id, playerId, text, image, onGameInit, onGameExist) => {
     return onGameInit(games[id]);
 };
 
-const verify = (id, playerId, image, onValid, onNotValid, onGameNotExist) => {
+const verify = (id, image, onValid, onNotValid, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
@@ -24,20 +24,32 @@ const verify = (id, playerId, image, onValid, onNotValid, onGameNotExist) => {
     const game = games[id];
 
     if (game.image === image) {
-        game.history.push([playerId, game.history[game.history.length - 1][1]]);
-
         return onValid();
     }
 
     return onNotValid();
 };
 
-const end = (id, onGameEnd, onGameNotExist) => {
+const next = (id, playerId, onGameContinue, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
 
     const game = games[id];
+
+    game.history.push([playerId, game.history[game.history.length - 1][1]]);
+
+    onGameContinue(game);
+};
+
+const end = (id, playerId, onGameEnd, onGameNotExist) => {
+    if (!games[id]) {
+        return onGameNotExist();
+    }
+
+    const game = games[id];
+
+    game.history.push([playerId]);
 
     delete games[id];
 
@@ -53,7 +65,7 @@ const tick = (onGameEnd) => {
         if (game.history[game.history.length - 1][1] === 0) {
             delete games[i];
 
-            onGameEnd(game);
+            onGameEnd(i, game);
         }
     }
 };
@@ -61,6 +73,7 @@ const tick = (onGameEnd) => {
 module.exports = {
     init: init,
     verify: verify,
+    next: next,
     end: end,
     tick: tick,
 };
