@@ -236,6 +236,10 @@ bot.on('callback_query', (query) => {
 
     const msg = query.message;
 
+    if (!msg) {
+        return;
+    }
+
     if (query.data.match(/^\w+$/)) {
         log(
             msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),

@@ -342,6 +342,10 @@ bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
 bot.on('callback_query', (query) => {
     const msg = query.message;
 
+    if (!msg) {
+        return;
+    }
+
     if (query.data === 'join') {
         log(
             msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),

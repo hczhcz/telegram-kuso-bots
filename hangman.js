@@ -399,6 +399,11 @@ bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
 
 bot.on('callback_query', (query) => {
     const msg = query.message;
+
+    if (!msg) {
+        return;
+    }
+
     const info = JSON.parse(query.data);
 
     if (info[0] === 'join') {
