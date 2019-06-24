@@ -14,6 +14,16 @@ const get = (id) => {
     return null;
 };
 
+const getRandom = (id) => {
+    if (lists[id]) {
+        const list = lists[id];
+
+        return list[Math.floor(Math.random() * list.length)];
+    }
+
+    return null;
+};
+
 const add = (id, player, onDone, onPlayerExist, onListFull) => {
     if (!lists[id]) {
         lists[id] = [];
@@ -56,24 +66,24 @@ const remove = (id, player, onDone, onPlayerNotExist) => {
     return onPlayerNotExist();
 };
 
-const shuffle = (id, onDone, onNotMultiplayer) => {
-    if (lists[id]) {
-        const list = lists[id];
+// const shuffle = (id, onDone, onNotMultiplayer) => {
+//     if (lists[id]) {
+//         const list = lists[id];
 
-        for (let i = list.length - 1; i >= 0; i -= 1) {
-            const j = Math.floor(Math.random() * (i + 1));
-            const first = list[i];
-            const second = list[j];
+//         for (let i = list.length - 1; i >= 0; i -= 1) {
+//             const j = Math.floor(Math.random() * (i + 1));
+//             const first = list[i];
+//             const second = list[j];
 
-            list[i] = second;
-            list[j] = first;
-        }
+//             list[i] = second;
+//             list[j] = first;
+//         }
 
-        return onDone();
-    }
+//         return onDone();
+//     }
 
-    return onNotMultiplayer();
-};
+//     return onNotMultiplayer();
+// };
 
 const clear = (id, onDone, onNotMultiplayer) => {
     if (lists[id]) {
@@ -107,9 +117,10 @@ const verify = (id, player, onValid, onNotValid) => {
 
 module.exports = {
     get: get,
+    getRandom: getRandom,
     add: add,
     remove: remove,
-    shuffle: shuffle,
+    // shuffle: shuffle,
     clear: clear,
     verify: verify,
 };

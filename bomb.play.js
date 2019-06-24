@@ -2,7 +2,7 @@
 
 const games = {};
 
-const init = (id, text, image, onGameInit, onGameExist) => {
+const init = (id, player, text, image, onGameInit, onGameExist) => {
     if (games[id]) {
         return onGameExist(games[id]);
     }
@@ -10,14 +10,14 @@ const init = (id, text, image, onGameInit, onGameExist) => {
     games[id] = {
         text: text,
         image: image,
-        history: [],
+        player: player,
+        history: [[player.id, 30]],
     };
 
-    // return onGameInit(games[id]);
-    return onGameInit();
+    return onGameInit(games[id]);
 };
 
-const verify = (id, image, onValid, onNotValid, onGameNotExist) => {
+const verify = (id, player, image, onValid, onWrongPlayer, onNotValid, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
@@ -25,36 +25,39 @@ const verify = (id, image, onValid, onNotValid, onGameNotExist) => {
     const game = games[id];
 
     if (game.image === image) {
-        return onValid();
+        if (player.id === game.player.id) {
+            return onValid();
+        }
+
+        return onWrongPlayer();
     }
 
     return onNotValid();
 };
 
-const next = (id, playerId, onGameContinue, onGameNotExist) => {
+const next = (id, player, onGameContinue, onGameEnd, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
 
     const game = games[id];
 
-    if (game.history.length) {
-        game.history.push([playerId, game.history[game.history.length - 1][1]]);
-    } else {
-        game.history.push([playerId, 30]);
-    }
+    game.player = player;
+    game.history.push([player.id, game.history[game.history.length - 1][1]]);
 
     onGameContinue(game);
 };
 
-const end = (id, playerId, onGameEnd, onGameNotExist) => {
+const end = (id, player, onGameEnd, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
 
     const game = games[id];
 
-    game.history.push([playerId]);
+    game.history.push([player.id]);
+
+    delete game.player;
 
     delete games[id];
 
@@ -68,9 +71,13 @@ const tick = (onGameEnd) => {
         game.history[game.history.length - 1][1] -= 1;
 
         if (game.history[game.history.length - 1][1] === 0) {
+            const player = game.player;
+
+            delete game.player;
+
             delete games[i];
 
-            onGameEnd(i, game);
+            onGameEnd(i, game, player);
         }
     }
 };
