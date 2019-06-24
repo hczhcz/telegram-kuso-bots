@@ -322,7 +322,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                 }
             }
 
-            if (tot.length > 0) {
+            if (tot.length) {
                 const choice = Math.floor(Math.random() * tot.length);
 
                 tot[choice].command[msg.chat.id] = {

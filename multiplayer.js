@@ -56,7 +56,7 @@ const remove = (id, player, onDone, onPlayerNotExist) => {
     return onPlayerNotExist();
 };
 
-const shuffle = (id) => {
+const shuffle = (id, onDone, onNotMultiplayer) => {
     if (lists[id]) {
         const list = lists[id];
 
@@ -68,7 +68,11 @@ const shuffle = (id) => {
             list[i] = second;
             list[j] = first;
         }
+
+        return onDone();
     }
+
+    return onNotMultiplayer();
 };
 
 const clear = (id, onDone, onNotMultiplayer) => {

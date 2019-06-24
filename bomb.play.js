@@ -2,7 +2,7 @@
 
 const games = {};
 
-const init = (id, playerId, text, image, onGameInit, onGameExist) => {
+const init = (id, text, image, onGameInit, onGameExist) => {
     if (games[id]) {
         return onGameExist(games[id]);
     }
@@ -10,10 +10,11 @@ const init = (id, playerId, text, image, onGameInit, onGameExist) => {
     games[id] = {
         text: text,
         image: image,
-        history: [[playerId, 30]],
+        history: [],
     };
 
-    return onGameInit(games[id]);
+    // return onGameInit(games[id]);
+    return onGameInit();
 };
 
 const verify = (id, image, onValid, onNotValid, onGameNotExist) => {
@@ -37,7 +38,11 @@ const next = (id, playerId, onGameContinue, onGameNotExist) => {
 
     const game = games[id];
 
-    game.history.push([playerId, game.history[game.history.length - 1][1]]);
+    if (game.history.length) {
+        game.history.push([playerId, game.history[game.history.length - 1][1]]);
+    } else {
+        game.history.push([playerId, 30]);
+    }
 
     onGameContinue(game);
 };
@@ -70,10 +75,15 @@ const tick = (onGameEnd) => {
     }
 };
 
+const count = () => {
+    return Object.keys(games).length;
+};
+
 module.exports = {
     init: init,
     verify: verify,
     next: next,
     end: end,
     tick: tick,
+    count: count,
 };

@@ -72,7 +72,7 @@ const init = (id, text, meowId, onGameInit, onGameExist) => {
     if (list.length > 1) {
         game.charset = normalGet(list);
         game.hint = meowHint(game.charset);
-    } else if (list.length > 0) {
+    } else if (list.length) {
         game.charset = normalGet(list);
         game.hint = normalHint(game.charset);
     }

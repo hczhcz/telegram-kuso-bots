@@ -74,46 +74,71 @@ const playerUpdate = (msg, list) => {
 };
 
 bot.onText(/^\/ignite(@\w+)?(?: (.+))?$/, event((msg, match) => {
-    const player = multiplayer.get(msg.chat.id);
+    const image = msg.reply_to_message
+        && msg.reply_to_message.sticker
+        && msg.reply_to_message.sticker.file_id;
 
-    if (player === null) {
-        bot.sendMessage(
-            msg.chat.id,
-            playerMention(msg.from) + ' 点燃了 ' + (match[2] || config.bombDefaultText) + '\n'
-                + '他自爆了！\n\n'
-                + '/bomb@' + config.bombUsername + ' 开始新游戏\n'
-                + '/ignite@' + config.bombUsername + ' 点火',
-            {
-                reply_to_message_id: msg.message_id,
-            }
-        );
-    } else {
-        play.init(
-            msg.chat.id,
-            player.id,
-            match[2] || config.bombDefaultText,
-            (
-                msg.reply_to_message
-                    && msg.reply_to_message.sticker
-                    && msg.reply_to_message.sticker.file_id
-            ) || config.bombDefaultImage,
-            (game) => {
-                // game init
+    play.init(
+        msg.chat.id,
+        match[2] || config.bombDefaultText,
+        image || config.bombDefaultImage,
+        () => {
+            // game init
 
-                multiplayer.shuffle(msg.chat.id);
+            multiplayer.shuffle(
+                msg.chat.id,
+                () => {
+                    // shuffled
 
-                bot.sendMessage(
-                    msg.chat.id,
-                    game.text + ' 被点燃啦，第一个拿到它的人是 ' + playerMention(player) + '\n'
-                        + game.text + ' 还有 ' + game.history[game.history.length - 1][1] + ' 秒爆炸',
-                    {
-                        reply_to_message_id: msg.message_id,
-                    }
-                );
-            },
-            (game) => {
-                // game exist
+                    const player = multiplayer.get(msg.chat.id);
 
+                    play.next(
+                        msg.chat.id,
+                        player.id,
+                        (game) => {
+                            // game continue
+
+                            bot.sendMessage(
+                                msg.chat.id,
+                                game.text + ' 被点燃啦，第一个拿到它的人是 ' + playerMention(player) + '\n'
+                                    + game.text + ' 还有 ' + game.history[game.history.length - 1][1] + ' 秒爆炸',
+                                {
+                                    reply_to_message_id: msg.message_id,
+                                }
+                            );
+                        },
+                        () => {
+                            // game not exist
+
+                            // never reach
+                            throw Error(JSON.stringify(msg));
+                        }
+                    );
+                },
+                () => {
+                    // not multiplayer
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        playerMention(msg.from) + ' 点燃了 ' + (match[2] || config.bombDefaultText) + '\n'
+                            + '他自爆了！\n\n'
+                            + '/bomb@' + config.bombUsername + ' 开始新游戏\n'
+                            + '/ignite@' + config.bombUsername + ' 点火',
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                }
+            );
+        },
+        (game) => {
+            // game exist
+
+            const player = multiplayer.get(msg.chat.id);
+
+            if (player === null) {
+                // TODO
+            } else {
                 bot.sendMessage(
                     msg.chat.id,
                     game.text + ' 已经被点燃了哟，现在在 ' + playerMention(player) + ' 的手上\n'
@@ -123,8 +148,8 @@ bot.onText(/^\/ignite(@\w+)?(?: (.+))?$/, event((msg, match) => {
                     }
                 );
             }
-        );
-    }
+        }
+    );
 }));
 
 bot.onText(/^\/bomb(@\w+)?$/, event((msg, match) => {
@@ -201,42 +226,52 @@ bot.on('message', (msg) => {
                     () => {
                         // valid
 
-                        multiplayer.shuffle(msg.chat.id);
-
-                        play.next(
+                        multiplayer.shuffle(
                             msg.chat.id,
-                            msg.from.id,
-                            (game) => {
-                                // game continue
+                            () => {
+                                // shuffled
 
-                                const player = multiplayer.get(msg.chat.id);
+                                play.next(
+                                    msg.chat.id,
+                                    msg.from.id,
+                                    (game) => {
+                                        // game continue
 
-                                if (msg.from.id === player.id) {
-                                    bot.sendMessage(
-                                        msg.chat.id,
-                                        playerMention(msg.from) + ' 竟然把 ' + game.text + ' 丢给了自己！\n'
-                                            + game.text + ' 还有 ' + game.history[game.history.length - 1][1] + ' 秒爆炸',
-                                        {
-                                            reply_to_message_id: msg.message_id,
+                                        const player = multiplayer.get(msg.chat.id);
+
+                                        if (msg.from.id === player.id) {
+                                            bot.sendMessage(
+                                                msg.chat.id,
+                                                playerMention(msg.from) + ' 竟然把 ' + game.text + ' 丢给了自己！\n'
+                                                    + game.text + ' 还有 ' + game.history[game.history.length - 1][1] + ' 秒爆炸',
+                                                {
+                                                    reply_to_message_id: msg.message_id,
+                                                }
+                                            );
+                                        } else {
+                                            bot.sendMessage(
+                                                msg.chat.id,
+                                                playerMention(msg.from) + ' 把 ' + game.text + '\n'
+                                                    + '丢给了 ' + playerMention(player) + '\n'
+                                                    + game.text + ' 还有 ' + game.history[game.history.length - 1][1] + ' 秒爆炸',
+                                                {
+                                                    reply_to_message_id: msg.message_id,
+                                                }
+                                            );
                                         }
-                                    );
-                                } else {
-                                    bot.sendMessage(
-                                        msg.chat.id,
-                                        playerMention(msg.from) + ' 把 ' + game.text + '\n'
-                                            + '丢给了 ' + playerMention(player) + '\n'
-                                            + game.text + ' 还有 ' + game.history[game.history.length - 1][1] + ' 秒爆炸',
-                                        {
-                                            reply_to_message_id: msg.message_id,
-                                        }
-                                    );
-                                }
+                                    },
+                                    () => {
+                                        // game not exist
+
+                                        // never reach
+                                        throw Error(JSON.stringify(msg));
+                                    }
+                                );
                             },
                             () => {
-                                // game not exist
+                                // not multiplayer
 
-                                // never reach
-                                throw Error(JSON.stringify(msg));
+                                // TODO: handle this special case
                             }
                         );
                     },
@@ -391,16 +426,22 @@ setInterval(() => {
     play.tick((id, game) => {
         // game end
 
-        fs.write(fd, JSON.stringify(game) + '\n', () => {
-            // nothing
-        });
+        const player = multiplayer.get(id);
 
-        bot.sendMessage(
-            id,
-            game.text + ' 在 ' + playerMention(multiplayer.get(id)) + ' 的手上爆炸了！\n'
-                + '游戏结束\n\n'
-                + '/bomb@' + config.bombUsername + ' 开始新游戏\n'
-                + '/ignite@' + config.bombUsername + ' 点火'
-        );
+        if (player === null) {
+            // TODO
+        } else {
+            fs.write(fd, JSON.stringify(game) + '\n', () => {
+                // nothing
+            });
+
+            bot.sendMessage(
+                id,
+                game.text + ' 在 ' + playerMention(player) + ' 的手上爆炸了！\n'
+                    + '游戏结束\n\n'
+                    + '/bomb@' + config.bombUsername + ' 开始新游戏\n'
+                    + '/ignite@' + config.bombUsername + ' 点火'
+            );
+        }
     });
 }, 1000);
