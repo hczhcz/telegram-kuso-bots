@@ -100,6 +100,8 @@ bot.onText(/^\/ignite(@\w+)?(?: (.+))?$/, event((msg, match) => {
             (game) => {
                 // game init
 
+                multiplayer.shuffle(msg.chat.id);
+
                 bot.sendMessage(
                     msg.chat.id,
                     game.text + ' 被点燃啦，第一个拿到它的人是 ' + playerMention(player) + '\n'
@@ -198,6 +200,8 @@ bot.on('message', (msg) => {
                     msg.from,
                     () => {
                         // valid
+
+                        multiplayer.shuffle(msg.chat.id);
 
                         play.next(
                             msg.chat.id,
