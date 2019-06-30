@@ -109,7 +109,6 @@ const messageUpdate = (msg, game, win) => {
             {
                 chat_id: msg.chat.id,
                 message_id: msg.message_id,
-                reply_to_message_id: msg.reply_to_message.message_id,
             }
         ).finally(() => {
             setTimeout(() => {
