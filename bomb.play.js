@@ -24,7 +24,7 @@ const verify = (id, player, image, onValid, onWrongPlayer, onNotValid, onGameNot
 
     const game = games[id];
 
-    if (game.image === image) {
+    if (image === game.image) {
         if (player.id === game.player.id) {
             return onValid();
         }
@@ -42,8 +42,11 @@ const next = (id, player, onGameContinue, onGameEnd, onGameNotExist) => {
 
     const game = games[id];
 
-    game.player = player;
-    game.history.push([player.id, game.history[game.history.length - 1][1]]);
+    if (player !== null) {
+        game.player = player;
+    }
+
+    game.history.push([game.player.id, game.history[game.history.length - 1][1]]);
 
     onGameContinue(game);
 };
