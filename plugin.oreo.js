@@ -60,7 +60,7 @@ module.exports = (bot, event, playerEvent, env) => {
             }
         }
 
-        if (width || height) {
+        if (width > 0 && height > 0) {
             const image = canvas.createCanvas(width, height);
             const ctx = image.getContext('2d');
 

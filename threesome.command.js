@@ -34,6 +34,8 @@ module.exports = (bot, games, commands, writeCommand) => {
             for (const i in commands[msg.chat.mapped]['/' + key]) {
                 const command = commands[msg.chat.mapped]['/' + key][i];
 
+                delete result[command.content];
+
                 result[command.content] = command;
             }
 
