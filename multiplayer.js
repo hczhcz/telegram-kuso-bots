@@ -2,125 +2,102 @@
 
 const config = require('./config');
 
-const lists = {};
+module.exports = () => {
+    const self = {
+        lists: {},
 
-const get = (id) => {
-    if (lists[id]) {
-        const list = lists[id];
+        get: (id) => {
+            if (self.lists[id]) {
+                const list = self.lists[id];
 
-        return list[0];
-    }
+                return list[0];
+            }
 
-    return null;
-};
+            return null;
+        },
 
-const getRandom = (id) => {
-    if (lists[id]) {
-        const list = lists[id];
+        getRandom: (id) => {
+            if (self.lists[id]) {
+                const list = self.lists[id];
 
-        return list[Math.floor(Math.random() * list.length)];
-    }
+                return list[Math.floor(Math.random() * list.length)];
+            }
 
-    return null;
-};
+            return null;
+        },
 
-const add = (id, player, onDone, onPlayerExist, onListFull) => {
-    if (!lists[id]) {
-        lists[id] = [];
-    }
+        add: (id, player, onDone, onPlayerExist, onListFull) => {
+            if (!self.lists[id]) {
+                self.lists[id] = [];
+            }
 
-    const list = lists[id];
+            const list = self.lists[id];
 
-    for (const i in list) {
-        if (list[i].id === player.id) {
-            return onPlayerExist(list);
-        }
-    }
+            for (const i in list) {
+                if (list[i].id === player.id) {
+                    return onPlayerExist(list);
+                }
+            }
 
-    if (list.length < config.multiplayerMaxPlayer) {
-        list.push(player);
-    } else {
-        return onListFull(list);
-    }
+            if (list.length < config.multiplayerMaxPlayer) {
+                list.push(player);
+            } else {
+                return onListFull(list);
+            }
 
-    return onDone(list);
-};
+            return onDone(list);
+        },
 
-const remove = (id, player, onDone, onPlayerNotExist) => {
-    if (lists[id]) {
-        const list = lists[id];
+        remove: (id, player, onDone, onPlayerNotExist) => {
+            if (self.lists[id]) {
+                const list = self.lists[id];
 
-        for (const i in list) {
-            if (list[i].id === player.id) {
-                list.splice(i, 1);
+                for (const i in list) {
+                    if (list[i].id === player.id) {
+                        list.splice(i, 1);
+
+                        if (!list.length) {
+                            delete self.lists[id];
+                        }
+
+                        return onDone(list);
+                    }
+                }
+            }
+
+            return onPlayerNotExist();
+        },
+
+        clear: (id, onDone, onNotMultiplayer) => {
+            if (self.lists[id]) {
+                delete self.lists[id];
+
+                return onDone();
+            }
+
+            return onNotMultiplayer();
+        },
+
+        verify: (id, player, onValid, onNotValid) => {
+            if (self.lists[id]) {
+                const list = self.lists[id];
 
                 if (!list.length) {
-                    delete lists[id];
+                    return onValid();
                 }
 
-                return onDone(list);
+                if (list[0].id === player.id) {
+                    list.push(list.shift());
+
+                    return onValid();
+                }
+
+                return onNotValid();
             }
-        }
-    }
-
-    return onPlayerNotExist();
-};
-
-// const shuffle = (id, onDone, onNotMultiplayer) => {
-//     if (lists[id]) {
-//         const list = lists[id];
-
-//         for (let i = list.length - 1; i >= 0; i -= 1) {
-//             const j = Math.floor(Math.random() * (i + 1));
-//             const first = list[i];
-//             const second = list[j];
-
-//             list[i] = second;
-//             list[j] = first;
-//         }
-
-//         return onDone();
-//     }
-
-//     return onNotMultiplayer();
-// };
-
-const clear = (id, onDone, onNotMultiplayer) => {
-    if (lists[id]) {
-        delete lists[id];
-
-        return onDone();
-    }
-
-    return onNotMultiplayer();
-};
-
-const verify = (id, player, onValid, onNotValid) => {
-    if (lists[id]) {
-        const list = lists[id];
-
-        if (!list.length) {
-            return onValid();
-        }
-
-        if (list[0].id === player.id) {
-            list.push(list.shift());
 
             return onValid();
-        }
+        },
+    };
 
-        return onNotValid();
-    }
-
-    return onValid();
-};
-
-module.exports = {
-    get: get,
-    getRandom: getRandom,
-    add: add,
-    remove: remove,
-    // shuffle: shuffle,
-    clear: clear,
-    verify: verify,
+    return self;
 };

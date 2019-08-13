@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.abToken);
-const multiplayer = require('./multiplayer');
+const multiplayer = require('./multiplayer')();
 
 const play = require('./1a2b.play');
 

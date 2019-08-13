@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.hangmanToken);
-const multiplayer = require('./multiplayer');
+const multiplayer = require('./multiplayer')();
 
 const resource = require('./hangman.resource');
 const play = require('./hangman.play');
