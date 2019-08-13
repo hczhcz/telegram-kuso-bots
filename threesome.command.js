@@ -9,11 +9,13 @@ module.exports = (bot, games, commands, writeCommand) => {
             const result = {};
 
             for (const i in commands[0]) {
-                result[i] = true;
+                result[i] = 0;
             }
 
             for (const i in commands[msg.chat.mapped]) {
-                result[i] = true;
+                delete result[i];
+
+                result[i] = msg.chat.mapped;
             }
 
             return result;
@@ -48,6 +50,12 @@ module.exports = (bot, games, commands, writeCommand) => {
             const fetched = self.fetchKey(msg);
 
             for (const i in fetched) {
+                const mapped = fetched[i];
+
+                if (mapped === 0) {
+                    text += '*';
+                }
+
                 text += (i.slice(1) || '<bot自言自语>') + '\n';
             }
 
