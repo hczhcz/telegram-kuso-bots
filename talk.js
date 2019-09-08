@@ -19,6 +19,54 @@ const bot = require('./bot.' + config.bot)(config.talkToken);
 let corpus1 = [];
 let corpus2 = [];
 
+const updateCorpus = () => {
+    const newCorpus1 = [];
+    const newCorpus2 = [];
+
+    let last = {};
+
+    readline.createInterface({
+        input: fs.createReadStream(config.talkPathCorpus),
+    }).on('line', (line) => {
+        const obj = JSON.parse(line);
+
+        if (config.talkDataSource[obj.chat]) {
+            if (obj.reply_id) {
+                last = {};
+
+                if (obj.reply_text) {
+                    last.text = obj.reply_text;
+                }
+
+                if (obj.reply_sticker) {
+                    last.sticker = obj.reply_sticker;
+                }
+            }
+
+            const current = {};
+
+            if (obj.text) {
+                current.text = obj.text;
+            }
+
+            if (obj.sticker) {
+                current.sticker = obj.sticker;
+            }
+
+            newCorpus1.push([current]);
+
+            if (last.text || last.sticker) {
+                newCorpus2.push([last, current]);
+            }
+
+            last = current;
+        }
+    }).on('close', () => {
+        corpus1 = newCorpus1;
+        corpus2 = newCorpus2;
+    });
+};
+
 const getCandidates = (msg) => {
     const candidates = [];
 
@@ -34,7 +82,7 @@ const getCandidates = (msg) => {
         }
 
         for (const i in corpus2) {
-            if (corpus2[i].text) {
+            if (corpus2[i][0].text) {
                 const rate = 0.01 * fuzzball.ratio(msg.text, corpus2[i][0].text);
 
                 if (rate > 0.5) {
@@ -46,8 +94,8 @@ const getCandidates = (msg) => {
 
     if (msg.sticker) {
         for (const i in corpus2) {
-            if (corpus2[i].sticker && msg.sticker.file_id === corpus2[i].sticker) {
-                candidates.push([1, corpus2[i]]);
+            if (corpus2[i][0].sticker && msg.sticker.file_id === corpus2[i][0].sticker) {
+                candidates.push([1, corpus2[i][1]]);
             }
         }
     }
@@ -107,50 +155,6 @@ bot.on('message', (msg) => {
     }
 });
 
-setInterval(() => {
-    let last = {};
+updateCorpus();
 
-    const newCorpus1 = [];
-    const newCorpus2 = [];
-
-    readline.createInterface({
-        input: fs.createReadStream(config.talkPathCorpus),
-    }).on('line', (line) => {
-        const obj = JSON.parse(line);
-
-        if (config.talkDataSource[obj.chat]) {
-            if (obj.reply_id) {
-                last = {};
-
-                if (obj.reply_text) {
-                    last.text = obj.reply_text;
-                }
-
-                if (obj.reply_sticker) {
-                    last.sticker = obj.reply_sticker;
-                }
-            }
-
-            const current = {};
-
-            if (obj.text) {
-                current.text = obj.text;
-            }
-
-            if (obj.sticker) {
-                current.sticker = obj.sticker;
-            }
-
-            newCorpus1.push([current]);
-
-            if (last.text || last.sticker) {
-                newCorpus2.push([last, current]);
-            }
-
-            last = current;
-        }
-    }).on('close', () => {
-        corpus1 = newCorpus1;
-        corpus2 = newCorpus2;
-    });
-}, config.talkUpdateInterval);
+setInterval(updateCorpus, config.talkUpdateInterval);
