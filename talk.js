@@ -7,14 +7,13 @@ const readline = require('readline');
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.talkToken);
 
-// TODO
-// const fd = fs.openSync('log_talk', 'a');
+const fd = fs.openSync('log_talk', 'a');
 
-// const log = (head, body) => {
-//     fs.write(fd, '[' + Date() + '] ' + head + ' ' + body + '\n', () => {
-//         // nothing
-//     });
-// };
+const log = (head, body) => {
+    fs.write(fd, '[' + Date() + '] ' + head + ' ' + body + '\n', () => {
+        // nothing
+    });
+};
 
 let corpus1 = [];
 let corpus2 = [];
@@ -67,13 +66,13 @@ const updateCorpus = () => {
     });
 };
 
-const getCandidates = (msg) => {
+const getCandidates = (last) => {
     const candidates = [];
 
-    if (msg.text) {
+    if (last.text) {
         for (const i in corpus1) {
             if (corpus1[i].text) {
-                const rate = 0.01 * fuzzball.ratio(msg.text, corpus1[i].text);
+                const rate = 0.01 * fuzzball.ratio(last.text, corpus1[i].text);
 
                 if (rate > 0.5) {
                     candidates.push([0.5 * rate * rate, corpus1[i]]);
@@ -83,7 +82,7 @@ const getCandidates = (msg) => {
 
         for (const i in corpus2) {
             if (corpus2[i][0].text) {
-                const rate = 0.01 * fuzzball.ratio(msg.text, corpus2[i][0].text);
+                const rate = 0.01 * fuzzball.ratio(last.text, corpus2[i][0].text);
 
                 if (rate > 0.5) {
                     candidates.push([rate * rate, corpus2[i][1]]);
@@ -92,10 +91,14 @@ const getCandidates = (msg) => {
         }
     }
 
-    if (msg.sticker) {
+    if (last.sticker) {
         for (const i in corpus2) {
-            if (corpus2[i][0].sticker && msg.sticker.file_id === corpus2[i][0].sticker) {
-                candidates.push([1, corpus2[i][1]]);
+            if (corpus2[i][0].sticker && last.sticker === corpus2[i][0].sticker) {
+                if (corpus2[i][1].sticker) {
+                    candidates.push([1, corpus2[i][1]]);
+                } else {
+                    candidates.push([0.25, corpus2[i][1]]);
+                }
             }
         }
     }
@@ -103,8 +106,8 @@ const getCandidates = (msg) => {
     return candidates;
 };
 
-const chooseCandidate = (msg) => {
-    const candidates = getCandidates(msg);
+const chooseCandidate = (last) => {
+    const candidates = getCandidates(last);
 
     let total = 0;
 
@@ -128,10 +131,31 @@ const chooseCandidate = (msg) => {
 };
 
 bot.on('message', (msg) => {
-    if ((msg.text || msg.sticker) && Math.random() < config.talkRate) {
-        const candidate = chooseCandidate(msg);
+    if (!msg.text && !msg.sticker) {
+        return;
+    }
+
+    const force = msg.reply_to_message && msg.reply_to_message.from.id === config.talkUsername;
+
+    if (force || Math.random() < config.talkRate) {
+        const last = {};
+
+        if (msg.text) {
+            last.text = msg.text;
+        }
+
+        if (msg.sticker) {
+            last.sticker = msg.sticker.file_id;
+        }
+
+        const candidate = chooseCandidate(last);
 
         if (candidate !== null) {
+            log(
+                msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+                (last.text || last.sticker) + ':' + (candidate.text || candidate.sticker)
+            );
+
             if (candidate.text) {
                 bot.sendMessage(
                     msg.chat.id,
