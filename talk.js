@@ -42,23 +42,23 @@ const updateCorpus = () => {
                 }
             }
 
-            const current = {};
+            const payload = {};
 
             if (obj.text) {
-                current.text = obj.text;
+                payload.text = obj.text;
             }
 
             if (obj.sticker) {
-                current.sticker = obj.sticker;
+                payload.sticker = obj.sticker;
             }
 
-            newCorpus1.push([current]);
+            newCorpus1.push([payload]);
 
             if (last.text || last.sticker) {
-                newCorpus2.push([last, current]);
+                newCorpus2.push([last, payload]);
             }
 
-            last = current;
+            last = payload;
         }
     }).on('close', () => {
         corpus1 = newCorpus1;
@@ -106,16 +106,14 @@ const getCandidates = (last) => {
     return candidates;
 };
 
-const chooseCandidate = (last) => {
-    const candidates = getCandidates(last);
-
+const chooseCandidate = (candidates, force) => {
     let total = 0;
 
     for (const i in candidates) {
         total += candidates[i][0];
     }
 
-    if (total >= 1) {
+    if (force || total >= 1) {
         let target = total * Math.random();
 
         for (const i in candidates) {
@@ -135,7 +133,8 @@ bot.on('message', (msg) => {
         return;
     }
 
-    const force = msg.reply_to_message && msg.reply_to_message.from.id === config.talkUsername;
+    const force = msg.chat.id === msg.from.id
+        || msg.reply_to_message && msg.reply_to_message.from.id === config.talkUsername;
 
     if (force || Math.random() < config.talkRate) {
         const last = {};
@@ -148,28 +147,29 @@ bot.on('message', (msg) => {
             last.sticker = msg.sticker.file_id;
         }
 
-        const candidate = chooseCandidate(last);
+        const candidates = getCandidates(last);
+        const payload = chooseCandidate(candidates, force);
 
-        if (candidate !== null) {
+        if (payload !== null) {
             log(
                 msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
-                (last.text || last.sticker) + ':' + (candidate.text || candidate.sticker)
+                (last.text || last.sticker) + ':' + (payload.text || payload.sticker)
             );
 
-            if (candidate.text) {
+            if (payload.text) {
                 bot.sendMessage(
                     msg.chat.id,
-                    candidate.text,
+                    payload.text,
                     {
                         reply_to_message_id: msg.message_id,
                     }
                 );
             }
 
-            if (candidate.sticker) {
+            if (payload.sticker) {
                 bot.sendSticker(
                     msg.chat.id,
-                    candidate.sticker,
+                    payload.sticker,
                     {
                         reply_to_message_id: msg.message_id,
                     }
