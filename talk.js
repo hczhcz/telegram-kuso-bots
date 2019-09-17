@@ -134,7 +134,7 @@ bot.on('message', (msg) => {
     }
 
     const force = msg.chat.id === msg.from.id
-        || msg.reply_to_message && msg.reply_to_message.from.id === config.talkUsername;
+        || msg.reply_to_message && msg.reply_to_message.from.username === config.talkUsername;
 
     if (force || Math.random() < config.talkRate) {
         const last = {};
