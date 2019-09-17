@@ -85,7 +85,16 @@ const getCandidates = (last) => {
                 const rate = 0.01 * fuzzball.ratio(last.text, corpus2[i][0].text);
 
                 if (rate > 0.5) {
-                    candidates.push([rate * rate, corpus2[i][1]]);
+                    if (
+                        corpus2[i][1].text
+                        && corpus2[i][1].text.length <= Math.max(16, 2 * last.text.length)
+                    ) {
+                        candidates.push([rate * rate, corpus2[i][1]]);
+                    }
+
+                    if (corpus2[i][1].sticker) {
+                        candidates.push([rate * rate, corpus2[i][1]]);
+                    }
                 }
             }
         }
@@ -94,10 +103,12 @@ const getCandidates = (last) => {
     if (last.sticker) {
         for (const i in corpus2) {
             if (corpus2[i][0].sticker && last.sticker === corpus2[i][0].sticker) {
+                if (corpus2[i][1].text && corpus2[i][1].text.length <= 16) {
+                    candidates.push([0.25, corpus2[i][1]]);
+                }
+
                 if (corpus2[i][1].sticker) {
                     candidates.push([1, corpus2[i][1]]);
-                } else {
-                    candidates.push([0.25, corpus2[i][1]]);
                 }
             }
         }
