@@ -11,7 +11,7 @@ module.exports = (bot, event, playerEvent, env) => {
         }
 
         if (match[1] === 'clac') {
-            match[3] = match[3].split().reverse().join();
+            match[3] = match[3].split('').reverse().join('');
         }
 
         const process = child_process.spawn('timeout', ['0.2s', './calc/eigenmath']);
@@ -26,7 +26,7 @@ module.exports = (bot, event, playerEvent, env) => {
         process.on('close', (code) => {
             if (code === 0 && result.length > 0 && result.length <= config.calcMaxLength) {
                 if (match[1] === 'clac') {
-                    result = result.split().reverse().join();
+                    result = result.split('').reverse().join('');
                 }
 
                 bot.sendMessage(
@@ -39,7 +39,7 @@ module.exports = (bot, event, playerEvent, env) => {
             }
         });
 
-        process.stdin.write(match[3]);
+        process.stdin.write(match[3] + '\n');
     }, 2));
 
     env.info.addPluginHelp(
