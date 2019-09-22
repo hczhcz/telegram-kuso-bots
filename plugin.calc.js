@@ -4,6 +4,27 @@ const child_process = require('child_process');
 
 const config = require('./config');
 
+const run_calc = (path, expression, onDone, onFail) => {
+    const process = child_process.spawn('timeout', ['0.2s', path]);
+    let result = '';
+
+    process.stdout.on('data', (data) => {
+        if (result.length <= config.calcMaxLength) {
+            result += data;
+        }
+    });
+
+    process.on('close', (code) => {
+        if (code === 0 && result && result.length <= config.calcMaxLength) {
+            onDone(result);
+        } else {
+            onFail();
+        }
+    });
+
+    process.stdin.write(expression + '\n');
+};
+
 module.exports = (bot, event, playerEvent, env) => {
     bot.onText(/^\/(calc|clac)(@\w+)? (.+)$/, event((msg, match) => {
         if (match[3].length > config.calcMaxLength) {
@@ -14,32 +35,37 @@ module.exports = (bot, event, playerEvent, env) => {
             match[3] = match[3].split('').reverse().join('');
         }
 
-        const process = child_process.spawn('timeout', ['0.2s', './calc/eigenmath']);
-        let result = '';
+        run_calc('./calc/eigenmath', match[3], (result) => {
+            // done
 
-        process.stdout.on('data', (data) => {
-            if (result.length <= config.calcMaxLength) {
-                result += data;
-            }
-        });
-
-        process.on('close', (code) => {
-            if (code === 0 && result.length > 0 && result.length <= config.calcMaxLength) {
-                if (match[1] === 'clac') {
-                    result = result.split('').reverse().join('');
+            bot.sendMessage(
+                msg.chat.id,
+                match[1] === 'clac'
+                    ? result.split('').reverse().join('')
+                    : result,
+                {
+                    reply_to_message_id: msg.message_id,
                 }
+            );
+        }, () => {
+            // fail
+
+            run_calc('./calc/eigenmath_format', match[3], (result) => {
+                // done
 
                 bot.sendMessage(
                     msg.chat.id,
-                    result,
+                    match[1] === 'clac'
+                        ? result.split('').reverse().join('')
+                        : result,
                     {
                         reply_to_message_id: msg.message_id,
                     }
                 );
-            }
+            }, () => {
+                // fail
+            });
         });
-
-        process.stdin.write(match[3] + '\n');
     }, 2));
 
     env.info.addPluginHelp(
