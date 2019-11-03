@@ -173,6 +173,7 @@ bot.on('message', (msg) => {
                     payload.text,
                     {
                         reply_to_message_id: msg.message_id,
+                        disable_notification: true,
                     }
                 );
             }
@@ -183,6 +184,7 @@ bot.on('message', (msg) => {
                     payload.sticker,
                     {
                         reply_to_message_id: msg.message_id,
+                        disable_notification: true,
                     }
                 );
             }
