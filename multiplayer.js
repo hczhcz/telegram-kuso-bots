@@ -52,10 +52,6 @@ module.exports = () => {
         add: (id, player, onDone, onPlayerExist, onListFull) => {
             const time = Date.now();
 
-            if (time - self.time[id] > config.multiplayerTimeout) {
-                self.lists[id] = [];
-            }
-
             self.time[id] = time;
 
             if (!self.lists[id]) {
@@ -82,13 +78,6 @@ module.exports = () => {
         remove: (id, player, onDone, onPlayerNotExist) => {
             if (self.lists[id]) {
                 const time = Date.now();
-
-                if (time - self.time[id] > config.multiplayerTimeout) {
-                    delete self.time[id];
-                    delete self.lists[id];
-
-                    return onDone([]);
-                }
 
                 self.time[id] = time;
 
