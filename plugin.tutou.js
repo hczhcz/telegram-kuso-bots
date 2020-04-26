@@ -70,7 +70,7 @@ module.exports = (bot, event, playerEvent, env) => {
                 });
             }
         }
-    }, 2));
+    }));
 
     env.info.addPluginHelp(
         'tutou',
