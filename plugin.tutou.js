@@ -12,7 +12,7 @@ module.exports = (bot, event, playerEvent, env) => {
         tutouImage = image;
     });
 
-    bot.onText(/^\/addtutou(@\w+)?$/, event((msg, match) => {
+    bot.onText(/^\/addtutou(@\w+)?(?: ([\d.]+) ([\d.]+) ([\d.]+))?$/, event((msg, match) => {
         if (msg.reply_to_message) {
             let file_id = null;
 
@@ -40,9 +40,21 @@ module.exports = (bot, event, playerEvent, env) => {
                         const image = canvas.createCanvas(bgImage.width, bgImage.height);
                         const ctx = image.getContext('2d');
 
-                        const size = Math.min(bgImage.width, bgImage.height) * (0.1 + 0.8 * Math.random());
-                        const left = (bgImage.width - size) * Math.random();
-                        const top = (bgImage.height - size) * Math.random();
+                        const size = Math.min(bgImage.width, bgImage.height) * (
+                            match[4]
+                                ? Math.min(parseFloat(match[4]), 1)
+                                : 0.1 + 0.8 * Math.random()
+                        );
+                        const left = bgImage.width * (
+                            match[2]
+                                ? Math.min(parseFloat(match[2]), 1)
+                                : Math.random()
+                        ) - 0.5 * size;
+                        const top = bgImage.height * (
+                            match[3]
+                                ? Math.min(parseFloat(match[3]), 1)
+                                : Math.random()
+                        ) - 0.5 * size;
 
                         ctx.drawImage(bgImage, 0, 0);
                         ctx.drawImage(tutouImage, left, top, size, size);
@@ -62,6 +74,7 @@ module.exports = (bot, event, playerEvent, env) => {
 
     env.info.addPluginHelp(
         'tutou',
-        '/addtutou 给图片加上兔头'
+        '/addtutou 给图片加上兔头\n'
+            + '/addtutou <left> <top> <size> 给图片指定位置加上兔头'
     );
 };
