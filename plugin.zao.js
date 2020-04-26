@@ -9,7 +9,7 @@ module.exports = (bot, event, playerEvent, env) => {
 
     const zao = [];
 
-    bot.onText(/^\/zao(\w*)(?<!\/zaog[au]ys)(@\w+)?(?: (.+))?$/, event((msg, match) => {
+    bot.onText(/^\/zao(?!g[au]ys)(\w*)(@\w+)?(?: (.+))?$/, event((msg, match) => {
         let text = '起床了！';
 
         if (match[3]) {

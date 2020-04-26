@@ -59,7 +59,9 @@ bot.onText(/./, handler((msg, match) => {
         msg.reply_to_message
         && msg.reply_to_message.from.username === botname
     ) {
-        if (Math.random() < 0.3) {
+        const prob = Math.random();
+
+        if (prob < 0.3) {
             bot.sendMessage(
                 msg.chat.id,
                 '么么哒～',
@@ -68,7 +70,7 @@ bot.onText(/./, handler((msg, match) => {
                     parse_mode: 'HTML',
                 }
             );
-        } else if (Math.random() < 0.3) {
+        } else if (prob < 0.5) {
             bot.sendMessage(
                 msg.chat.id,
                 'cao你妈～',
