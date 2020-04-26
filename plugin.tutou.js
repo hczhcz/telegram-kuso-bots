@@ -33,10 +33,8 @@ module.exports = (bot, event, playerEvent, env) => {
             }
 
             if (file_id) {
-                bot.getFile(file_id).then((file) => {
-                    const url = 'https://api.telegram.org/file/bot' + config.threesomeToken + '/' + file.file_path;
-
-                    canvas.loadImage(url).then((bgImage) => {
+                bot.getFileLink(file_id).then((link) => {
+                    canvas.loadImage(link).then((bgImage) => {
                         const image = canvas.createCanvas(bgImage.width, bgImage.height);
                         const ctx = image.getContext('2d');
 
