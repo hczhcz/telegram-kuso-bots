@@ -35,7 +35,7 @@ module.exports = (bot, event, playerEvent, env) => {
             match[3] = match[3].split('').reverse().join('');
         }
 
-        run_calc('./calc/eigenmath', match[3], (result) => {
+        run_calc('calc/eigenmath', match[3], (result) => {
             // done
 
             bot.sendMessage(
@@ -50,7 +50,7 @@ module.exports = (bot, event, playerEvent, env) => {
         }, () => {
             // fail
 
-            run_calc('./calc/eigenmath_format', match[3], (result) => {
+            run_calc('calc/eigenmath_format', match[3], (result) => {
                 // done
 
                 bot.sendMessage(
