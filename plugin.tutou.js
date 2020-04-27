@@ -12,7 +12,7 @@ module.exports = (bot, event, playerEvent, env) => {
         tutouImage = image;
     });
 
-    bot.onText(/^\/addtutou(@\w+)?(?: (-?[\d.]+) (-?[\d.]+))?(?: (-?[\d.]+))?(?: (-?\d+))?$/, event((msg, match) => {
+    bot.onText(/^\/addtutou(@\w+)?(?: (-?[\d.]+) (-?[\d.]+))?(?: (-?)([\d.]+))?(?: (-?\d+))?$/, event((msg, match) => {
         if (msg.reply_to_message) {
             let file_id = null;
 
@@ -43,27 +43,30 @@ module.exports = (bot, event, playerEvent, env) => {
                         const left = bgImage.width * (
                             match[2]
                                 ? Math.min(Math.max(parseFloat(match[2]), -1), 2)
-                                : Math.random()
+                                : Math.asin(Math.random() * 2 - 1) / Math.PI + 0.5
                         );
                         const top = bgImage.height * (
                             match[3]
                                 ? Math.min(Math.max(parseFloat(match[3]), -1), 2)
-                                : Math.random()
+                                : Math.asin(Math.random() * 2 - 1) / Math.PI + 0.5
                         );
                         const size = Math.min(bgImage.width, bgImage.height) * (
-                            match[4]
-                                ? Math.min(Math.max(parseFloat(match[4]), 0), 2)
-                                : 0.1 + 0.8 * Math.random()
-                        );
-                        const angle = Math.PI / 180 * (
                             match[5]
-                                ? Math.min(Math.max(parseInt(match[5], 10), -360), 360)
-                                : 360 * Math.random() - 180
+                                ? Math.min(Math.max(parseFloat(match[5]), 0), 10)
+                                : Math.random() * 0.8 + 0.1
                         );
+                        const angle = match[6]
+                            ? Math.min(Math.max(parseInt(match[6], 10), -360), 360) * Math.PI / 180
+                            : Math.asin(Math.random() * 2 - 1) * 2;
 
                         ctx.translate(left, top);
                         ctx.rotate(angle);
-                        ctx.drawImage(tutouImage, -0.5 * size, -0.5 * size, size, size);
+
+                        if (match[4] || match[4] !== '' && Math.random() < 0.5) {
+                            ctx.scale(-1, 1);
+                        }
+
+                        ctx.drawImage(tutouImage, -size / 2, -size / 2, size, size);
 
                         bot.sendPhoto(
                             msg.chat.id,

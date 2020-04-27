@@ -72,22 +72,22 @@ const getCandidates = (last) => {
     if (last.text) {
         for (const i in corpus1) {
             if (corpus1[i].text) {
-                const rate = 0.01 * fuzzball.ratio(last.text, corpus1[i].text);
+                const rate = fuzzball.ratio(last.text, corpus1[i].text) / 100;
 
                 if (rate > 0.5) {
-                    candidates.push([0.5 * rate * rate, corpus1[i]]);
+                    candidates.push([rate * rate * 0.5, corpus1[i]]);
                 }
             }
         }
 
         for (const i in corpus2) {
             if (corpus2[i][0].text) {
-                const rate = 0.01 * fuzzball.ratio(last.text, corpus2[i][0].text);
+                const rate = fuzzball.ratio(last.text, corpus2[i][0].text) / 100;
 
                 if (rate > 0.5) {
                     if (
                         corpus2[i][1].text
-                        && corpus2[i][1].text.length <= Math.max(16, 2 * last.text.length)
+                        && corpus2[i][1].text.length <= Math.max(16, last.text.length * 2)
                     ) {
                         candidates.push([rate * rate, corpus2[i][1]]);
                     }
@@ -125,7 +125,7 @@ const chooseCandidate = (candidates, force) => {
     }
 
     if (force || total >= 1) {
-        let target = total * Math.random();
+        let target = Math.random() * total;
 
         for (const i in candidates) {
             target -= candidates[i][0];

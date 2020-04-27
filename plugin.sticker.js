@@ -29,7 +29,7 @@ module.exports = (bot, event, playerEvent, env) => {
             canvas.loadImage(link).then((bgImage) => {
                 const size = Math.max(bgImage.width, bgImage.height);
 
-                const image = canvas.createCanvas(512 * bgImage.width / size, 512 * bgImage.height / size);
+                const image = canvas.createCanvas(bgImage.width * 512 / size, bgImage.height * 512 / size);
                 const ctx = image.getContext('2d');
 
                 ctx.drawImage(bgImage, 0, 0, image.width, image.height);
