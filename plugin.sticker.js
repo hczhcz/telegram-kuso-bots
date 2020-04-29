@@ -1,17 +1,23 @@
 'use strict';
 
 const canvas = require('canvas');
+const cwebp = require('cwebp');
 
 module.exports = (bot, event, playerEvent, env) => {
     const stickerEvent = event((msg, match) => {
-        bot.sendDocument(
-            msg.chat.id,
-            bot.getFileStream(msg.sticker.file_id),
-            {},
-            {
-                filename: msg.sticker.file_id + '.webp',
-            }
-        );
+        const decoder = new cwebp.DWebp(bot.getFileStream(msg.sticker.file_id));
+
+        decoder.toBuffer((err, buffer) => {
+            bot.sendDocument(
+                msg.chat.id,
+                buffer,
+                {},
+                {
+                    filename: msg.sticker.file_id + '.png',
+                    contentType: 'image/png',
+                }
+            );
+        });
     }, -1);
 
     const photoEvent = event((msg, match) => {
@@ -40,6 +46,7 @@ module.exports = (bot, event, playerEvent, env) => {
                     {},
                     {
                         filename: file_id + '.png',
+                        contentType: 'image/png',
                     }
                 );
             });
