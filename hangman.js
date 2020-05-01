@@ -85,17 +85,19 @@ const playerUpdate = (msg, list) => {
 const messageUpdate = (msg, game, win) => {
     if (game.update) {
         game.update = () => {
-            delete game.update;
-
             messageUpdate(msg, game, win);
         };
 
         return;
     }
 
-    game.update = () => {
+    game.update = () => {};
+
+    setTimeout(() => {
+        game.update();
+
         delete game.update;
-    };
+    }, config.hangmanUpdateDelay);
 
     // dict info
 
@@ -289,11 +291,7 @@ const messageUpdate = (msg, game, win) => {
                 inline_keyboard: matrix,
             },
         }
-    ).finally(() => {
-        setTimeout(() => {
-            game.update();
-        }, config.hangmanUpdateDelay);
-    });
+    );
 };
 
 bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {

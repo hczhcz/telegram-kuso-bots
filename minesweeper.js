@@ -31,17 +31,19 @@ const event = (handler) => {
 const messageUpdate = (msg, game) => {
     if (game.update) {
         game.update = () => {
-            delete game.update;
-
             messageUpdate(msg, game);
         };
 
         return;
     }
 
-    game.update = () => {
+    game.update = () => {};
+
+    setTimeout(() => {
+        game.update();
+
         delete game.update;
-    };
+    }, config.minesweeperUpdateDelay);
 
     const matrix = [];
 
@@ -83,11 +85,7 @@ const messageUpdate = (msg, game) => {
             chat_id: msg.chat.id,
             message_id: msg.message_id,
         }
-    ).finally(() => {
-        setTimeout(() => {
-            game.update();
-        }, config.minesweeperUpdateDelay);
-    });
+    );
 };
 
 const gameStat = (msg, game, title, last) => {

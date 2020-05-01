@@ -32,17 +32,11 @@ const event = (handler) => {
 const messageUpdate = (msg, game, win) => {
     if (game.update) {
         game.update = () => {
-            delete game.update;
-
             messageUpdate(msg, game, win);
         };
 
         return;
     }
-
-    game.update = () => {
-        delete game.update;
-    };
 
     const matrix = [[{
         text: game.levelId + ' - ' + game.levelIndex,
@@ -98,6 +92,14 @@ const messageUpdate = (msg, game, win) => {
     const matrixStr = JSON.stringify(matrix);
 
     if (!game.lastMatrix || game.lastMatrix() !== matrixStr) {
+        game.update = () => {};
+
+        setTimeout(() => {
+            game.update();
+
+            delete game.update;
+        }, config.sokobanUpdateDelay);
+
         game.lastMatrix = () => {
             return matrixStr;
         };
@@ -110,13 +112,7 @@ const messageUpdate = (msg, game, win) => {
                 chat_id: msg.chat.id,
                 message_id: msg.message_id,
             }
-        ).finally(() => {
-            setTimeout(() => {
-                game.update();
-            }, config.sokobanUpdateDelay);
-        });
-    } else {
-        game.update();
+        );
     }
 };
 
