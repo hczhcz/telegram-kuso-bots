@@ -78,7 +78,7 @@ bot.onText(/^\/ignite(@\w+)?(?: (.+))?$/, event((msg, match) => {
 
     const image = msg.reply_to_message
         && msg.reply_to_message.sticker
-        && msg.reply_to_message.sticker.file_id;
+        && msg.reply_to_message.sticker.file_unique_id;
 
     if (player === null) {
         bot.sendMessage(
@@ -190,7 +190,7 @@ bot.on('message', (msg) => {
         play.verify(
             msg.chat.id,
             msg.from,
-            msg.sticker.file_id,
+            msg.sticker.file_unique_id,
             () => {
                 // valid
 
