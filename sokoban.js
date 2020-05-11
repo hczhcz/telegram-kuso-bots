@@ -147,6 +147,12 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
         '仓库play什么的最棒了！',
         {
             reply_to_message_id: msg.message_id,
+            reply_markup: {
+                inline_keyboard: [[{
+                    text: '...',
+                    callback_data: '-',
+                }]],
+            },
         }
     ).then((sentmsg) => {
         resource.load(
@@ -231,7 +237,7 @@ bot.on('callback_query', (query) => {
 
     const msg = query.message;
 
-    if (!msg) {
+    if (!msg || query.data === '-') {
         return;
     }
 

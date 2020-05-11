@@ -124,6 +124,12 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
         '路过的大爷～来扫个雷嘛～',
         {
             reply_to_message_id: msg.message_id,
+            reply_markup: {
+                inline_keyboard: [[{
+                    text: '...',
+                    callback_data: '-',
+                }]],
+            },
         }
     ).then((sentmsg) => {
         play.init(
@@ -182,7 +188,7 @@ bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
 bot.on('callback_query', (query) => {
     const msg = query.message;
 
-    if (!msg) {
+    if (!msg || query.data === '-') {
         return;
     }
 
