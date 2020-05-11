@@ -137,6 +137,18 @@ bot.onText(/^\/bomb(@\w+)?$/, event((msg, match) => {
                 '一大波玩家正在赶来……',
                 {
                     reply_to_message_id: msg.message_id,
+                    reply_markup: {
+                        inline_keyboard: [[{
+                            text: '加入',
+                            callback_data: JSON.stringify(['join']),
+                        }, {
+                            text: '离开',
+                            callback_data: JSON.stringify(['flee']),
+                        }, {
+                            text: '清空',
+                            callback_data: JSON.stringify(['clear']),
+                        }]],
+                    },
                 }
             ).then((sentmsg) => {
                 playerUpdate(
@@ -153,6 +165,18 @@ bot.onText(/^\/bomb(@\w+)?$/, event((msg, match) => {
                 '一大波玩家正在赶来……',
                 {
                     reply_to_message_id: msg.message_id,
+                    reply_markup: {
+                        inline_keyboard: [[{
+                            text: '加入',
+                            callback_data: JSON.stringify(['join']),
+                        }, {
+                            text: '离开',
+                            callback_data: JSON.stringify(['flee']),
+                        }, {
+                            text: '清空',
+                            callback_data: JSON.stringify(['clear']),
+                        }]],
+                    },
                 }
             ).then((sentmsg) => {
                 playerUpdate(
