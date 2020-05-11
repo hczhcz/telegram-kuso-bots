@@ -91,7 +91,9 @@ const messageUpdate = (msg, game, win) => {
         return;
     }
 
-    game.update = () => {};
+    game.update = () => {
+        // nothing
+    };
 
     setTimeout(() => {
         game.update();

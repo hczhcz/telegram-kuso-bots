@@ -92,7 +92,9 @@ const messageUpdate = (msg, game, win) => {
     const matrixStr = JSON.stringify(matrix);
 
     if (!game.lastMatrix || game.lastMatrix() !== matrixStr) {
-        game.update = () => {};
+        game.update = () => {
+            // nothing
+        };
 
         setTimeout(() => {
             game.update();

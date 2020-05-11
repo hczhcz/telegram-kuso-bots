@@ -37,7 +37,9 @@ const messageUpdate = (msg, game) => {
         return;
     }
 
-    game.update = () => {};
+    game.update = () => {
+        // nothing
+    };
 
     setTimeout(() => {
         game.update();
