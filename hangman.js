@@ -412,6 +412,21 @@ bot.onText(/^\/diao(@\w+)?$/, event((msg, match) => {
     );
 }, 1));
 
+bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
+    bot.sendMessage(
+        msg.chat.id,
+        '命令列表：\n'
+            + '/hang 开始新游戏\n'
+            + '/hang <keyboard size> 指定键盘大小开始新游戏\n'
+            + '/diao 多人模式\n'
+            + '/help 显示帮助\n'
+            + '/status 查看 bot 状态\n'
+            + '\n'
+            + '备注：\n'
+            + 'inline 查询将触发喵喵模式'
+    );
+}, 1));
+
 bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,

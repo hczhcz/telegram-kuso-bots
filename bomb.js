@@ -201,6 +201,21 @@ bot.onText(/^\/bomb(@\w+)?$/, event((msg, match) => {
     );
 }, 1));
 
+bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
+    bot.sendMessage(
+        msg.chat.id,
+        '命令列表：\n'
+            + '/bomb 开始新游戏\n'
+            + '/ignite 点火\n'
+            + '/ignite <name> 点燃某个东西\n'
+            + '/help 显示帮助\n'
+            + '/status 查看 bot 状态\n'
+            + '\n'
+            + '备注：\n'
+            + '/bomb 可使用回复的消息中的表情'
+    );
+}, 1));
+
 bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,

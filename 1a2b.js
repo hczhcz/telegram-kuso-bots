@@ -355,6 +355,24 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
     );
 }, 1));
 
+bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
+    bot.sendMessage(
+        msg.chat.id,
+        '命令列表：\n'
+            + '/1a2b 开始新游戏\n'
+            + '/1a2b <target> 开始新游戏\n'
+            + '/3a4b 多人模式\n'
+            + '/0a0b 结束游戏\n'
+            + '/help 显示帮助\n'
+            + '/status 查看 bot 状态\n'
+            + '\n'
+            + '备注：\n'
+            + '/1a2b 可将回复的消息设为猜测目标\n'
+            + 'inline 查询将触发喵喵模式\n'
+            + '多行的猜测目标将触发喵喵模式'
+    );
+}, 1));
+
 bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,

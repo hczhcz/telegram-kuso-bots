@@ -47,7 +47,11 @@ module.exports = (bot) => {
                 + '/del <trigger>@<content> 删除本地 trigger\n'
                 + '/dels <trigger>@<content> 删除全网共享 trigger\n'
                 + '/help 显示帮助\n'
-                + '/status 查看 bot 状态';
+                + '/status 查看 bot 状态\n'
+                + '\n'
+                + '备注：\n'
+                + '<trigger> 为空，将 trigger 加入 bot自言自语\n'
+                + '@<content> 为空，将回复的消息加入 trigger';
 
             for (const i in self.pluginHelp) {
                 text += '\n\n'

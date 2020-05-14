@@ -226,6 +226,21 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
     });
 }, 1));
 
+bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
+    bot.sendMessage(
+        msg.chat.id,
+        '命令列表：\n'
+            + '/sokoban 开始新游戏\n'
+            + '/sokoban <level id> 指定关卡组开始新游戏\n'
+            + '/sokoban <level id> <level index> 指定关卡开始新游戏\n'
+            + '/help 显示帮助\n'
+            + '/status 查看 bot 状态\n'
+            + '\n'
+            + '备注：\n'
+            + '/sokoban 可从回复的消息中还原游戏'
+    );
+}, 1));
+
 bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
