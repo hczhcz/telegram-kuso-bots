@@ -368,7 +368,7 @@ bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
 bot.on('callback_query', (query) => {
     const msg = query.message;
 
-    if (!msg) {
+    if (!msg || config.ban[query.from.id]) {
         return;
     }
 

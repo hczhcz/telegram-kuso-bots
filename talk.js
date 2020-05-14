@@ -140,7 +140,7 @@ const chooseCandidate = (candidates, force) => {
 };
 
 bot.on('message', (msg) => {
-    if (!msg.text && !msg.sticker) {
+    if (!msg.text && !msg.sticker || config.ban[msg.from.id]) {
         return;
     }
 

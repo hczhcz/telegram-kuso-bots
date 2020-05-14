@@ -3,6 +3,8 @@
 const canvas = require('canvas');
 const cwebp = require('cwebp');
 
+const config = require('./config');
+
 module.exports = (bot, event, playerEvent, env) => {
     const stickerEvent = event((msg, match) => {
         const decoder = new cwebp.DWebp(bot.getFileStream(msg.sticker.file_id));
@@ -54,6 +56,10 @@ module.exports = (bot, event, playerEvent, env) => {
     }, -1);
 
     bot.on('message', (msg) => {
+        if (config.ban[msg.from.id]) {
+            return;
+        }
+
         if (msg.chat.id === msg.from.id && msg.sticker) {
             stickerEvent(msg, []);
         }

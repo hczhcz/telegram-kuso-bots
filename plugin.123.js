@@ -2,32 +2,36 @@
 
 const fs = require('fs');
 
+const config = require('./config');
+
 module.exports = (bot, event, playerEvent, env) => {
     const fd = fs.openSync('log.123', 'a');
 
     const actions = {};
 
     bot.on('message', (msg) => {
-        if (actions[msg.chat.id]) {
-            const action = actions[msg.chat.id];
-
-            delete actions[msg.chat.id];
-
-            fs.write(fd, JSON.stringify({
-                msg: msg,
-                action: action,
-            }) + '\n', () => {
-                // nothing
-            });
-
-            bot.sendMessage(
-                msg.chat.id,
-                action,
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
+        if (config.ban[msg.from.id] || !actions[msg.chat.id]) {
+            return;
         }
+
+        const action = actions[msg.chat.id];
+
+        delete actions[msg.chat.id];
+
+        fs.write(fd, JSON.stringify({
+            msg: msg,
+            action: action,
+        }) + '\n', () => {
+            // nothing
+        });
+
+        bot.sendMessage(
+            msg.chat.id,
+            action,
+            {
+                reply_to_message_id: msg.message_id,
+            }
+        );
     });
 
     bot.onText(/123(.*人)/, event((msg, match) => {

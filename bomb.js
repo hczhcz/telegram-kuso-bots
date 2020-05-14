@@ -212,97 +212,99 @@ bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
 }, 1));
 
 bot.on('message', (msg) => {
-    if (msg.sticker) {
-        play.verify(
-            msg.chat.id,
-            msg.from,
-            msg.sticker.file_unique_id,
-            () => {
-                // valid
+    if (!msg.sticker || config.ban[msg.from.id]) {
+        return;
+    }
 
-                const player = multiplayer.getRandom(msg.chat.id);
+    play.verify(
+        msg.chat.id,
+        msg.from,
+        msg.sticker.file_unique_id,
+        () => {
+            // valid
 
-                play.next(
-                    msg.chat.id,
-                    player,
-                    (game) => {
-                        // game continue
+            const player = multiplayer.getRandom(msg.chat.id);
 
-                        if (msg.from.id === game.player.id) {
-                            bot.sendMessage(
-                                msg.chat.id,
-                                playerMention(msg.from) + ' 竟然把 ' + game.text + ' 丢给了自己！\n'
-                                    + game.text + ' 还有 ' + game.history[game.history.length - 1][1] + ' 秒爆炸',
-                                {
-                                    reply_to_message_id: msg.message_id,
-                                }
-                            );
-                        } else {
-                            bot.sendMessage(
-                                msg.chat.id,
-                                playerMention(msg.from) + ' 把 ' + game.text + '\n'
-                                    + '丢给了 ' + playerMention(game.player) + '\n'
-                                    + game.text + ' 还有 ' + game.history[game.history.length - 1][1] + ' 秒爆炸',
-                                {
-                                    reply_to_message_id: msg.message_id,
-                                }
-                            );
-                        }
-                    },
-                    () => {
-                        // game not exist
+            play.next(
+                msg.chat.id,
+                player,
+                (game) => {
+                    // game continue
 
-                        // never reach
-                        throw Error(JSON.stringify(msg));
-                    }
-                );
-            },
-            () => {
-                // wrong player
-
-                play.end(
-                    msg.chat.id,
-                    msg.from,
-                    (game) => {
-                        // game end
-
-                        fs.write(fd, JSON.stringify(game) + '\n', () => {
-                            // nothing
-                        });
-
+                    if (msg.from.id === game.player.id) {
                         bot.sendMessage(
                             msg.chat.id,
-                            playerMention(msg.from) + ' 把 ' + game.text + ' 抢走了！\n'
-                                + '游戏结束\n\n'
-                                + '/bomb@' + config.bombUsername + ' 开始新游戏\n'
-                                + '/ignite@' + config.bombUsername + ' 点火',
+                            playerMention(msg.from) + ' 竟然把 ' + game.text + ' 丢给了自己！\n'
+                                + game.text + ' 还有 ' + game.history[game.history.length - 1][1] + ' 秒爆炸',
                             {
                                 reply_to_message_id: msg.message_id,
                             }
                         );
-                    },
-                    () => {
-                        // game not exist
-
-                        // never reach
-                        throw Error(JSON.stringify(msg));
+                    } else {
+                        bot.sendMessage(
+                            msg.chat.id,
+                            playerMention(msg.from) + ' 把 ' + game.text + '\n'
+                                + '丢给了 ' + playerMention(game.player) + '\n'
+                                + game.text + ' 还有 ' + game.history[game.history.length - 1][1] + ' 秒爆炸',
+                            {
+                                reply_to_message_id: msg.message_id,
+                            }
+                        );
                     }
-                );
-            },
-            () => {
-                // not valid
-            },
-            () => {
-                // game not exist
-            }
-        );
-    }
+                },
+                () => {
+                    // game not exist
+
+                    // never reach
+                    throw Error(JSON.stringify(msg));
+                }
+            );
+        },
+        () => {
+            // wrong player
+
+            play.end(
+                msg.chat.id,
+                msg.from,
+                (game) => {
+                    // game end
+
+                    fs.write(fd, JSON.stringify(game) + '\n', () => {
+                        // nothing
+                    });
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        playerMention(msg.from) + ' 把 ' + game.text + ' 抢走了！\n'
+                            + '游戏结束\n\n'
+                            + '/bomb@' + config.bombUsername + ' 开始新游戏\n'
+                            + '/ignite@' + config.bombUsername + ' 点火',
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                },
+                () => {
+                    // game not exist
+
+                    // never reach
+                    throw Error(JSON.stringify(msg));
+                }
+            );
+        },
+        () => {
+            // not valid
+        },
+        () => {
+            // game not exist
+        }
+    );
 });
 
 bot.on('callback_query', (query) => {
     const msg = query.message;
 
-    if (!msg) {
+    if (!msg || config.ban[query.from.id]) {
         return;
     }
 
