@@ -25,6 +25,7 @@ module.exports = (bot) => {
 
         help: (msg) => {
             let text = '欢迎使用～\n'
+                + '\n'
                 + '命令列表：\n'
                 + '/startmasturbate 启动一场撸管\n'
                 + '/startsex 启动一场啪啪\n'
@@ -55,7 +56,7 @@ module.exports = (bot) => {
 
             for (const i in self.pluginHelp) {
                 text += '\n\n'
-                    + '插件 ' + self.pluginHelp[i][0] + '：\n'
+                    + '插件 ' + self.pluginHelp[i][0] + '\n'
                     + self.pluginHelp[i][1];
             }
 
