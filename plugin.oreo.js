@@ -44,9 +44,9 @@ module.exports = (bot, event, playerEvent, env) => {
                         items.push([item.front, offset, item.width, item.height]);
                     }
 
-                    offset += item.delta;
                     width = Math.max(width, item.width);
                     height = Math.max(height, offset + item.height);
+                    offset += item.delta;
 
                     i += j.length;
                     done = true;

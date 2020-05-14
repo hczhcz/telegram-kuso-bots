@@ -183,8 +183,8 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
         '命令列表：\n'
-            + '/mine 开始新游戏'
-            + '/mine <rows> <columns> <mines> 指定规格开始新游戏'
+            + '/mine 开始新游戏\n'
+            + '/mine <rows> <columns> <mines> 指定规格开始新游戏\n'
             + '/help 显示帮助\n'
             + '/status 查看 bot 状态'
     );
