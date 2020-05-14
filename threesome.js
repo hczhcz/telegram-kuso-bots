@@ -89,10 +89,6 @@ const playerEvent = (msg, handler) => {
     handler(msg.reply_to_message && msg.reply_to_message.from);
 };
 
-bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
-    info.help(msg);
-}, 1));
-
 bot.onText(/^\/nextsex(@\w+)?$/, event((msg, match) => {
     info.next(msg);
 }, 1));
@@ -332,6 +328,10 @@ bot.onText(/^\/((?!_)\w+)(@\w+)?(?: (.*))?$/, event((msg, match) => {
 
     command.get(msg, match[1], args);
 }, 2));
+
+bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
+    info.help(msg);
+}, 1));
 
 bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(

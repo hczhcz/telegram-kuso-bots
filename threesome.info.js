@@ -25,7 +25,7 @@ module.exports = (bot) => {
 
         help: (msg) => {
             let text = '欢迎使用～\n'
-                + '/help 显示帮助\n'
+                + '命令列表：\n'
                 + '/startmasturbate 启动一场撸管\n'
                 + '/startsex 启动一场啪啪\n'
                 + '/startthreesome 启动 3P 模式\n'
@@ -34,8 +34,8 @@ module.exports = (bot) => {
                 + '/nextsex 我想滚床单\n'
                 + '/join 加入滥交派对\n'
                 + '/flee 进入贤者时间\n'
-                + '/invite 把 <被回复的人> 推倒\n'
-                + '/smite 把 <被回复的人> 踢下床\n'
+                + '/invite 把 被回复的人 推倒\n'
+                + '/smite 把 被回复的人 踢下床\n'
                 + '/forcestart 人家迫不及待了啦\n'
                 + '/forcefallback 不管多少人都要啪\n'
                 + '/forceorgasm 强 制 高 潮\n'
@@ -46,11 +46,12 @@ module.exports = (bot) => {
                 + '/adds <trigger>@<content> 添加全网共享 trigger\n'
                 + '/del <trigger>@<content> 删除本地 trigger\n'
                 + '/dels <trigger>@<content> 删除全网共享 trigger\n'
+                + '/help 显示帮助\n'
                 + '/status 查看 bot 状态';
 
             for (const i in self.pluginHelp) {
                 text += '\n\n'
-                    + '插件 ' + self.pluginHelp[i][0] + '\n'
+                    + '插件 ' + self.pluginHelp[i][0] + '：\n'
                     + self.pluginHelp[i][1];
             }
 

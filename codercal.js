@@ -37,40 +37,6 @@ const limitNum = (num, min, max) => {
     return Math.min(Math.max(parseInt(num, 10), min), max);
 };
 
-bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
-    bot.sendMessage(
-        msg.chat.id,
-        '命令列表：\n'
-            + '/help\n'
-            + '/calender <cal id> <title>\n'
-            + '/disable calender <cal id>\n'
-            + '/dictionary <cal id> <dict id> <random>\n'
-            + '/dictionary <cal id> <dict id> x<pick>\n'
-            + '/item <cal id> <dict id> <item>\n'
-            + '/delete item <cal id> <dict id> <item>\n'
-            + '/activity <cal id> <name>@<good>@<bad>\n'
-            + '/activity <cal id> <name>@<good>@<bad>@weekday\n'
-            + '/activity <cal id> <name>@<good>@<bad>@weekend\n'
-            + '/delete activity <cal id> <name>\n'
-            + '/special <cal id> <name>@good@<good>@<month>/<day>\n'
-            + '/special <cal id> <name>@bad@<bad>@<month>/<day>\n'
-            + '/delete special <cal id> <name>\n'
-            + '/hint <cal id> <hint>\n'
-            + '/delete hint <cal id> <hint>\n'
-            + '/luck <luck id> <title>@<random>\n'
-            + '/disable luck <luck id>\n'
-            + '/rate <luck id> <name>@<weight>@<descrpiton>\n'
-            + '/delete rate <luck id> <name>\n'
-            + '\n'
-            + '备注：\n'
-            + '<cal id> 必须以 cal 结尾\n'
-            + '<luck id> 必须以 luck 结尾\n'
-            + '除 /help 外，命令可以用首字母缩写\n'
-            + '例如 /c 等同 /calender\n'
-            + '/dc 等同 /disable calender'
-    );
-}, 1));
-
 // /calender <cal id> <title>
 bot.onText(/^\/(calender|c) (\w+cal) ([^\n\r@]+)$/, event((msg, match) => {
     bot.sendMessage(
@@ -216,6 +182,40 @@ bot.onText(/^\/(delete rate|dr) (\w+luck) ([^\n\r@]+)$/, event((msg, match) => {
         data.writeCalAction('DeleteRate', msg, [match[2], match[3]])
     );
 }, -1));
+
+bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
+    bot.sendMessage(
+        msg.chat.id,
+        '命令列表：\n'
+            + '/calender <cal id> <title>\n'
+            + '/disable calender <cal id>\n'
+            + '/dictionary <cal id> <dict id> <random>\n'
+            + '/dictionary <cal id> <dict id> x<pick>\n'
+            + '/item <cal id> <dict id> <item>\n'
+            + '/delete item <cal id> <dict id> <item>\n'
+            + '/activity <cal id> <name>@<good>@<bad>\n'
+            + '/activity <cal id> <name>@<good>@<bad>@weekday\n'
+            + '/activity <cal id> <name>@<good>@<bad>@weekend\n'
+            + '/delete activity <cal id> <name>\n'
+            + '/special <cal id> <name>@good@<good>@<month>/<day>\n'
+            + '/special <cal id> <name>@bad@<bad>@<month>/<day>\n'
+            + '/delete special <cal id> <name>\n'
+            + '/hint <cal id> <hint>\n'
+            + '/delete hint <cal id> <hint>\n'
+            + '/luck <luck id> <title>@<random>\n'
+            + '/disable luck <luck id>\n'
+            + '/rate <luck id> <name>@<weight>@<descrpiton>\n'
+            + '/delete rate <luck id> <name>\n'
+            + '/help 显示帮助\n'
+            + '\n'
+            + '备注：\n'
+            + '<cal id> 必须以 cal 结尾\n'
+            + '<luck id> 必须以 luck 结尾\n'
+            + '除 /help 外，命令可以用首字母缩写\n'
+            + '例如 /c 等同 /calender\n'
+            + '/dc 等同 /disable calender'
+    );
+}, 1));
 
 bot.on('inline_query', (query) => {
     if (config.ban[query.from.id]) {
