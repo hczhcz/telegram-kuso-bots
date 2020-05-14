@@ -360,7 +360,7 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
         msg.chat.id,
         '命令列表：\n'
             + '/1a2b 开始新游戏\n'
-            + '/1a2b <target> 开始新游戏\n'
+            + '/1a2b <target> 指定猜测目标开始新游戏\n'
             + '/3a4b 多人模式\n'
             + '/0a0b 结束游戏\n'
             + '/help 显示帮助\n'
