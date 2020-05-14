@@ -15,15 +15,17 @@ const log = (head, body) => {
     });
 };
 
-const event = (handler) => {
+const event = (handler, atIndex) => {
     return (msg, match) => {
-        log(
-            msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
-            match[0]
-        );
+        if (!match[atIndex] || match[atIndex] === '@' + config.minesweeperUsername) {
+            log(
+                msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+                match[0]
+            );
 
-        if (!config.ban[msg.from.id]) {
-            handler(msg, match);
+            if (!config.ban[msg.from.id]) {
+                handler(msg, match);
+            }
         }
     };
 };
@@ -175,7 +177,7 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
             }
         );
     });
-}));
+}, 1));
 
 bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
@@ -185,7 +187,7 @@ bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
             reply_to_message_id: msg.message_id,
         }
     );
-}));
+}, 1));
 
 bot.on('callback_query', (query) => {
     const msg = query.message;

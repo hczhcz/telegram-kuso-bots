@@ -16,16 +16,18 @@ const log = (head, body) => {
     });
 };
 
-const event = (handler) => {
+const event = (handler, atIndex) => {
     return (msg, match) => {
-        log(
-            msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
-            match[0]
-        );
+        if (!match[atIndex] || match[atIndex] === '@' + config.abUsername) {
+            log(
+                msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+                match[0]
+            );
 
-        // notice: take care of the inline query event
-        if (!config.ban[msg.from.id]) {
-            handler(msg, match);
+            // notice: take care of the inline query event
+            if (!config.ban[msg.from.id]) {
+                handler(msg, match);
+            }
         }
     };
 };
@@ -168,7 +170,7 @@ const gameEvent = event((msg, match) => {
             throw Error(JSON.stringify(msg));
         }
     );
-});
+}, -1);
 
 bot.onText(/^[^\n\r\s]+$/, (msg, match) => {
     play.verify(
@@ -229,7 +231,7 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
             );
         }
     );
-}));
+}, 1));
 
 bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
     multiplayer.add(
@@ -303,7 +305,7 @@ bot.onText(/^\/3a4b(@\w+)?$/, event((msg, match) => {
             );
         }
     );
-}));
+}, 1));
 
 bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
     play.end(
@@ -351,7 +353,7 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
             );
         }
     );
-}));
+}, 1));
 
 bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
@@ -361,7 +363,7 @@ bot.onText(/^\/status(@\w+)?$/, event((msg, match) => {
             reply_to_message_id: msg.message_id,
         }
     );
-}));
+}, 1));
 
 bot.on('callback_query', (query) => {
     const msg = query.message;

@@ -82,7 +82,7 @@ module.exports = (bot, event, playerEvent, env) => {
                 bot.getFileLink(file_id).then(handleImage);
             }
         }
-    }));
+    }, 1));
 
     env.info.addPluginHelp(
         'tutou',
