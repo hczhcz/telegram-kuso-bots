@@ -22,9 +22,9 @@ module.exports = (bot, event, playerEvent, env) => {
         });
     }, -1);
 
-    const photoEvent = event((msg, match) => {
+    const imageEvent = event((msg, match) => {
         let best_width = 0;
-        let file_id = null;
+        let file_id = msg.document && msg.document.file_id;
 
         for (const i in msg.photo) {
             if (best_width < msg.photo[i].width) {
@@ -64,14 +64,14 @@ module.exports = (bot, event, playerEvent, env) => {
             stickerEvent(msg, []);
         }
 
-        if (msg.chat.id === msg.from.id && msg.photo) {
-            photoEvent(msg, []);
+        if (msg.chat.id === msg.from.id && (msg.document || msg.photo)) {
+            imageEvent(msg, []);
         }
     });
 
     env.info.addPluginHelp(
         'sticker',
         '<sticker> （私聊）获取表情文件\n'
-            + '<photo> （私聊）转换为表情文件'
+            + '<image> （私聊）转换为表情文件'
     );
 };
