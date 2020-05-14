@@ -15,56 +15,60 @@ module.exports = (bot, event, playerEvent, env) => {
 
     bot.onText(/^\/addtutou(@\w+)?(?: (-?[\d.]+) (-?[\d.]+))?(?: (-?)([\d.]+))?(?: (-?\d+))?$/, event((msg, match) => {
         if (msg.reply_to_message) {
-            const handleImage = (link) => {
-                canvas.loadImage(link).then((bgImage) => {
-                    const image = canvas.createCanvas(bgImage.width, bgImage.height);
-                    const ctx = image.getContext('2d');
+            const render = (bgImage) => {
+                const image = canvas.createCanvas(bgImage.width, bgImage.height);
+                const ctx = image.getContext('2d');
 
-                    ctx.drawImage(bgImage, 0, 0);
+                ctx.drawImage(bgImage, 0, 0);
 
-                    const left = bgImage.width * (
-                        match[2]
-                            ? Math.min(Math.max(parseFloat(match[2]), -1), 2)
-                            : Math.asin(Math.random() * 2 - 1) / Math.PI + 0.5
-                    );
-                    const top = bgImage.height * (
-                        match[3]
-                            ? Math.min(Math.max(parseFloat(match[3]), -1), 2)
-                            : Math.asin(Math.random() * 2 - 1) / Math.PI + 0.5
-                    );
-                    const size = Math.min(bgImage.width, bgImage.height) * (
-                        match[5]
-                            ? Math.min(Math.max(parseFloat(match[5]), 0), 10)
-                            : Math.random() * 0.8 + 0.1
-                    );
-                    const angle = match[6]
-                        ? Math.min(Math.max(parseInt(match[6], 10), -360), 360) * Math.PI / 180
-                        : Math.asin(Math.random() * 2 - 1) * 2;
+                const left = bgImage.width * (
+                    match[2]
+                        ? Math.min(Math.max(parseFloat(match[2]), -1), 2)
+                        : Math.asin(Math.random() * 2 - 1) / Math.PI + 0.5
+                );
+                const top = bgImage.height * (
+                    match[3]
+                        ? Math.min(Math.max(parseFloat(match[3]), -1), 2)
+                        : Math.asin(Math.random() * 2 - 1) / Math.PI + 0.5
+                );
+                const size = Math.min(bgImage.width, bgImage.height) * (
+                    match[5]
+                        ? Math.min(Math.max(parseFloat(match[5]), 0), 10)
+                        : Math.random() * 0.8 + 0.1
+                );
+                const angle = match[6]
+                    ? Math.min(Math.max(parseInt(match[6], 10), -360), 360) * Math.PI / 180
+                    : Math.asin(Math.random() * 2 - 1) * 2;
 
-                    ctx.translate(left, top);
-                    ctx.rotate(angle);
+                ctx.translate(left, top);
+                ctx.rotate(angle);
 
-                    if (match[4] || match[4] !== '' && Math.random() < 0.5) {
-                        ctx.scale(-1, 1);
-                    }
+                if (match[4] || match[4] !== '' && Math.random() < 0.5) {
+                    ctx.scale(-1, 1);
+                }
 
-                    ctx.drawImage(tutouImage, -size / 2, -size / 2, size, size);
+                ctx.drawImage(tutouImage, -size / 2, -size / 2, size, size);
 
-                    bot.sendPhoto(
-                        msg.chat.id,
-                        image.toBuffer(),
-                        {
-                            reply_to_message_id: msg.message_id,
-                        }
-                    );
-                });
+                return image;
             };
 
             if (msg.reply_to_message.sticker) {
                 const decoder = new cwebp.DWebp(bot.getFileStream(msg.reply_to_message.sticker.file_id));
 
-                decoder.toBuffer((err, buffer) => {
-                    handleImage(buffer);
+                decoder.toBuffer((decodeErr, decodeBuffer) => {
+                    canvas.loadImage(decodeBuffer).then((bgImage) => {
+                        const encoder = new cwebp.CWebp(render(bgImage).createPNGStream());
+
+                        encoder.toBuffer((encodeErr, encodeBuffer) => {
+                            bot.sendSticker(
+                                msg.chat.id,
+                                encodeBuffer,
+                                {
+                                    reply_to_message_id: msg.message_id,
+                                }
+                            );
+                        });
+                    });
                 });
             }
 
@@ -79,7 +83,17 @@ module.exports = (bot, event, playerEvent, env) => {
                     }
                 }
 
-                bot.getFileLink(file_id).then(handleImage);
+                bot.getFileLink(file_id).then((link) => {
+                    canvas.loadImage(link).then((bgImage) => {
+                        bot.sendPhoto(
+                            msg.chat.id,
+                            render(bgImage).toBuffer(),
+                            {
+                                reply_to_message_id: msg.message_id,
+                            }
+                        );
+                    });
+                });
             }
         }
     }, 1));
