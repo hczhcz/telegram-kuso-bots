@@ -141,7 +141,7 @@ const messageUpdate = (msg, game, win) => {
 
     // game history
 
-    let totLives = 9;
+    let totError = 0;
     let lives = 9;
     let first = true;
     let text = '';
@@ -166,9 +166,9 @@ const messageUpdate = (msg, game, win) => {
         }
 
         if (win) {
-            if (totLives === 9) {
+            if (totError === 0) {
                 face[2] = '≖';
-            } else if (totLives === 0) {
+            } else if (totError === 9) {
                 face[0] = '!';
                 face[2] = '☆';
             } else if (game.history.length === game.keyboard.length) {
@@ -231,7 +231,7 @@ const messageUpdate = (msg, game, win) => {
 
     for (const i in game.history) {
         if (!game.history[i][2]) {
-            totLives -= 1;
+            totError += 1;
         }
     }
 
@@ -253,21 +253,51 @@ const messageUpdate = (msg, game, win) => {
                 : game.answer
         ).split('\x01').join('.');
 
-        if (totLives > 0) {
-            endText = '\n\n回答正确～撒花～';
-        } else if (totLives === 0) {
-            endText = '\n\n回答正确～真是好险呢～';
+        endText += '\n\n';
+
+        if (totError < 9) {
+            endText = '回答正确～撒花～\n\n';
+        } else if (totError === 9) {
+            endText = '回答正确～真是好险呢～\n\n';
         } else if (game.history.length === game.keyboard.length) {
-            endText = '\n\n卧…卧槽？！';
+            endText = '卧…卧槽？！\n\n';
         } else {
-            endText = '\n\n虽然 JJ 已经被 bot 切掉了，但是回答正确～';
+            endText = '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n\n';
         }
+
+        endText += '正确 ' + (game.history.length - totError) + ' / 错误 ' + totError + '\n'
+            + '键盘消耗率 ' + Math.round(100 * totError / game.keyboard.length) + '%\n\n'
+            + '统计：\n';
+
+        const stat = {};
+
+        for (const i in game.history) {
+            stat[game.history[i][0]] = stat[game.history[i][0]] || [0, 0];
+            stat[game.history[i][0]][game.history[i][2]] += 1;
+        }
+
+        for (const i in stat) {
+            const name = game.nameMap()[i]
+                .replace('&', '&amp;')
+                .replace('<', '&lt;')
+                .replace('>', '&gt;');
+
+            endText += name + ' - 正确 ' + stat[i][1] + ' / 错误 ' + stat[i][0] + '\n';
+        }
+
+        const lastName = game.nameMap()[game.history[game.history.length - 1][0]]
+            .replace('&', '&amp;')
+            .replace('<', '&lt;')
+            .replace('>', '&gt;');
+
+        endText += '\n'
+            + lastName + ' 猜对了！\n\n';
 
         if (dictInfo.url) {
-            endText += '\n所以…<a href="' + encodeURI(dictInfo.url + game.answer) + '">' + hint + '是什么呢？好吃吗？</a>';
+            endText += '所以…<a href="' + encodeURI(dictInfo.url + game.answer) + '">' + hint + '是什么呢？好吃吗？</a>\n\n';
         }
 
-        endText += '\n\n/hang@' + config.hangmanUsername + ' 开始新游戏\n'
+        endText += '/hang@' + config.hangmanUsername + ' 开始新游戏\n'
             + '/diao@' + config.hangmanUsername + ' 多人模式';
     } else {
         hint = (
@@ -284,7 +314,7 @@ const messageUpdate = (msg, game, win) => {
             + text + '\n'
             + '[ ' + dictInfo.title + ' - ' + game.dictSettings()[1] + ' ]\n'
             + '[ ' + hint + ' ]\n'
-            + '[ 剩余生命：' + totLives + ' ]'
+            + '[ 剩余生命：' + (9 - totError) + ' ]'
             + '</pre>'
             + endText,
         {
@@ -567,6 +597,14 @@ bot.on('callback_query', (query) => {
                             return [info[1], info[2] || dict.list.length];
                         };
 
+                        const nameMap = {};
+
+                        game.nameMap = () => {
+                            return nameMap;
+                        };
+
+                        game.nameMap()[msg.from.id] = msg.from.username || msg.from.first_name;
+
                         messageUpdate(
                             msg,
                             game,
@@ -616,6 +654,8 @@ bot.on('callback_query', (query) => {
                     (game) => {
                         // game continue
 
+                        game.nameMap()[query.from.id] = query.from.username || query.from.first_name;
+
                         messageUpdate(
                             msg,
                             game,
@@ -628,6 +668,8 @@ bot.on('callback_query', (query) => {
                     },
                     (game) => {
                         // game win
+
+                        game.nameMap()[query.from.id] = query.from.username || query.from.first_name;
 
                         fs.write(fd, JSON.stringify(game) + '\n', () => {
                             // nothing
