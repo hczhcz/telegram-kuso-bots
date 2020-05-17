@@ -253,16 +253,16 @@ const messageUpdate = (msg, game, win) => {
                 : game.answer
         ).split('\x01').join('.');
 
-        endText += '\n\n';
+        endText = '\n\n';
 
         if (totError < 9) {
-            endText = '回答正确～撒花～\n\n';
+            endText += '回答正确～撒花～\n\n';
         } else if (totError === 9) {
-            endText = '回答正确～真是好险呢～\n\n';
+            endText += '回答正确～真是好险呢～\n\n';
         } else if (game.history.length === game.keyboard.length) {
-            endText = '卧…卧槽？！\n\n';
+            endText += '卧…卧槽？！\n\n';
         } else {
-            endText = '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n\n';
+            endText += '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n\n';
         }
 
         endText += '正确 ' + (game.history.length - totError) + ' / 错误 ' + totError + '\n'
@@ -273,7 +273,12 @@ const messageUpdate = (msg, game, win) => {
 
         for (const i in game.history) {
             stat[game.history[i][0]] = stat[game.history[i][0]] || [0, 0];
-            stat[game.history[i][0]][game.history[i][2]] += 1;
+
+            if (game.history[i][2]) {
+                stat[game.history[i][0]][1] += 1;
+            } else {
+                stat[game.history[i][0]][0] += 1;
+            }
         }
 
         for (const i in stat) {
