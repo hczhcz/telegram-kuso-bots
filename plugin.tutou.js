@@ -23,12 +23,12 @@ module.exports = (bot, event, playerEvent, env) => {
 
                 const left = bgImage.width * (
                     match[2]
-                        ? Math.min(Math.max(parseFloat(match[2]), -1), 2)
+                        ? Math.min(Math.max(parseFloat(match[2]), -7), 8)
                         : Math.asin(Math.random() * 2 - 1) / Math.PI + 0.5
                 );
                 const top = bgImage.height * (
                     match[3]
-                        ? Math.min(Math.max(parseFloat(match[3]), -1), 2)
+                        ? Math.min(Math.max(parseFloat(match[3]), -7), 8)
                         : Math.asin(Math.random() * 2 - 1) / Math.PI + 0.5
                 );
                 const size = Math.min(bgImage.width, bgImage.height) * (
