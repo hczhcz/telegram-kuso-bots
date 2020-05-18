@@ -141,6 +141,7 @@ const messageUpdate = (msg, game, win) => {
 
     // game history
 
+    let totCorrect = 0;
     let totError = 0;
     let lives = 9;
     let first = true;
@@ -230,7 +231,9 @@ const messageUpdate = (msg, game, win) => {
     };
 
     for (const i in game.history) {
-        if (!game.history[i][2]) {
+        if (game.history[i][2]) {
+            totCorrect += 1;
+        } else {
             totError += 1;
         }
     }
@@ -265,8 +268,8 @@ const messageUpdate = (msg, game, win) => {
             endText += '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n\n';
         }
 
-        endText += '正确 ' + (game.history.length - totError) + ' / 错误 ' + totError + '\n'
-            + '键盘消耗率 ' + Math.round(100 * totError / game.keyboard.length) + '%\n\n'
+        endText += '正确 ' + totCorrect + ' / 错误 ' + totError + '\n'
+            + '键盘消耗率 ' + (Math.round(100 * totError / (game.keyboard.length - totCorrect)) | 0) + '%\n\n'
             + '统计：\n';
 
         const stat = {};
