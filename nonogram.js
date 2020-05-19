@@ -55,15 +55,32 @@ const messageUpdate = (msg, game) => {
         matrix.push([]);
 
         for (let j = 0; j <= game.columns; j += 1) {
-            matrix[i].push({
-                text: {
-                    's': ' ',
-                    ' ': '⨯',
-                    'b': ' ',
-                    '*': '\u2588',
-                }[game.map[i][j]] || game.map[i][j],
-                callback_data: JSON.stringify([i, j]),
-            });
+            if (i === 0 || j === 0) {
+                let hint = '';
+
+                for (const k in game.map[i][j]) {
+                    if (hint !== '') {
+                        hint += ' ';
+                    }
+
+                    hint += game.map[i][j][k];
+                }
+
+                matrix[i].push({
+                    text: hint || '\ud83d\udc30',
+                    callback_data: '-',
+                });
+            } else {
+                matrix[i].push({
+                    text: {
+                        's': ' ',
+                        ' ': '\u274c',
+                        'b': ' ',
+                        '*': '\u2b1b',
+                    }[game.map[i][j]],
+                    callback_data: JSON.stringify([i, j]),
+                });
+            }
         }
     }
 
