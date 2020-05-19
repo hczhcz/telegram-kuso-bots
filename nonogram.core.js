@@ -73,7 +73,7 @@ const finished = (map) => {
 };
 
 const click = (map, targetI, targetJ) => {
-    if (!map[targetI][0] || !map[0][targetJ]) {
+    if (map[targetI][0].length === 0 || map[0][targetJ].length === 0) {
         return false;
     }
 
