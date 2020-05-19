@@ -20,4 +20,5 @@ Game Bots
 * [Bomb @diudongxi_bot](https://t.me/diudongxi_bot)
 * [Hangman @diao_bot](https://t.me/diao_bot)
 * [Minesweeper @mine_sweeper_bot](https://t.me/mine_sweeper_bot)
+* [Nonogram @nonogram_bot](https://t.me/nonogram_bot)
 * [Sokoban @sokoban_bot](https://t.me/sokoban_bot)
