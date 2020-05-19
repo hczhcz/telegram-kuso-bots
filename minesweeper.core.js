@@ -123,11 +123,15 @@ const click = (map, targetI, targetJ) => {
         }
 
         return true;
-    } else if (map[targetI][targetJ] === 'm') {
+    }
+
+    if (map[targetI][targetJ] === 'm') {
         map[targetI][targetJ] = '*';
 
         return true;
-    } else if (map[targetI][targetJ] >= 0 && map[targetI][targetJ] <= 8) {
+    }
+
+    if (map[targetI][targetJ] >= 0 && map[targetI][targetJ] <= 8) {
         // TODO: option?
 
         let nearFlag = 0;
@@ -153,7 +157,9 @@ const click = (map, targetI, targetJ) => {
             });
 
             return true;
-        } else if (nearFlag === map[targetI][targetJ]) {
+        }
+
+        if (nearFlag === map[targetI][targetJ]) {
             scan((i, j, value) => {
                 if (value === 's' || value === 'm') {
                     click(map, i, j);
