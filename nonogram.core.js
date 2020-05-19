@@ -73,6 +73,10 @@ const finished = (map) => {
 };
 
 const click = (map, targetI, targetJ) => {
+    if (!map[targetI][0] || !map[0][targetJ]) {
+        return false;
+    }
+
     if (map[targetI][targetJ] === 's') {
         map[targetI][targetJ] = ' ';
 
