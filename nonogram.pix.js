@@ -3,12 +3,16 @@
 const canvas = require('canvas');
 
 const generate = (rows, columns, bgImage) => {
+    if (rows > 100 || columns > 100) {
+        return null;
+    }
+
     const image = canvas.createCanvas(columns, rows);
     const ctx = image.getContext('2d');
 
     ctx.drawImage(bgImage, 0, 0, columns, rows);
 
-    const data = ctx.getImageData(0, 0, columns, rows);
+    const data = ctx.getImageData(0, 0, columns, rows).data;
 
     const map = [];
 
@@ -20,8 +24,33 @@ const generate = (rows, columns, bgImage) => {
         }
     }
 
-    const bnow = [0, 0, 0, 255];
-    const wnow = [255, 255, 255, 0];
+    let min = 765;
+    let max = -255;
+    const bnow = [255, 255, 255, 0];
+    const wnow = [0, 0, 0, 255];
+
+    for (let i = 0; i < rows; i += 1) {
+        for (let j = 0; j < columns; j += 1) {
+            const offset = (i * columns + j) * 4;
+            const depth = data[offset] + data[offset + 1] + data[offset + 2] - data[offset + 3];
+
+            if (min > depth) {
+                min = depth;
+                bnow[0] = data[offset];
+                bnow[1] = data[offset + 1];
+                bnow[2] = data[offset + 2];
+                bnow[3] = data[offset + 3];
+            }
+
+            if (max < depth) {
+                max = depth;
+                wnow[0] = data[offset];
+                wnow[1] = data[offset + 1];
+                wnow[2] = data[offset + 2];
+                wnow[3] = data[offset + 3];
+            }
+        }
+    }
 
     for (let iter = 0; iter < 10; iter += 1) {
         // k-means
@@ -31,8 +60,8 @@ const generate = (rows, columns, bgImage) => {
         const bsum = [0, 0, 0, 0];
         const wsum = [0, 0, 0, 0];
 
-        for (const i in map) {
-            for (const j in map[i]) {
+        for (let i = 0; i < rows; i += 1) {
+            for (let j = 0; j < columns; j += 1) {
                 const offset = (i * columns + j) * 4;
 
                 const bdistance = (data[offset] - bnow[0]) * (data[offset] - bnow[0])
@@ -45,6 +74,7 @@ const generate = (rows, columns, bgImage) => {
                     + (data[offset + 3] - wnow[3]) * (data[offset + 3] - wnow[3]);
 
                 map[i][j] = bdistance >= wdistance;
+
                 if (map[i][j]) {
                     bn += 1;
                     bsum[0] += data[offset];

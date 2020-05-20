@@ -9,6 +9,11 @@
 
 const verify = (rows, columns, boxes) => {
     // note: telegram's limit
+    if (typeof boxes === 'object') {
+        return rows > 0 && columns > 0
+            && (rows + 1) * (columns + 1) <= 100 && columns <= 7;
+    }
+
     return rows > 0 && columns > 0 && boxes > 0
         && (rows + 1) * (columns + 1) <= 100 && columns <= 7 && boxes <= rows * columns;
 };
