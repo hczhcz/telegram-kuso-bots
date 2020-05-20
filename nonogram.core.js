@@ -25,23 +25,33 @@ const init = (rows, columns, boxes) => {
         for (let j = 0; j <= columns; j += 1) {
             if (i === 0 || j === 0) {
                 map[i].push([0]);
-            } else if (Math.random() * space < remain) {
-                map[i].push('b');
-                space -= 1;
-                remain -= 1;
-
-                map[i][0][map[i][0].length - 1] += 1;
-                map[0][j][map[0][j].length - 1] += 1;
             } else {
-                map[i].push('s');
-                space -= 1;
+                let condition = false;
 
-                if (map[i][0][map[i][0].length - 1] > 0) {
-                    map[i][0].push(0);
+                if (typeof boxes === 'object') {
+                    condition = boxes[i - 1][j - 1];
+                } else {
+                    condition = Math.random() * space < remain;
+
+                    space -= 1;
+                    remain -= condition;
                 }
 
-                if (map[0][j][map[0][j].length - 1] > 0) {
-                    map[0][j].push(0);
+                if (condition) {
+                    map[i].push('b');
+
+                    map[i][0][map[i][0].length - 1] += 1;
+                    map[0][j][map[0][j].length - 1] += 1;
+                } else {
+                    map[i].push('s');
+
+                    if (map[i][0][map[i][0].length - 1] > 0) {
+                        map[i][0].push(0);
+                    }
+
+                    if (map[0][j][map[0][j].length - 1] > 0) {
+                        map[0][j].push(0);
+                    }
                 }
             }
         }

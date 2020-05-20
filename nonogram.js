@@ -1,10 +1,13 @@
 'use strict';
 
 const fs = require('fs');
+const canvas = require('canvas');
+const cwebp = require('cwebp');
 
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.nonogramToken);
 
+const pix = require('./nonogram.pix');
 const play = require('./nonogram.play');
 
 const fd = fs.openSync('log_nonogram', 'a');
@@ -141,61 +144,94 @@ const gameStat = (msg, game, title, last) => {
     );
 };
 
-bot.onText(/^\/nono(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
-    bot.sendMessage(
-        msg.chat.id,
-        '快来打开人家哟～',
-        {
-            reply_to_message_id: msg.message_id,
-            reply_markup: {
-                inline_keyboard: [[{
-                    text: '...',
-                    callback_data: '-',
-                }]],
-            },
-        }
-    ).then((sentmsg) => {
-        play.init(
-            sentmsg.chat.id + '_' + sentmsg.message_id,
-            parseInt(match[2], 10) || 7,
-            parseInt(match[3], 10) || 7,
-            parseInt(match[4], 10) || 24,
-            (game) => {
-                // game init
+bot.onText(/^\/nono(@\w+)?(?: (\d+) (\d+))?(?: (\d+))?$/, event((msg, match) => {
+    const rows = parseInt(match[2], 10) || 7;
+    const columns = parseInt(match[3], 10) || 7;
 
-                const nameMap = {};
-
-                game.nameMap = () => {
-                    return nameMap;
-                };
-
-                game.nameMap()[msg.from.id] = msg.from.username || msg.from.first_name;
-
-                messageUpdate(
-                    sentmsg,
-                    game
-                );
-            },
-            () => {
-                // not valid
-
-                bot.editMessageText(
-                    '不…这样的参数…不可以…',
-                    {
-                        chat_id: sentmsg.chat.id,
-                        message_id: sentmsg.message_id,
-                        reply_to_message_id: msg.message_id,
-                    }
-                );
-            },
-            () => {
-                // game exist
-
-                // never reach
-                throw Error(JSON.stringify(sentmsg));
+    const init = (boxes) => {
+        bot.sendMessage(
+            msg.chat.id,
+            '快来打开人家哟～',
+            {
+                reply_to_message_id: msg.message_id,
+                reply_markup: {
+                    inline_keyboard: [[{
+                        text: '...',
+                        callback_data: '-',
+                    }]],
+                },
             }
-        );
-    });
+        ).then((sentmsg) => {
+            play.init(
+                sentmsg.chat.id + '_' + sentmsg.message_id,
+                rows,
+                columns,
+                boxes,
+                (game) => {
+                    // game init
+
+                    const nameMap = {};
+
+                    game.nameMap = () => {
+                        return nameMap;
+                    };
+
+                    game.nameMap()[msg.from.id] = msg.from.username || msg.from.first_name;
+
+                    messageUpdate(
+                        sentmsg,
+                        game
+                    );
+                },
+                () => {
+                    // not valid
+
+                    bot.editMessageText(
+                        '不…这样的参数…不可以…',
+                        {
+                            chat_id: sentmsg.chat.id,
+                            message_id: sentmsg.message_id,
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                },
+                () => {
+                    // game exist
+
+                    // never reach
+                    throw Error(JSON.stringify(sentmsg));
+                }
+            );
+        });
+    };
+
+    if (msg.reply_to_message && msg.reply_to_message.sticker) {
+        const decoder = new cwebp.DWebp(bot.getFileStream(msg.reply_to_message.sticker.file_id));
+
+        decoder.toBuffer((decodeErr, decodeBuffer) => {
+            canvas.loadImage(decodeBuffer).then((bgImage) => {
+                init(pix.generate(rows, columns, bgImage));
+            });
+        });
+    } else if (msg.reply_to_message && msg.reply_to_message.photo) {
+        let best_width = 0;
+        let file_id = null;
+
+        for (const i in msg.reply_to_message.photo) {
+            if (best_width < msg.reply_to_message.photo[i].width) {
+                best_width = msg.reply_to_message.photo[i].width;
+                file_id = msg.reply_to_message.photo[i].file_id;
+            }
+        }
+
+        bot.getFileLink(file_id).then((link) => {
+            canvas.loadImage(link).then((bgImage) => {
+                init(pix.generate(rows, columns, bgImage));
+            });
+        });
+    } else {
+        init(parseInt(match[4], 10) || Math.floor(rows * columns / 2));
+    }
 }, 1));
 
 bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
@@ -203,9 +239,14 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
         msg.chat.id,
         '命令列表：\n'
             + '/nono 开始新游戏\n'
-            + '/nono <rows> <columns> <boxes> 指定规格开始新游戏\n'
+            + '/nono <rows> <columns> 指定尺寸开始新游戏\n'
+            + '/nono <boxes> 指定格数开始新游戏\n'
+            + '/nono <rows> <columns> <boxes> 指定尺寸和格数开始新游戏\n'
             + '/help 显示帮助\n'
             + '/status 查看 bot 状态'
+            + '\n'
+            + '备注：\n'
+            + '/nono 可从回复的消息中提取像素格'
     );
 }, 1));
 
