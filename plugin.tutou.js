@@ -102,7 +102,7 @@ module.exports = (bot, event, playerEvent, env) => {
         'tutou',
         '/addtutou 给图片加上兔头\n'
             + '/addtutou <left> <top> 指定位置画兔头\n'
-            + '/addtutou <left> <top> <size> 指定位置和尺寸画兔头'
+            + '/addtutou <left> <top> <size> 指定位置和尺寸画兔头\n'
             + '/addtutou <left> <top> <size> <angle> 指定位置、尺寸、角度画兔头'
     );
 };

@@ -256,7 +256,7 @@ const messageUpdate = (msg, game, win) => {
                 : game.answer
         ).split('\x01').join('.');
 
-        endText = '\n\n';
+        endText = '\n';
 
         if (totError < 9) {
             endText += '回答正确～撒花～\n\n';
@@ -322,9 +322,8 @@ const messageUpdate = (msg, game, win) => {
             + text + '\n'
             + '[ ' + dictInfo.title + ' - ' + game.dictSettings()[1] + ' ]\n'
             + '[ ' + hint + ' ]\n'
-            + '[ 剩余生命：' + (9 - totError) + ' ]'
-            + '</pre>'
-            + endText,
+            + '[ 剩余生命：' + (9 - totError) + ' ]\n'
+            + '</pre>' + endText,
         {
             chat_id: msg.chat.id,
             message_id: msg.message_id,

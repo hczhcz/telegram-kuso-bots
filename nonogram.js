@@ -133,7 +133,7 @@ const gameStat = (msg, game, title, last) => {
 
     text += '\n'
         + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last + '\n\n'
-        + '/nono@' + config.nonogramUsername + ' 开始新游戏'
+        + '/nono@' + config.nonogramUsername + ' 开始新游戏\n'
         + '/onon@' + config.nonogramUsername + ' 开始神秘模式';
 
     bot.sendMessage(
@@ -253,7 +253,7 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/onon <boxes> 指定格数开始神秘模式\n'
             + '/onon <rows> <columns> <boxes> 指定尺寸和格数开始神秘模式\n'
             + '/help 显示帮助\n'
-            + '/status 查看 bot 状态'
+            + '/status 查看 bot 状态\n'
             + '\n'
             + '备注：\n'
             + '/nono 和 /onon 可从回复的消息中提取像素格'
