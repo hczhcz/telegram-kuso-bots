@@ -77,9 +77,9 @@ const messageUpdate = (msg, game) => {
                 matrix[i].push({
                     text: {
                         's': ' ',
-                        ' ': '\u274c',
+                        ' ': '\ud83c\udf36',
                         'b': ' ',
-                        '*': '\u2b1b',
+                        '*': '\ud83e\udd55',
                     }[game.map[i][j]],
                     callback_data: JSON.stringify([i, j]),
                 });
@@ -151,7 +151,7 @@ bot.onText(/^\/nono(@\w+)?(?: (\d+) (\d+))?(?: (\d+))?$/, event((msg, match) => 
     const init = (boxes) => {
         bot.sendMessage(
             msg.chat.id,
-            '快来打开人家哟～',
+            '快用\ud83e\udd55把我填满哟～',
             {
                 reply_to_message_id: msg.message_id,
                 reply_markup: {
