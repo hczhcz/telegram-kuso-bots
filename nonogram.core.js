@@ -75,10 +75,10 @@ const init = (rows, columns, boxes) => {
     return map;
 };
 
-const finished = (map) => {
+const finished = (map, correct) => {
     for (const i in map) {
         for (const j in map[i]) {
-            if (map[i][j] === 'b') {
+            if (correct === ' ' && map[i][j] === 's' || correct === '*' && map[i][j] === 'b') {
                 return false;
             }
         }
@@ -87,38 +87,38 @@ const finished = (map) => {
     return true;
 };
 
-const click = (map, targetI, targetJ) => {
+const click = (map, correct, targetI, targetJ) => {
     if (map[targetI][0].length === 0 || map[0][targetJ].length === 0) {
         return false;
     }
 
-    if (map[targetI][targetJ] === 's') {
-        map[targetI][targetJ] = ' ';
+    if (map[targetI][targetJ] === 's' || map[targetI][targetJ] === 'b') {
+        if (map[targetI][targetJ] === 's') {
+            map[targetI][targetJ] = ' ';
+        } else if (map[targetI][targetJ] === 'b') {
+            map[targetI][targetJ] = '*';
+        }
 
-        return true;
-    }
+        if (map[targetI][targetJ] === correct) {
+            let iDone = true;
+            let jDone = true;
 
-    if (map[targetI][targetJ] === 'b') {
-        map[targetI][targetJ] = '*';
-
-        let iDone = true;
-        let jDone = true;
-
-        for (const i in map) {
-            for (const j in map[i]) {
-                if (map[i][j] === 'b') {
-                    iDone &= parseInt(i, 10) !== targetI;
-                    jDone &= parseInt(j, 10) !== targetJ;
+            for (const i in map) {
+                for (const j in map[i]) {
+                    if (correct === ' ' && map[i][j] === 's' || correct === '*' && map[i][j] === 'b') {
+                        iDone &= parseInt(i, 10) !== targetI;
+                        jDone &= parseInt(j, 10) !== targetJ;
+                    }
                 }
             }
-        }
 
-        if (iDone) {
-            map[targetI][0] = [];
-        }
+            if (iDone) {
+                map[targetI][0] = [];
+            }
 
-        if (jDone) {
-            map[0][targetJ] = [];
+            if (jDone) {
+                map[0][targetJ] = [];
+            }
         }
 
         return true;

@@ -4,7 +4,7 @@ const core = require('./nonogram.core');
 
 const games = {};
 
-const init = (id, rows, columns, boxes, onGameInit, onNotValid, onGameExist) => {
+const init = (id, rows, columns, boxes, correct, onGameInit, onNotValid, onGameExist) => {
     if (games[id]) {
         return onGameExist();
     }
@@ -14,6 +14,7 @@ const init = (id, rows, columns, boxes, onGameInit, onNotValid, onGameExist) => 
             rows: rows,
             columns: columns,
             boxes: boxes,
+            correct: correct,
             map: core.init(rows, columns, boxes),
             history: [],
         };
@@ -31,10 +32,10 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotC
 
     const game = games[id];
 
-    if (core.click(game.map, targetI, targetJ)) {
-        game.history.push([playerId, targetI, targetJ, game.map[targetI][targetJ] === '*']);
+    if (core.click(game.map, game.correct, targetI, targetJ)) {
+        game.history.push([playerId, targetI, targetJ, game.map[targetI][targetJ] === game.correct]);
 
-        if (core.finished(game.map)) {
+        if (core.finished(game.map, game.correct)) {
             delete games[id];
 
             return onGameWin(game);

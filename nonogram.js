@@ -133,7 +133,8 @@ const gameStat = (msg, game, title, last) => {
 
     text += '\n'
         + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last + '\n\n'
-        + '/nono@' + config.nonogramUsername + ' 开始新游戏';
+        + '/nono@' + config.nonogramUsername + ' 开始新游戏'
+        + '/onon@' + config.nonogramUsername + ' 开始神秘模式';
 
     bot.sendMessage(
         msg.chat.id,
@@ -144,14 +145,16 @@ const gameStat = (msg, game, title, last) => {
     );
 };
 
-bot.onText(/^\/nono(@\w+)?(?: (\d+) (\d+))?(?: (\d+))?$/, event((msg, match) => {
-    const rows = parseInt(match[2], 10) || 7;
-    const columns = parseInt(match[3], 10) || 7;
+bot.onText(/^\/(nono|onon)(@\w+)?(?: (\d+) (\d+))?(?: (\d+))?$/, event((msg, match) => {
+    const rows = parseInt(match[3], 10) || 7;
+    const columns = parseInt(match[4], 10) || 7;
 
     const init = (boxes) => {
         bot.sendMessage(
             msg.chat.id,
-            '快用\ud83e\udd55把我填满哟～',
+            match[1] === 'onon'
+                ? '快用\ud83c\udf36把我填满哟～'
+                : '快用\ud83e\udd55把我填满哟～',
             {
                 reply_to_message_id: msg.message_id,
                 reply_markup: {
@@ -167,6 +170,9 @@ bot.onText(/^\/nono(@\w+)?(?: (\d+) (\d+))?(?: (\d+))?$/, event((msg, match) => 
                 rows,
                 columns,
                 boxes,
+                match[1] === 'onon'
+                    ? ' '
+                    : '*',
                 (game) => {
                     // game init
 
@@ -230,9 +236,9 @@ bot.onText(/^\/nono(@\w+)?(?: (\d+) (\d+))?(?: (\d+))?$/, event((msg, match) => 
             });
         });
     } else {
-        init(parseInt(match[4], 10) || Math.floor(rows * columns / 2));
+        init(parseInt(match[5], 10) || Math.floor(rows * columns / 2));
     }
-}, 1));
+}, 2));
 
 bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
@@ -242,11 +248,15 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/nono <rows> <columns> 指定尺寸开始新游戏\n'
             + '/nono <boxes> 指定格数开始新游戏\n'
             + '/nono <rows> <columns> <boxes> 指定尺寸和格数开始新游戏\n'
+            + '/onon 开始神秘模式\n'
+            + '/onon <rows> <columns> 指定尺寸开始神秘模式\n'
+            + '/onon <boxes> 指定格数开始神秘模式\n'
+            + '/onon <rows> <columns> <boxes> 指定尺寸和格数开始神秘模式\n'
             + '/help 显示帮助\n'
             + '/status 查看 bot 状态'
             + '\n'
             + '备注：\n'
-            + '/nono 可从回复的消息中提取像素格'
+            + '/nono 和 /onon 可从回复的消息中提取像素格'
     );
 }, 1));
 
