@@ -15,7 +15,7 @@ const init = (id, rows, columns, boxes, correct, onGameInit, onNotValid, onGameE
             columns: columns,
             boxes: boxes,
             correct: correct,
-            map: core.init(rows, columns, boxes),
+            map: core.init(rows, columns, boxes, correct),
             history: [],
         };
 

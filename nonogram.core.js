@@ -18,7 +18,7 @@ const verify = (rows, columns, boxes) => {
         && (rows + 1) * (columns + 1) <= 100 && columns <= 7 && boxes <= rows * columns;
 };
 
-const init = (rows, columns, boxes) => {
+const init = (rows, columns, boxes, correct) => {
     const map = [];
 
     let space = rows * columns;
@@ -65,7 +65,21 @@ const init = (rows, columns, boxes) => {
     for (let i = 0; i <= rows; i += 1) {
         for (let j = 0; j <= columns; j += 1) {
             if (i === 0 || j === 0) {
-                if (map[i][j][map[i][j].length - 1] === 0) {
+                if (map[i][j].length === 1) {
+                    let size = 0;
+
+                    if (correct === ' ') {
+                        if (i > 0) {
+                            size = columns;
+                        } else if (j > 0) {
+                            size = rows;
+                        }
+                    }
+
+                    if (map[i][j][0] === size) {
+                        map[i][j].pop();
+                    }
+                } else if (map[i][j][map[i][j].length - 1] === 0) {
                     map[i][j].pop();
                 }
             }
