@@ -57,11 +57,11 @@ const pickRandom = (list, size) => {
 const pickDictionary = (dictionaries, id) => {
     for (const i in dictionaries) {
         if (dictionaries[i].id === id) {
-            if ('random' in dictionaries[i]) {
+            if (Object.hasOwnProperty.bind(dictionaries[i])('random')) {
                 return dictionaries[i].items[
                     random(dictionaries[i].random) % dictionaries[i].items.length
                 ];
-            } else if ('pick' in dictionaries[i]) {
+            } else if (Object.hasOwnProperty.bind(dictionaries[i])('pick')) {
                 return pickRandom(dictionaries[i].items, dictionaries[i].pick).join('，');
             }
 
@@ -146,12 +146,12 @@ const pickEvents = (dictionaries, activities, specials) => {
     const pickedSpecials = pickSpecials(specials);
 
     for (const i in pickedSpecials) {
-        if ('good' in pickedSpecials[i]) {
+        if (Object.hasOwnProperty.bind(pickedSpecials[i])('good')) {
             good.push({
                 name: parse(dictionaries, pickedSpecials[i].name),
                 description: parse(dictionaries, pickedSpecials[i].good),
             });
-        } else if ('bad' in pickedSpecials[i]) {
+        } else if (Object.hasOwnProperty.bind(pickedSpecials[i])('bad')) {
             bad.push({
                 name: parse(dictionaries, pickedSpecials[i].name),
                 description: parse(dictionaries, pickedSpecials[i].bad),
