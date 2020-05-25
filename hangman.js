@@ -291,7 +291,7 @@ const messageUpdate = (msg, game, win) => {
         }
 
         endText += '正确 ' + totCorrect + ' / 错误 ' + totError + '\n'
-            + '键盘消耗率 ' + Math.round(100 * totError / (game.keyboard.length - totCorrect)) + '%\n\n'
+            + '键盘消耗率 ' + Math.round(100 * totError / (game.keyboard.length - totCorrect) | 0) + '%\n\n'
             + '统计：\n';
 
         const stat = {};

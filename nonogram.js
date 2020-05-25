@@ -114,7 +114,7 @@ const gameStat = (msg, game, title, last) => {
 
     let text = title + '\n\n'
         + '正确 ' + totCorrect + ' / 错误 ' + totError + '\n'
-        + '空格消耗率 ' + Math.round(100 * totError / (game.rows * game.columns - totCorrect)) + '%\n\n'
+        + '空格消耗率 ' + Math.round(100 * totError / (game.rows * game.columns - totCorrect) | 0) + '%\n\n'
         + '统计：\n';
 
     const stat = {};
