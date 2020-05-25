@@ -60,6 +60,26 @@ const playerInfo = (list) => {
 };
 
 const playerUpdate = (msg, list) => {
+    if (list.update) {
+        list.update = () => {
+            playerUpdate(msg, list);
+        };
+
+        return;
+    }
+
+    list.update = () => {
+        // nothing
+    };
+
+    setTimeout(() => {
+        const update = list.update;
+
+        delete list.update;
+
+        update();
+    }, config.multiplayerUpdateDelay);
+
     bot.editMessageText(
         playerInfo(list) + '\n\n'
             + '/1a2b@' + config.abUsername + ' 开始新游戏\n'

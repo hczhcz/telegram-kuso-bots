@@ -61,6 +61,26 @@ const playerInfo = (list) => {
 };
 
 const playerUpdate = (msg, list) => {
+    if (list.update) {
+        list.update = () => {
+            playerUpdate(msg, list);
+        };
+
+        return;
+    }
+
+    list.update = () => {
+        // nothing
+    };
+
+    setTimeout(() => {
+        const update = list.update;
+
+        delete list.update;
+
+        update();
+    }, config.multiplayerUpdateDelay);
+
     bot.editMessageText(
         playerInfo(list) + '\n\n'
             + '/hang@' + config.hangmanUsername + ' 开始新游戏',
@@ -98,9 +118,11 @@ const messageUpdate = (msg, game, win) => {
     };
 
     setTimeout(() => {
-        game.update();
+        const update = game.update;
 
         delete game.update;
+
+        update();
     }, config.hangmanUpdateDelay);
 
     // dict info

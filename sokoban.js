@@ -99,9 +99,11 @@ const messageUpdate = (msg, game, win) => {
         };
 
         setTimeout(() => {
-            game.update();
+            const update = game.update;
 
             delete game.update;
+
+            update();
         }, config.sokobanUpdateDelay);
 
         game.lastMatrix = () => {

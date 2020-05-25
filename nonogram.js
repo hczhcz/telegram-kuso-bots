@@ -47,9 +47,11 @@ const messageUpdate = (msg, game) => {
     };
 
     setTimeout(() => {
-        game.update();
+        const update = game.update;
 
         delete game.update;
+
+        update();
     }, config.nonogramUpdateDelay);
 
     const matrix = [];
