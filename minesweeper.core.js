@@ -11,7 +11,7 @@
 const verify = (rows, columns, mines) => {
     // note: telegram's limit
     return rows > 0 && columns > 0 && mines > 0
-        && rows * columns <= 100 && columns <= 8 && mines <= rows * columns - 1;
+        && rows * columns <= 100 && columns <= 8 && mines < rows * columns;
 };
 
 const init = (rows, columns, mines, targetI, targetJ) => {

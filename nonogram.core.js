@@ -8,14 +8,23 @@
 // [...] = hint
 
 const verify = (rows, columns, boxes) => {
-    // note: telegram's limit
+    let realBoxes = 0;
+
     if (typeof boxes === 'object') {
-        return rows > 0 && columns > 0
-            && (rows + 1) * (columns + 1) <= 100 && columns <= 7;
+        for (const i in boxes) {
+            for (const j in boxes[i]) {
+                if (boxes[i][j]) {
+                    realBoxes += 1;
+                }
+            }
+        }
+    } else {
+        realBoxes = boxes;
     }
 
-    return rows > 0 && columns > 0 && boxes > 0
-        && (rows + 1) * (columns + 1) <= 100 && columns <= 7 && boxes <= rows * columns;
+    // note: telegram's limit
+    return rows > 0 && columns > 0 && realBoxes > 0
+        && (rows + 1) * (columns + 1) <= 100 && columns <= 7 && realBoxes < rows * columns;
 };
 
 const init = (rows, columns, boxes, correct) => {
