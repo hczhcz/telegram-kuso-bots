@@ -62,11 +62,11 @@ const messageUpdate = (msg, game) => {
                 let hint = '';
 
                 for (const k in game.map[i][j]) {
-                    if (hint !== '') {
-                        hint += ' ';
+                    if (game.map[i][j][k] < 10) {
+                        hint += game.map[i][j][k];
+                    } else {
+                        hint += '(' + game.map[i][j][k] + ')';
                     }
-
-                    hint += game.map[i][j][k];
                 }
 
                 matrix[i].push({
