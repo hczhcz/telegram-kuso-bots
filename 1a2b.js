@@ -72,14 +72,6 @@ const playerUpdate = (msg, list) => {
         // nothing
     };
 
-    setTimeout(() => {
-        const update = list.update;
-
-        delete list.update;
-
-        update();
-    }, config.multiplayerUpdateDelay);
-
     bot.editMessageText(
         playerInfo(list) + '\n\n'
             + '/1a2b@' + config.abUsername + ' 开始新游戏\n'
@@ -101,7 +93,15 @@ const playerUpdate = (msg, list) => {
                 }]],
             },
         }
-    );
+    ).finally(() => {
+        setTimeout(() => {
+            const update = list.update;
+
+            delete list.update;
+
+            update();
+        }, config.multiplayerUpdateDelay);
+    });
 };
 
 const gameInfo = (guess, hint) => {

@@ -64,14 +64,6 @@ const playerUpdate = (msg, list) => {
         // nothing
     };
 
-    setTimeout(() => {
-        const update = list.update;
-
-        delete list.update;
-
-        update();
-    }, config.multiplayerUpdateDelay);
-
     bot.editMessageText(
         playerInfo(list) + '\n\n'
             + '/ignite@' + config.bombUsername + ' 点火',
@@ -92,7 +84,15 @@ const playerUpdate = (msg, list) => {
                 }]],
             },
         }
-    );
+    ).finally(() => {
+        setTimeout(() => {
+            const update = list.update;
+
+            delete list.update;
+
+            update();
+        }, config.multiplayerUpdateDelay);
+    });
 };
 
 bot.onText(/^\/ignite(@\w+)?(?: (.+))?$/, event((msg, match) => {

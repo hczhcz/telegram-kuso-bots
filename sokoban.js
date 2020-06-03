@@ -98,14 +98,6 @@ const messageUpdate = (msg, game, win) => {
             // nothing
         };
 
-        setTimeout(() => {
-            const update = game.update;
-
-            delete game.update;
-
-            update();
-        }, config.sokobanUpdateDelay);
-
         game.lastMatrix = () => {
             return matrixStr;
         };
@@ -118,7 +110,15 @@ const messageUpdate = (msg, game, win) => {
                 chat_id: msg.chat.id,
                 message_id: msg.message_id,
             }
-        );
+        ).finally(() => {
+            setTimeout(() => {
+                const update = game.update;
+
+                delete game.update;
+
+                update();
+            }, config.sokobanUpdateDelay);
+        });
     }
 };
 

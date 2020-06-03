@@ -43,14 +43,6 @@ const messageUpdate = (msg, game) => {
         // nothing
     };
 
-    setTimeout(() => {
-        const update = game.update;
-
-        delete game.update;
-
-        update();
-    }, config.minesweeperUpdateDelay);
-
     const matrix = [];
 
     for (let i = 0; i < game.rows; i += 1) {
@@ -91,7 +83,15 @@ const messageUpdate = (msg, game) => {
             chat_id: msg.chat.id,
             message_id: msg.message_id,
         }
-    );
+    ).finally(() => {
+        setTimeout(() => {
+            const update = game.update;
+
+            delete game.update;
+
+            update();
+        }, config.minesweeperUpdateDelay);
+    });
 };
 
 const gameStat = (msg, game, title, last) => {

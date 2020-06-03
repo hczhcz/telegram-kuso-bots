@@ -73,14 +73,6 @@ const playerUpdate = (msg, list) => {
         // nothing
     };
 
-    setTimeout(() => {
-        const update = list.update;
-
-        delete list.update;
-
-        update();
-    }, config.multiplayerUpdateDelay);
-
     bot.editMessageText(
         playerInfo(list) + '\n\n'
             + '/hang@' + config.hangmanUsername + ' 开始新游戏',
@@ -101,7 +93,15 @@ const playerUpdate = (msg, list) => {
                 }]],
             },
         }
-    );
+    ).finally(() => {
+        setTimeout(() => {
+            const update = list.update;
+
+            delete list.update;
+
+            update();
+        }, config.multiplayerUpdateDelay);
+    });
 };
 
 const messageUpdate = (msg, game, win) => {
@@ -116,14 +116,6 @@ const messageUpdate = (msg, game, win) => {
     game.update = () => {
         // nothing
     };
-
-    setTimeout(() => {
-        const update = game.update;
-
-        delete game.update;
-
-        update();
-    }, config.hangmanUpdateDelay);
 
     // dict info
 
@@ -354,7 +346,15 @@ const messageUpdate = (msg, game, win) => {
                 inline_keyboard: matrix,
             },
         }
-    );
+    ).finally(() => {
+        setTimeout(() => {
+            const update = game.update;
+
+            delete game.update;
+
+            update();
+        }, config.hangmanUpdateDelay);
+    });
 };
 
 bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {
