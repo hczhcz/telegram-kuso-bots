@@ -13,7 +13,7 @@ module.exports = (bot, event, playerEvent, env) => {
         tutouImage = image;
     });
 
-    bot.onText(/^\/addtutou(@\w+)?(?: (-?[\d.]+) (-?[\d.]+))?(?: (-?)([\d.]+))?(?: (-?\d+))?$/, event((msg, match) => {
+    bot.onText(/^\/addtutou(@\w+)?(?: (-?[\d.]+) (-?[\d.]+))?(?: (-?)([\d.]+))?(?: (-?[\d.]+))?$/, event((msg, match) => {
         if (msg.reply_to_message) {
             const render = (bgImage) => {
                 const image = canvas.createCanvas(bgImage.width, bgImage.height);
@@ -37,7 +37,7 @@ module.exports = (bot, event, playerEvent, env) => {
                         : Math.random() * 0.8 + 0.1
                 );
                 const angle = match[6]
-                    ? Math.min(Math.max(parseInt(match[6], 10), -360), 360) * Math.PI / 180
+                    ? Math.min(Math.max(parseFloat(match[6]), -360), 360) * Math.PI / 180
                     : Math.asin(Math.random() * 2 - 1) * 2;
 
                 ctx.translate(left, top);
