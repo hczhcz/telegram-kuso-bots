@@ -60,7 +60,7 @@ module.exports = () => {
 
             const list = self.lists[id];
 
-            for (const i in list) {
+            for (let i = 0; i < list.length; i += 1) {
                 if (list[i].id === player.id) {
                     return onPlayerExist(list);
                 }
@@ -83,7 +83,7 @@ module.exports = () => {
 
                 const list = self.lists[id];
 
-                for (const i in list) {
+                for (let i = 0; i < list.length; i += 1) {
                     if (list[i].id === player.id) {
                         list.splice(i, 1);
 

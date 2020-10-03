@@ -49,7 +49,7 @@ const playerInfo = (list) => {
     let info = '玩家列表：\n';
     let total = 0;
 
-    for (const i in list) {
+    for (let i = 0; i < list.length; i += 1) {
         info += (list[i].username || list[i].first_name) + '\n';
         total += 1;
     }
