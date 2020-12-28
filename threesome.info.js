@@ -52,13 +52,15 @@ module.exports = (bot) => {
                 + '\n'
                 + '备注：\n'
                 + '<trigger> 为空，将 trigger 加入 bot自言自语\n'
-                + '@<content> 为空，将回复的消息加入 trigger';
+                + '@<content> 为空，将回复的消息加入 trigger\n\n';
 
             for (const i in self.pluginHelp) {
-                text += '\n\n'
-                    + '插件 ' + self.pluginHelp[i][0] + '\n'
-                    + self.pluginHelp[i][1];
+                text += '插件 ' + self.pluginHelp[i][0] + '\n'
+                    + self.pluginHelp[i][1] + '\n\n';
             }
+
+            text += '源码：\n'
+                + 'https://github.com/hczhcz/telegram-kuso-bots';
 
             return bot.sendMessage(
                 msg.chat.id,
