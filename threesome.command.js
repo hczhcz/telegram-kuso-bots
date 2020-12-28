@@ -319,7 +319,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                 if (
                     allowUsed
                     || !command[msg.chat.id]
-                    || Math.random() < (now - command[msg.chat.id].used) / 30000 - 1
+                    || Math.random() < (now - command[msg.chat.id].used) / 20000 - 1
                 ) {
                     if (command.text) {
                         genText(command);
