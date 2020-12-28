@@ -22,6 +22,18 @@ module.exports = (bot, event, playerEvent, env) => {
         });
     }, -1);
 
+    const animationEvent = event((msg, match) => {
+        bot.sendDocument(
+            msg.chat.id,
+            bot.getFileStream(msg.animation.file_id),
+            {},
+            {
+                filename: msg.animation.file_id + '.m4v',
+                contentType: 'video/x-m4v',
+            }
+        );
+    }, -1);
+
     const imageEvent = event((msg, match) => {
         let best_width = 0;
         let file_id = msg.document && msg.document.file_id;
@@ -62,6 +74,10 @@ module.exports = (bot, event, playerEvent, env) => {
 
         if (msg.chat.id === msg.from.id && msg.sticker) {
             stickerEvent(msg, []);
+        }
+
+        if (msg.chat.id === msg.from.id && msg.animation) {
+            animationEvent(msg, []);
         }
 
         if (msg.chat.id === msg.from.id && (msg.document || msg.photo)) {
