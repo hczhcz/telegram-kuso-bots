@@ -5,7 +5,7 @@ module.exports = (bot, games) => {
         join: (msg) => {
             const game = games[msg.chat.id];
 
-            game.total += 60;
+            game.total += 30;
 
             if (!game.users[msg.from.id]) {
                 game.usercount += 1;
@@ -51,7 +51,7 @@ module.exports = (bot, games) => {
             const game = games[msg.chat.id];
 
             if (player) {
-                game.total += 60;
+                game.total += 30;
 
                 if (!game.users[player.id]) {
                     game.usercount += 1;

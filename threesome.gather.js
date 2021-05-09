@@ -189,7 +189,7 @@ module.exports = (bot, games) => {
                     );
                 case 0:
                     if (game.usercount >= game.modemin) {
-                        game.total = 120 + game.usercount * 60;
+                        game.total = 120 + game.usercount * 30;
 
                         return bot.sendMessage(
                             msg.chat.id,
