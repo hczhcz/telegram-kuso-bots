@@ -36,12 +36,18 @@ module.exports = (bot, event, playerEvent, env) => {
 
     const welcomeEvent = event((msg, match) => {
         for (const i in msg.new_chat_members) {
-            gen('welcome', welcomePairs, msg, msg.new_chat_members[i]);
+            if (msg.new_chat_members[i].username === config.threesomeUsername) {
+                env.info.welcome(msg);
+            } else {
+                gen('welcome', welcomePairs, msg, msg.new_chat_members[i]);
+            }
         }
     }, -1);
 
     const leaveEvent = event((msg, match) => {
-        gen('leave', leavePairs, msg, msg.left_chat_member);
+        if (msg.new_chat_members[i].username !== config.threesomeUsername) {
+            gen('leave', leavePairs, msg, msg.left_chat_member);
+        }
     }, -1);
 
     bot.on('message', (msg) => {
