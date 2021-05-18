@@ -20,7 +20,8 @@ const event = (handler, atIndex) => {
     return (msg, match) => {
         if (!match[atIndex] || match[atIndex] === '@' + config.bombUsername) {
             log(
-                msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+                msg.chat.id + '@' + (msg.chat.username || '')
+                    + ':' + msg.from.id + '@' + (msg.from.username || ''),
                 match[0]
             );
 
@@ -345,7 +346,8 @@ bot.on('callback_query', (query) => {
 
     if (query.data === 'join') {
         log(
-            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            msg.chat.id + '@' + (msg.chat.username || '')
+                + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'join'
         );
 
@@ -381,7 +383,8 @@ bot.on('callback_query', (query) => {
         );
     } else if (query.data === 'flee') {
         log(
-            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            msg.chat.id + '@' + (msg.chat.username || '')
+                + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'flee'
         );
 
@@ -410,7 +413,8 @@ bot.on('callback_query', (query) => {
         );
     } else if (query.data === 'clear') {
         log(
-            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            msg.chat.id + '@' + (msg.chat.username || '')
+                + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'clear'
         );
 

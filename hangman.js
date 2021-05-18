@@ -21,7 +21,8 @@ const event = (handler, atIndex) => {
     return (msg, match) => {
         if (!match[atIndex] || match[atIndex] === '@' + config.hangmanUsername) {
             log(
-                msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+                msg.chat.id + '@' + (msg.chat.username || '')
+                    + ':' + msg.from.id + '@' + (msg.from.username || ''),
                 match[0]
             );
 
@@ -507,7 +508,8 @@ bot.on('callback_query', (query) => {
 
     if (info[0] === 'join') {
         log(
-            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            msg.chat.id + '@' + (msg.chat.username || '')
+                + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'join'
         );
 
@@ -543,7 +545,8 @@ bot.on('callback_query', (query) => {
         );
     } else if (info[0] === 'flee') {
         log(
-            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            msg.chat.id + '@' + (msg.chat.username || '')
+                + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'flee'
         );
 
@@ -572,7 +575,8 @@ bot.on('callback_query', (query) => {
         );
     } else if (info[0] === 'clear') {
         log(
-            msg.chat.id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            msg.chat.id + '@' + (msg.chat.username || '')
+                + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'clear'
         );
 
@@ -604,7 +608,8 @@ bot.on('callback_query', (query) => {
         }
 
         log(
-            msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            msg.chat.id + '_' + msg.message_id + '@' + (msg.chat.username || '')
+                + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'dict ' + info[1] + ' ' + info[2] + ' ' + info[3]
         );
 
@@ -666,7 +671,8 @@ bot.on('callback_query', (query) => {
         }
 
         log(
-            msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            msg.chat.id + '_' + msg.message_id + '@' + (msg.chat.username || '')
+                + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             'guess ' + info[1]
         );
 

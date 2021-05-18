@@ -20,7 +20,8 @@ const event = (handler, atIndex) => {
     return (msg, match) => {
         if (!match[atIndex] || match[atIndex] === '@' + config.sokobanUsername) {
             log(
-                msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+                msg.chat.id + '@' + (msg.chat.username || '')
+                    + ':' + msg.from.id + '@' + (msg.from.username || ''),
                 match[0]
             );
 
@@ -264,7 +265,8 @@ bot.on('callback_query', (query) => {
 
     if (query.data.match(/^\w+$/)) {
         log(
-            msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            msg.chat.id + '_' + msg.message_id + '@' + (msg.chat.username || '')
+                + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             query.data
         );
 
@@ -424,7 +426,8 @@ bot.on('callback_query', (query) => {
         }
 
         log(
-            msg.chat.id + '_' + msg.message_id + ':callback:' + query.from.id + '@' + (query.from.username || ''),
+            msg.chat.id + '_' + msg.message_id + '@' + (msg.chat.username || '')
+                + ':callback:' + query.from.id + '@' + (query.from.username || ''),
             info[0] + ' ' + info[1]
         );
 

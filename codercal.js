@@ -21,7 +21,8 @@ const event = (handler, atIndex) => {
     return (msg, match) => {
         if (!match[atIndex] || match[atIndex] === '@' + config.coderCalUsername) {
             log(
-                msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+                msg.chat.id + '@' + (msg.chat.username || '')
+                    + ':' + msg.from.id + '@' + (msg.from.username || ''),
                 match[0]
             );
 

@@ -29,7 +29,8 @@ const event = (handler, atIndex) => {
         if (!match[atIndex] || match[atIndex] === '@' + config.threesomeUsername) {
             if (!msg.msg_init) {
                 log(
-                    msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+                    msg.chat.id + '@' + (msg.chat.username || '')
+                        + ':' + msg.from.id + '@' + (msg.from.username || ''),
                     match[0]
                 );
 

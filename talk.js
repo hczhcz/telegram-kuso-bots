@@ -168,7 +168,8 @@ bot.on('message', (msg) => {
 
         if (payload !== null) {
             log(
-                msg.chat.id + ':' + msg.from.id + '@' + (msg.from.username || ''),
+                msg.chat.id + '@' + (msg.chat.username || '')
+                    + ':' + msg.from.id + '@' + (msg.from.username || ''),
                 (last.text || last.sticker) + ':' + (payload.text || payload.sticker)
             );
 
