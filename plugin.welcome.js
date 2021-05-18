@@ -45,7 +45,7 @@ module.exports = (bot, event, playerEvent, env) => {
     }, -1);
 
     const leaveEvent = event((msg, match) => {
-        if (msg.new_chat_members[i].username !== config.threesomeUsername) {
+        if (msg.left_chat_member.username !== config.threesomeUsername) {
             gen('leave', leavePairs, msg, msg.left_chat_member);
         }
     }, -1);
