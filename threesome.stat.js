@@ -108,9 +108,9 @@ module.exports = (bot, stats) => {
                 return bot.sendMessage(
                     msg.chat.id,
                     (stats.name[player.id] || '') + ' 啪啪了 ' + gameUserStat.count + ' 次，其中：\n'
-                        + '3P 有 ' + (gameStat.user[player.id][3] || 0) + ' 次\n'
-                        + '2P 有 ' + (gameStat.user[player.id][2] || 0) + ' 次\n'
-                        + '撸管 有 ' + (gameStat.user[player.id][1] || 0) + ' 次\n'
+                        + '3P 有 ' + ((gameStat.user[player.id] || {})[3] || 0) + ' 次\n'
+                        + '2P 有 ' + ((gameStat.user[player.id] || {})[2] || 0) + ' 次\n'
+                        + '撸管 有 ' + ((gameStat.user[player.id] || {})[1] || 0) + ' 次\n'
                         + (stats.name[player.id] || '') + ' 最多参与过 ' + gameUserStat.max + 'P\n'
                         + '每次啪啪平均 ' + gameUserStat.ave + ' 人\n\n'
 
