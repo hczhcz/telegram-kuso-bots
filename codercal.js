@@ -187,7 +187,9 @@ bot.onText(/^\/(delete rate|dr) (\w+luck) ([^\n\r@]+)$/, event((msg, match) => {
 bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
-        '命令列表：\n'
+        '程序员老黄历\n'
+            + '\n'
+            + '命令列表：\n'
             + '/calender <cal id> <title>\n'
             + '/disable calender <cal id>\n'
             + '/dictionary <cal id> <dict id> <random>\n'
@@ -214,7 +216,10 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '<luck id> 必须以 luck 结尾\n'
             + '除 /help 外，命令可以用首字母缩写\n'
             + '例如 /c 等同 /calender\n'
-            + '/dc 等同 /disable calender'
+            + '/dc 等同 /disable calender\n'
+            + '\n'
+            + '源码：\n'
+            + 'https://github.com/hczhcz/telegram-kuso-bots'
     );
 }, 1));
 
@@ -241,7 +246,10 @@ bot.on('inline_query', (query) => {
                 calender.specials
             );
 
-            let calText = calender.title + '\n' + core.getTodayString() + '\n\n宜：';
+            let calText = calender.title + '\n'
+                + core.getTodayString() + '\n'
+                + '\n'
+                + '宜：';
 
             for (const i in pickedEvents.good) {
                 calText += '\n' + pickedEvents.good[i].name;
@@ -251,7 +259,9 @@ bot.on('inline_query', (query) => {
                 }
             }
 
-            calText += '\n\n不宜：';
+            calText += '\n'
+                + '\n'
+                + '不宜：';
 
             for (const i in pickedEvents.bad) {
                 calText += '\n' + pickedEvents.bad[i].name;
@@ -261,10 +271,12 @@ bot.on('inline_query', (query) => {
                 }
             }
 
-            calText += '\n\n' + core.pickHints(
-                calender.dictionaries,
-                calender.hints
-            ).join('\n');
+            calText += '\n'
+                + '\n'
+                + core.pickHints(
+                    calender.dictionaries,
+                    calender.hints
+                ).join('\n');
 
             answers.push({
                 type: 'article',
@@ -285,9 +297,11 @@ bot.on('inline_query', (query) => {
         const addLuck = (luck) => {
             const pickedLuck = core.pickLuck(luck.rates, luck.random, query);
 
-            let luckText = luck.title + '\n' + core.getTodayString()
-                + '\n\n所求事项：' + query.query
-                + '\n结果：' + pickedLuck.name;
+            let luckText = luck.title + '\n'
+                + core.getTodayString() + '\n'
+                + '\n'
+                + '所求事项：' + query.query + '\n'
+                + '结果：' + pickedLuck.name;
 
             if (pickedLuck.description) {
                 luckText += ' - ' + pickedLuck.description;

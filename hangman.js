@@ -36,7 +36,8 @@ const event = (handler, atIndex) => {
 
 const playerLine = (player) => {
     if (player) {
-        return '\n\n'
+        return '\n'
+            + '\n'
             + (
                 player.username
                     ? '@' + player.username
@@ -75,7 +76,8 @@ const playerUpdate = (msg, list) => {
     };
 
     bot.editMessageText(
-        playerInfo(list) + '\n\n'
+        playerInfo(list) + '\n'
+            + '\n'
             + '/hang@' + config.hangmanUsername + ' 开始新游戏',
         {
             chat_id: msg.chat.id,
@@ -274,17 +276,20 @@ const messageUpdate = (msg, game, win) => {
         endText = '\n';
 
         if (totError < 9) {
-            endText += '回答正确～撒花～\n\n';
+            endText += '回答正确～撒花～';
         } else if (totError === 9) {
-            endText += '回答正确～真是好险呢～\n\n';
+            endText += '回答正确～真是好险呢～';
         } else if (game.history.length === game.keyboard.length) {
-            endText += '卧…卧槽？！\n\n';
+            endText += '卧…卧槽？！';
         } else {
-            endText += '虽然 JJ 已经被 bot 切掉了，但是回答正确～\n\n';
+            endText += '虽然 JJ 已经被 bot 切掉了，但是回答正确～';
         }
 
-        endText += '正确 ' + totCorrect + ' / 错误 ' + totError + '\n'
-            + '键盘消耗率 ' + Math.round(100 * totError / (game.keyboard.length - totCorrect) | 0) + '%\n\n'
+        endText += '\n'
+            + '\n'
+            + '正确 ' + totCorrect + ' / 错误 ' + totError + '\n'
+            + '键盘消耗率 ' + Math.round(100 * totError / (game.keyboard.length - totCorrect) | 0) + '%\n'
+            + '\n'
             + '统计：\n';
 
         const stat = {};
@@ -314,10 +319,12 @@ const messageUpdate = (msg, game, win) => {
             .replace('>', '&gt;');
 
         endText += '\n'
-            + lastName + ' 猜对了！\n\n';
+            + lastName + ' 猜对了！\n'
+            + '\n';
 
         if (dictInfo.url) {
-            endText += '所以…<a href="' + encodeURI(dictInfo.url + game.answer) + '">' + hint + '是什么呢？好吃吗？</a>\n\n';
+            endText += '所以…<a href="' + encodeURI(dictInfo.url + game.answer) + '">' + hint + '是什么呢？好吃吗？</a>\n'
+                + '\n';
         }
 
         endText += '/hang@' + config.hangmanUsername + ' 开始新游戏\n'
@@ -388,7 +395,9 @@ bot.onText(/^\/hang(@\w+)?(?: (\d+))?$/, event((msg, match) => {
 
     bot.sendMessage(
         msg.chat.id,
-        '请选择词典\n\n数字表示的是缩减版哦',
+        '请选择词典\n'
+            + '\n'
+            + '数字表示的是缩减版哦',
         {
             reply_to_message_id: msg.message_id,
             reply_markup: {
@@ -475,7 +484,9 @@ bot.onText(/^\/diao(@\w+)?$/, event((msg, match) => {
 bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
-        '命令列表：\n'
+        '猜单词游戏\n'
+            + '\n'
+            + '命令列表：\n'
             + '/hang 开始新游戏\n'
             + '/hang <keyboard size> 指定键盘大小开始新游戏\n'
             + '/diao 多人模式\n'
@@ -483,7 +494,10 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/status 查看 bot 状态\n'
             + '\n'
             + '备注：\n'
-            + 'inline 查询将触发喵喵模式'
+            + 'inline 查询将触发喵喵模式\n'
+            + '\n'
+            + '源码：\n'
+            + 'https://github.com/hczhcz/telegram-kuso-bots'
     );
 }, 1));
 
@@ -785,7 +799,8 @@ bot.on('inline_query', (query) => {
                         query.from.username
                             ? '@' + query.from.username
                             : query.from.first_name
-                    ) + ' 喵喵模式已装载！\n\n'
+                    ) + ' 喵喵模式已装载！\n'
+                        + '\n'
                         + '/hang@' + config.hangmanUsername + ' 开始新游戏\n'
                         + '/diao@' + config.hangmanUsername + ' 多人模式',
                 },

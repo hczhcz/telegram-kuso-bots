@@ -66,7 +66,8 @@ const playerUpdate = (msg, list) => {
     };
 
     bot.editMessageText(
-        playerInfo(list) + '\n\n'
+        playerInfo(list) + '\n'
+            + '\n'
             + '/ignite@' + config.bombUsername + ' 点火',
         {
             chat_id: msg.chat.id,
@@ -107,7 +108,8 @@ bot.onText(/^\/ignite(@\w+)?(?: (.+))?$/, event((msg, match) => {
         bot.sendMessage(
             msg.chat.id,
             playerMention(msg.from) + ' 点燃了 ' + (match[2] || config.bombDefaultText) + '\n'
-                + '他自爆了！\n\n'
+                + '他自爆了！\n'
+                + '\n'
                 + '/bomb@' + config.bombUsername + ' 开始新游戏\n'
                 + '/ignite@' + config.bombUsername + ' 点火',
             {
@@ -225,7 +227,9 @@ bot.onText(/^\/bomb(@\w+)?$/, event((msg, match) => {
 bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
-        '命令列表：\n'
+        '丢炸弹游戏\n'
+            + '\n'
+            + '命令列表：\n'
             + '/bomb 开始新游戏\n'
             + '/ignite 点火\n'
             + '/ignite <name> 点燃某个东西\n'
@@ -233,7 +237,10 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/status 查看 bot 状态\n'
             + '\n'
             + '备注：\n'
-            + '/bomb 可使用回复的消息中的表情'
+            + '/bomb 可使用回复的消息中的表情\n'
+            + '\n'
+            + '源码：\n'
+            + 'https://github.com/hczhcz/telegram-kuso-bots'
     );
 }, 1));
 
@@ -312,7 +319,8 @@ bot.on('message', (msg) => {
                     bot.sendMessage(
                         msg.chat.id,
                         playerMention(msg.from) + ' 把 ' + game.text + ' 抢走了！\n'
-                            + '游戏结束\n\n'
+                            + '游戏结束\n'
+                            + '\n'
                             + '/bomb@' + config.bombUsername + ' 开始新游戏\n'
                             + '/ignite@' + config.bombUsername + ' 点火',
                         {
@@ -454,7 +462,8 @@ setInterval(() => {
         bot.sendMessage(
             id,
             game.text + ' 在 ' + playerMention(player) + ' 的手上爆炸了！\n'
-                + '游戏结束\n\n'
+                + '游戏结束\n'
+                + '\n'
                 + '/bomb@' + config.bombUsername + ' 开始新游戏\n'
                 + '/ignite@' + config.bombUsername + ' 点火'
         );

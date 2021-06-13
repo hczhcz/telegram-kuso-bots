@@ -41,7 +41,8 @@ module.exports = (bot, games) => {
                 return bot.sendMessage(
                     msg.chat.id,
                     msg.from.first_name + ' 逃离了' + game.modename + '，'
-                        + '不再与大家啪啪\n\n'
+                        + '不再与大家啪啪\n'
+                        + '\n'
                         + '剩余 ' + game.usercount + ' 人'
                 );
             }

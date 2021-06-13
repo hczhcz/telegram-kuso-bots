@@ -137,10 +137,12 @@ const gameStat = (msg, game) => {
 
     bot.sendMessage(
         msg.chat.id,
-        '好耶～箱子都被推到正确的地方了！\n\n'
+        '好耶～箱子都被推到正确的地方了！\n'
+            + '\n'
             + '总共 ' + game.history.length + ' 项操作\n'
             + '其中 ' + move + ' 次移动\n'
-            + push + ' 次推动箱子\n\n'
+            + push + ' 次推动箱子\n'
+            + '\n'
             + '/sokoban@' + config.sokobanUsername + ' 开始新游戏',
         {
             reply_to_message_id: msg.message_id,
@@ -232,7 +234,9 @@ bot.onText(/^\/sokoban(@\w+)?(?: (\w+)(?: (\d+))?)?$/, event((msg, match) => {
 bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
-        '命令列表：\n'
+        '推箱子游戏\n'
+            + '\n'
+            + '命令列表：\n'
             + '/sokoban 开始新游戏\n'
             + '/sokoban <level id> 指定关卡组开始新游戏\n'
             + '/sokoban <level id> <level index> 指定关卡开始新游戏\n'
@@ -240,7 +244,10 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/status 查看 bot 状态\n'
             + '\n'
             + '备注：\n'
-            + '/sokoban 可从回复的消息中还原游戏'
+            + '/sokoban 可从回复的消息中还原游戏\n'
+            + '\n'
+            + '源码：\n'
+            + 'https://github.com/hczhcz/telegram-kuso-bots'
     );
 }, 1));
 

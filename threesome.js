@@ -330,8 +330,8 @@ bot.onText(/^\/((?!_)\w+)(@\w+)?(?: (.*))?$/, event((msg, match) => {
     command.get(msg, match[1], args);
 }, 2));
 
-bot.onText(/^\/welcome(@\w+)?$/, event((msg, match) => {
-    info.welcome(msg);
+bot.onText(/^\/start(@\w+)?$/, event((msg, match) => {
+    info.start(msg);
 }, 1));
 
 bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {

@@ -96,11 +96,13 @@ const messageUpdate = (msg, game) => {
 };
 
 const gameStat = (msg, game, title, last) => {
-    let text = title + '\n\n'
+    let text = title + '\n'
+        + '\n'
         + '地图：\n'
         + 'Op ' + game.analysis.open + ' / Is ' + game.analysis.island + ' / 3bv ' + game.analysis.bbbv + '\n'
         + '操作总数 ' + game.history.length + '\n'
-        + '耗时 ' + (game.timeEnd - game.timeBegin) / 1000 + 's\n\n'
+        + '耗时 ' + (game.timeEnd - game.timeBegin) / 1000 + 's\n'
+        + '\n'
         + '统计：\n';
 
     const stat = {};
@@ -114,7 +116,8 @@ const gameStat = (msg, game, title, last) => {
     }
 
     text += '\n'
-        + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last + '\n\n'
+        + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last + '\n'
+        + '\n'
         + '/mine@' + config.minesweeperUsername + ' 开始新游戏';
 
     bot.sendMessage(
@@ -186,11 +189,16 @@ bot.onText(/^\/mine(@\w+)?(?: (\d+) (\d+) (\d+))?$/, event((msg, match) => {
 bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
-        '命令列表：\n'
+        '扫雷游戏\n'
+            + '\n'
+            + '命令列表：\n'
             + '/mine 开始新游戏\n'
             + '/mine <rows> <columns> <mines> 指定规格开始新游戏\n'
             + '/help 显示帮助\n'
-            + '/status 查看 bot 状态'
+            + '/status 查看 bot 状态\n'
+            + '\n'
+            + '源码：\n'
+            + 'https://github.com/hczhcz/telegram-kuso-bots'
     );
 }, 1));
 

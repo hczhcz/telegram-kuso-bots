@@ -113,9 +113,11 @@ const gameStat = (msg, game, title, last) => {
         }
     }
 
-    let text = title + '\n\n'
+    let text = title + '\n'
+        + '\n'
         + '正确 ' + totCorrect + ' / 错误 ' + totError + '\n'
-        + '空格消耗率 ' + Math.round(100 * totError / (game.rows * game.columns - totCorrect) | 0) + '%\n\n'
+        + '空格消耗率 ' + Math.round(100 * totError / (game.rows * game.columns - totCorrect) | 0) + '%\n'
+        + '\n'
         + '统计：\n';
 
     const stat = {};
@@ -135,7 +137,8 @@ const gameStat = (msg, game, title, last) => {
     }
 
     text += '\n'
-        + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last + '\n\n'
+        + game.nameMap()[game.history[game.history.length - 1][0]] + ' ' + last + '\n'
+        + '\n'
         + '/nono@' + config.nonogramUsername + ' 开始新游戏\n'
         + '/onon@' + config.nonogramUsername + ' 开始神秘模式';
 
@@ -246,7 +249,9 @@ bot.onText(/^\/(nono|onon)(@\w+)?(?: (\d+) (\d+))?(?: (\d+))?$/, event((msg, mat
 bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
-        '命令列表：\n'
+        'Nonogram 数织游戏\n'
+            + '\n'
+            + '命令列表：\n'
             + '/nono 开始新游戏\n'
             + '/nono <rows> <columns> 指定尺寸开始新游戏\n'
             + '/nono <boxes> 指定格数开始新游戏\n'
@@ -259,7 +264,10 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/status 查看 bot 状态\n'
             + '\n'
             + '备注：\n'
-            + '/nono 和 /onon 可从回复的消息中提取像素格'
+            + '/nono 和 /onon 可从回复的消息中提取像素格\n'
+            + '\n'
+            + '源码：\n'
+            + 'https://github.com/hczhcz/telegram-kuso-bots'
     );
 }, 1));
 

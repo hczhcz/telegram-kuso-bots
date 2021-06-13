@@ -112,39 +112,39 @@ module.exports = (bot, stats) => {
                         + '2P 有 ' + ((gameStat.user[player.id] || {})[2] || 0) + ' 次\n'
                         + '撸管 有 ' + ((gameStat.user[player.id] || {})[1] || 0) + ' 次\n'
                         + (stats.name[player.id] || '') + ' 最多参与过 ' + gameUserStat.max + 'P\n'
-                        + '每次啪啪平均 ' + gameUserStat.ave + ' 人\n\n'
-
+                        + '每次啪啪平均 ' + gameUserStat.ave + ' 人\n'
+                        + '\n'
                         + (stats.name[player.id] || '') + ' 最喜欢的性伴侣是：\n'
                         + (stats.name[gamePairStat.top1[1]] || '') + '（' + (gamePairStat.top1[0] || 0) + ' 次）\n'
                         + (stats.name[gamePairStat.top2[1]] || '') + '（' + (gamePairStat.top2[0] || 0) + ' 次）\n'
-                        + (stats.name[gamePairStat.top3[1]] || '') + '（' + (gamePairStat.top3[0] || 0) + ' 次）\n\n'
-
+                        + (stats.name[gamePairStat.top3[1]] || '') + '（' + (gamePairStat.top3[0] || 0) + ' 次）\n'
+                        + '\n'
                         + (stats.name[player.id] || '') + ' 触发过 ' + commandUserStat.count + ' 个 trigger，最多的 trigger 是：\n'
                         + (commandUserStat.top1[1] || '') + '（' + (commandUserStat.top1[0] || 0) + ' 次）\n'
                         + (commandUserStat.top2[1] || '') + '（' + (commandUserStat.top2[0] || 0) + ' 次）\n'
-                        + (commandUserStat.top3[1] || '') + '（' + (commandUserStat.top3[0] || 0) + ' 次）\n\n'
-
+                        + (commandUserStat.top3[1] || '') + '（' + (commandUserStat.top3[0] || 0) + ' 次）\n'
+                        + '\n'
                         + '其中，' + (stats.name[player.id] || '') + ' 经常：\n'
                         + (commandPairStat.top1[2] || '') + ' ' + (stats.name[commandPairStat.top1[1]] || '')
                         + '（' + (commandPairStat.top1[0] || 0) + ' 次）\n'
                         + (commandPairStat.top2[2] || '') + ' ' + (stats.name[commandPairStat.top2[1]] || '')
                         + '（' + (commandPairStat.top2[0] || 0) + ' 次）\n'
                         + (commandPairStat.top3[2] || '') + ' ' + (stats.name[commandPairStat.top3[1]] || '')
-                        + '（' + (commandPairStat.top3[0] || 0) + ' 次）\n\n'
-
+                        + '（' + (commandPairStat.top3[0] || 0) + ' 次）\n'
+                        + '\n'
                         + (stats.name[player.id] || '') + ' 接受过 ' + commandReplyStat.count + ' 个 trigger，最多的 trigger 是：\n'
                         + (commandReplyStat.top1[1] || '') + '（' + (commandReplyStat.top1[0] || 0) + ' 次）\n'
                         + (commandReplyStat.top2[1] || '') + '（' + (commandReplyStat.top2[0] || 0) + ' 次）\n'
-                        + (commandReplyStat.top3[1] || '') + '（' + (commandReplyStat.top3[0] || 0) + ' 次）\n\n'
-
+                        + (commandReplyStat.top3[1] || '') + '（' + (commandReplyStat.top3[0] || 0) + ' 次）\n'
+                        + '\n'
                         + '其中，' + (stats.name[player.id] || '') + ' 经常：\n'
                         + '被 ' + (stats.name[commandReplyPairStat.top1[1]] || '') + ' ' + (commandReplyPairStat.top1[2] || '')
                         + '（' + (commandReplyPairStat.top1[0] || 0) + ' 次）\n'
                         + '被 ' + (stats.name[commandReplyPairStat.top2[1]] || '') + ' ' + (commandReplyPairStat.top2[2] || '')
                         + '（' + (commandReplyPairStat.top2[0] || 0) + ' 次）\n'
                         + '被 ' + (stats.name[commandReplyPairStat.top3[1]] || '') + ' ' + (commandReplyPairStat.top3[2] || '')
-                        + '（' + (commandReplyPairStat.top3[0] || 0) + ' 次）\n\n'
-
+                        + '（' + (commandReplyPairStat.top3[0] || 0) + ' 次）\n'
+                        + '\n'
                         + (stats.name[player.id] || '') + ' 呻吟了 ' + inlineUserStat.count + ' 次\n'
                         + '最长的呻吟有 ' + inlineUserStat.max + ' 段\n'
                         + '平均呻吟长度 ' + inlineUserStat.ave + ' 段',
@@ -184,26 +184,26 @@ module.exports = (bot, stats) => {
                     + '2P 有 ' + (gameStat.chat[2] || 0) + ' 次\n'
                     + '撸管 有 ' + (gameStat.chat[1] || 0) + ' 次\n'
                     + '本群最多发生过 ' + gameChatStat.max + 'P\n'
-                    + '每次啪啪平均 ' + gameChatStat.ave + ' 人\n\n'
-
+                    + '每次啪啪平均 ' + gameChatStat.ave + ' 人\n'
+                    + '\n'
                     + '本群最勤劳的是：\n'
                     + (stats.name[gameUserTotalStat.top1[1]] || '') + '（' + (gameUserTotalStat.top1[0] || 0) + ' 次）\n'
                     + (stats.name[gameUserTotalStat.top2[1]] || '') + '（' + (gameUserTotalStat.top2[0] || 0) + ' 次）\n'
-                    + (stats.name[gameUserTotalStat.top3[1]] || '') + '（' + (gameUserTotalStat.top3[0] || 0) + ' 次）\n\n'
-
+                    + (stats.name[gameUserTotalStat.top3[1]] || '') + '（' + (gameUserTotalStat.top3[0] || 0) + ' 次）\n'
+                    + '\n'
                     + '本群最缠绵的是：\n'
                     + (stats.name[gamePairStat.top1[1]] || '') + ' 和 ' + (stats.name[gamePairStat.top1[2]] || '')
                     + '（' + (gamePairStat.top1[0] || 0) + ' 次）\n'
                     + (stats.name[gamePairStat.top2[1]] || '') + ' 和 ' + (stats.name[gamePairStat.top2[2]] || '')
                     + '（' + (gamePairStat.top2[0] || 0) + ' 次）\n'
                     + (stats.name[gamePairStat.top3[1]] || '') + ' 和 ' + (stats.name[gamePairStat.top3[2]] || '')
-                    + '（' + (gamePairStat.top3[0] || 0) + ' 次）\n\n'
-
+                    + '（' + (gamePairStat.top3[0] || 0) + ' 次）\n'
+                    + '\n'
                     + '所有人总共触发过 ' + commandChatStat.count + ' 个 trigger，最多的 trigger 是：\n'
                     + (commandChatStat.top1[1] || '') + '（' + (commandChatStat.top1[0] || 0) + ' 次）\n'
                     + (commandChatStat.top2[1] || '') + '（' + (commandChatStat.top2[0] || 0) + ' 次）\n'
-                    + (commandChatStat.top3[1] || '') + '（' + (commandChatStat.top3[0] || 0) + ' 次）\n\n'
-
+                    + (commandChatStat.top3[1] || '') + '（' + (commandChatStat.top3[0] || 0) + ' 次）\n'
+                    + '\n'
                     + '本群的日常是：\n'
                     + (stats.name[commandUserStat.top1[1]] || '') + ' 喜欢 ' + (commandUserStat.top1[2] || '')
                     + '（' + (commandUserStat.top1[0] || 0) + ' 次）\n'

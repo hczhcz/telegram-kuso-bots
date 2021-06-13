@@ -35,7 +35,8 @@ const event = (handler, atIndex) => {
 
 const playerLine = (player) => {
     if (player) {
-        return '\n\n'
+        return '\n'
+            + '\n'
             + (
                 player.username
                     ? '@' + player.username
@@ -74,7 +75,8 @@ const playerUpdate = (msg, list) => {
     };
 
     bot.editMessageText(
-        playerInfo(list) + '\n\n'
+        playerInfo(list) + '\n'
+            + '\n'
             + '/1a2b@' + config.abUsername + ' 开始新游戏\n'
             + '/0a0b@' + config.abUsername + ' 结束游戏',
         {
@@ -114,7 +116,8 @@ const gameInfo = (guess, hint) => {
         total += 1;
     }
 
-    info += '（总共' + total + '次）\n\n'
+    info += '（总共' + total + '次）\n'
+        + '\n'
         + '猜测目标：\n'
         + hint;
 
@@ -163,9 +166,11 @@ const gameEvent = event((msg, match) => {
 
             bot.sendMessage(
                 msg.chat.id,
-                gameInfo(game.guess, game.charset) + '\n\n'
+                gameInfo(game.guess, game.charset) + '\n'
+                    + '\n'
                     + '猜对啦！答案是：\n'
-                    + game.answer + '\n\n'
+                    + game.answer + '\n'
+                    + '\n'
                     + '/1a2b@' + config.abUsername + ' 开始新游戏\n'
                     + '/3a4b@' + config.abUsername + ' 多人模式',
                 {
@@ -233,7 +238,8 @@ bot.onText(/^\/1a2b(@\w+)?(?: ([^\0]+))?$/, event((msg, match) => {
             bot.sendMessage(
                 msg.chat.id,
                 '游戏开始啦，猜测目标：\n'
-                    + game.hint + playerLine(multiplayer.get(msg.chat.id)) + '\n\n'
+                    + game.hint + playerLine(multiplayer.get(msg.chat.id)) + '\n'
+                    + '\n'
                     + '将根据第一次猜测决定答案长度',
                 {
                     reply_to_message_id: msg.message_id,
@@ -339,9 +345,11 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
             if (game.answer) {
                 bot.sendMessage(
                     msg.chat.id,
-                    gameInfo(game.guess, game.charset) + '\n\n'
+                    gameInfo(game.guess, game.charset) + '\n'
+                        + '\n'
                         + '游戏结束啦，答案是：\n'
-                        + game.answer + '\n\n'
+                        + game.answer + '\n'
+                        + '\n'
                         + '/1a2b@' + config.abUsername + ' 开始新游戏\n'
                         + '/3a4b@' + config.abUsername + ' 多人模式',
                     {
@@ -351,7 +359,8 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
             } else {
                 bot.sendMessage(
                     msg.chat.id,
-                    '游戏结束啦\n\n'
+                    '游戏结束啦\n'
+                        + '\n'
                         + '/1a2b@' + config.abUsername + ' 开始新游戏\n'
                         + '/3a4b@' + config.abUsername + ' 多人模式',
                     {
@@ -365,7 +374,8 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
 
             bot.sendMessage(
                 msg.chat.id,
-                '不存在的！\n\n'
+                '不存在的！\n'
+                    + '\n'
                     + '/1a2b@' + config.abUsername + ' 开始新游戏\n'
                     + '/3a4b@' + config.abUsername + ' 多人模式',
                 {
@@ -379,7 +389,9 @@ bot.onText(/^\/0a0b(@\w+)?$/, event((msg, match) => {
 bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
     bot.sendMessage(
         msg.chat.id,
-        '命令列表：\n'
+        '1A2B 猜数游戏\n'
+            + '\n'
+            + '命令列表：\n'
             + '/1a2b 开始新游戏\n'
             + '/1a2b <target> 指定猜测目标开始新游戏\n'
             + '/3a4b 多人模式\n'
@@ -390,7 +402,10 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '备注：\n'
             + '/1a2b 可将回复的消息设为猜测目标\n'
             + 'inline 查询将触发喵喵模式\n'
-            + '多行的猜测目标将触发喵喵模式'
+            + '多行的猜测目标将触发喵喵模式\n'
+            + '\n'
+            + '源码：\n'
+            + 'https://github.com/hczhcz/telegram-kuso-bots'
     );
 }, 1));
 
@@ -548,7 +563,8 @@ bot.on('inline_query', (query) => {
                         query.from.username
                             ? '@' + query.from.username
                             : query.from.first_name
-                    ) + ' 喵喵模式已装载！\n\n'
+                    ) + ' 喵喵模式已装载！\n'
+                        + '\n'
                         + '/1a2b@' + config.abUsername + ' 开始新游戏\n'
                         + '/3a4b@' + config.abUsername + ' 多人模式\n'
                         + '/0a0b@' + config.abUsername + ' 结束游戏',

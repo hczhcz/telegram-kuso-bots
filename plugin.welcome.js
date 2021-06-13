@@ -37,7 +37,7 @@ module.exports = (bot, event, playerEvent, env) => {
     const welcomeEvent = event((msg, match) => {
         for (const i in msg.new_chat_members) {
             if (msg.new_chat_members[i].username === config.threesomeUsername) {
-                env.info.welcome(msg);
+                env.info.start(msg);
             } else {
                 gen('welcome', welcomePairs, msg, msg.new_chat_members[i]);
             }
