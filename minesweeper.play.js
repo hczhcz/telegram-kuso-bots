@@ -15,6 +15,8 @@ const init = (id, rows, columns, mines, onGameInit, onNotValid, onGameExist) => 
             columns: columns,
             mines: mines,
             map: null,
+            timeBegin: null,
+            timeEnd: null,
             history: [],
             analysis: null,
         };
@@ -34,6 +36,7 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGame
 
     if (!game.map) {
         game.map = core.init(game.rows, game.columns, game.mines, targetI, targetJ);
+        game.timeBegin = Date.now();
     }
 
     if (core.click(game.map, targetI, targetJ)) {
@@ -48,12 +51,16 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onGame
         }
 
         if (result === 'win') {
+            game.timeEnd = Date.now();
+
             delete games[id];
 
             return onGameWin(game);
         }
 
         if (result === 'lose') {
+            game.timeEnd = Date.now();
+
             delete games[id];
 
             return onGameLose(game);

@@ -99,7 +99,8 @@ const gameStat = (msg, game, title, last) => {
     let text = title + '\n\n'
         + '地图：\n'
         + 'Op ' + game.analysis.open + ' / Is ' + game.analysis.island + ' / 3bv ' + game.analysis.bbbv + '\n'
-        + '操作总数 ' + game.history.length + '\n\n'
+        + '操作总数 ' + game.history.length + '\n'
+        + '耗时 ' + (game.timeEnd - game.timeBegin) / 1000 + 's\n\n'
         + '统计：\n';
 
     const stat = {};
