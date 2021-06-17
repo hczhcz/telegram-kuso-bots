@@ -15,6 +15,7 @@ const log = (head, body) => {
     });
 };
 
+const coolDown = {};
 let corpus1 = [];
 let corpus2 = [];
 
@@ -147,6 +148,14 @@ bot.on('message', (msg) => {
     if (!msg.text && !msg.sticker || config.ban[msg.from.id]) {
         return;
     }
+
+    const now = Date.now();
+
+    if (coolDown[msg.chat.id] > now - config.talkCoolDown) {
+        return;
+    }
+
+    coolDown[msg.chat.id] = now;
 
     const force = msg.chat.id === msg.from.id
         || msg.reply_to_message && msg.reply_to_message.from.username === config.talkUsername
