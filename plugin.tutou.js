@@ -6,14 +6,16 @@ const cwebp = require('cwebp');
 const config = require('./config');
 
 module.exports = (bot, event, playerEvent, env) => {
-    let tutouImage = null;
+    const tutouImages = {};
 
-    // cache image
-    canvas.loadImage('tutou/' + config.tutouImage).then((image) => {
-        tutouImage = image;
-    });
+    for (const i in config.tutouImages) {
+        // cache image
+        canvas.loadImage('tutou/' + config.tutouImages[i]).then((image) => {
+            tutouImages[i] = image;
+        });
+    }
 
-    bot.onText(/^\/addtutou(@\w+)?(?: (-?[\d.]+) (-?[\d.]+))?(?: (-?)([\d.]+))?(?: (-?[\d.]+))?$/, event((msg, match) => {
+    const draw = (msg, match, tutouImage) => {
         if (msg.reply_to_message) {
             const render = (bgImage) => {
                 const image = canvas.createCanvas(bgImage.width, bgImage.height);
@@ -96,6 +98,14 @@ module.exports = (bot, event, playerEvent, env) => {
                 });
             }
         }
+    };
+
+    bot.onText(/^\/addtutou(@\w+)?(?: (-?[\d.]+) (-?[\d.]+))?(?: (-?)([\d.]+))?(?: (-?[\d.]+))?$/, event((msg, match) => {
+        draw(msg, match, tutouImages.tutou);
+    }, 1));
+
+    bot.onText(/^\/addkangaroo(@\w+)?(?: (-?[\d.]+) (-?[\d.]+))?(?: (-?)([\d.]+))?(?: (-?[\d.]+))?$/, event((msg, match) => {
+        draw(msg, match, tutouImages.kangaroo);
     }, 1));
 
     env.info.addPluginHelp(
@@ -103,6 +113,10 @@ module.exports = (bot, event, playerEvent, env) => {
         '/addtutou 给图片加上兔头\n'
             + '/addtutou <left> <top> 指定位置画兔头\n'
             + '/addtutou <left> <top> <size> 指定位置和尺寸画兔头\n'
-            + '/addtutou <left> <top> <size> <angle> 指定位置、尺寸、角度画兔头'
+            + '/addtutou <left> <top> <size> <angle> 指定位置、尺寸、角度画兔头\n'
+            + '/addkangaroo 给图片加上袋鼠头\n'
+            + '/addkangaroo <left> <top> 指定位置画袋鼠头\n'
+            + '/addkangaroo <left> <top> <size> 指定位置和尺寸画袋鼠头\n'
+            + '/addkangaroo <left> <top> <size> <angle> 指定位置、尺寸、角度画袋鼠头'
     );
 };
