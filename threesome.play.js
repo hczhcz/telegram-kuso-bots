@@ -169,7 +169,7 @@ module.exports = (bot, games) => {
 
                     return bot.sendMessage(
                         msg.chat.id,
-                        '啪啪结束'
+                        '去了❤️'
                     );
                 default:
                     // nothing
