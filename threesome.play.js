@@ -164,13 +164,6 @@ module.exports = (bot, games) => {
                         msg.chat.id,
                         '唔哇啊啊啊啊…………'
                     );
-                case 0:
-                    delete games[msg.chat.id];
-
-                    return bot.sendMessage(
-                        msg.chat.id,
-                        '啪啪结束'
-                    );
                 default:
                     // nothing
             }

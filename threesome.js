@@ -408,6 +408,10 @@ setInterval(() => {
                 && game.time % 5 === 0
             ) {
                 command.tick(mockMsg);
+            } else if (game.time === game.total) {
+                command.get(mockMsg, 'orgasm', []);
+
+                delete data.games[i];
             }
         }
 
