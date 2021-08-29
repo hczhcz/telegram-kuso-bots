@@ -66,8 +66,8 @@ module.exports = (bot) => {
                 + '/status 查看 bot 状态\n'
                 + '\n'
                 + '备注：\n'
-                + '如果 <trigger> 为空，将 trigger 加入 bot自言自语\n'
-                + 'bot自言自语 即为啪啪时显示的内容\n'
+                + '啪啪时显示的内容 trigger 为 /sex\n'
+                + '高潮时显示的内容 trigger 为 /orgasm\n'
                 + '如果 @<content> 为空，将回复的消息加入 trigger\n'
                 + '\n';
 

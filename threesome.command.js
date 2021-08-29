@@ -56,7 +56,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                     text += '*';
                 }
 
-                text += (i.slice(1) || '<bot自言自语>') + '\n';
+                text += i.slice(1) + '\n';
             }
 
             return bot.sendMessage(
@@ -145,7 +145,7 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '已加入 ' + (key || 'bot自言自语') + ' 套餐！',
+                '已加入 ' + key + ' 套餐！',
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -209,7 +209,7 @@ module.exports = (bot, games, commands, writeCommand) => {
 
             return bot.sendMessage(
                 msg.chat.id,
-                '已从 ' + (key || 'bot自言自语') + ' 移除！',
+                '已从 ' + key + ' 移除！',
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -403,7 +403,7 @@ module.exports = (bot, games, commands, writeCommand) => {
                     args[pos] = tmp;
                 }
 
-                self.get(msg, '', args);
+                self.get(msg, 'sex', args);
             }
         },
     };

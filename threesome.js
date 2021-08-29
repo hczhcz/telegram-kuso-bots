@@ -292,25 +292,25 @@ bot.onText(/^\/listall(@\w+)?$/, event((msg, match) => {
     command.all(msg);
 }, 1));
 
-bot.onText(/^\/list(@\w+)?(?: ((?!_)\w*))?$/, event((msg, match) => {
+bot.onText(/^\/list(@\w+)? ((?!_)\w+)?$/, event((msg, match) => {
     command.list(msg, match[2] || '');
 }, 1));
 
-bot.onText(/^\/add(@\w+)? ((?!_)\w*)(?:@(.*))?$/, event((msg, match) => {
+bot.onText(/^\/add(@\w+)? ((?!_)\w+)(?:@(.*))?$/, event((msg, match) => {
     command.add(msg, match[2], match[3], true);
 }, 1));
 
-bot.onText(/^\/adds(@\w+)? ((?!_)\w*)(?:@(.*))?$/, event((msg, match) => {
+bot.onText(/^\/adds(@\w+)? ((?!_)\w+)(?:@(.*))?$/, event((msg, match) => {
     msg.chat.mapped = 0;
 
     command.add(msg, match[2], match[3], false);
 }, 1));
 
-bot.onText(/^\/del(@\w+)? ((?!_)\w*)(?:@(.*))?$/, event((msg, match) => {
+bot.onText(/^\/del(@\w+)? ((?!_)\w+)(?:@(.*))?$/, event((msg, match) => {
     command.del(msg, match[2], match[3], true, config.admin[msg.from.id]);
 }, 1));
 
-bot.onText(/^\/dels(@\w+)? ((?!_)\w*)(?:@(.*))?$/, event((msg, match) => {
+bot.onText(/^\/dels(@\w+)? ((?!_)\w+)(?:@(.*))?$/, event((msg, match) => {
     msg.chat.mapped = 0;
 
     command.del(msg, match[2], match[3], false, config.admin[msg.from.id]);
