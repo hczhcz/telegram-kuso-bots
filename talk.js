@@ -8,6 +8,7 @@ const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.talkToken);
 
 const fd = fs.openSync('log_talk', 'a');
+const fdAltCorpus = fs.openSync(config.talkPathAltCorpus, 'a');
 
 const log = (head, body) => {
     fs.write(fd, '[' + Date() + '] ' + head + ' ' + body + '\n', () => {
@@ -148,6 +149,40 @@ bot.on('message', (msg) => {
     if (!msg.text && !msg.sticker || config.ban[msg.from.id]) {
         return;
     }
+
+    // write to alt corpus (not in use for now)
+
+    const obj = {
+        id: msg.message_id,
+        from: msg.from.id,
+        chat: msg.chat.id,
+    };
+
+    if (msg.text) {
+        obj.text = msg.text;
+    }
+
+    if (msg.sticker) {
+        obj.sticker = msg.sticker.file_id;
+    }
+
+    if (msg.reply_to_message) {
+        obj.reply_id = msg.reply_to_message.message_id;
+
+        if (msg.reply_to_message.text) {
+            obj.reply_text = msg.reply_to_message.text;
+        }
+
+        if (msg.reply_to_message.sticker) {
+            obj.reply_sticker = msg.reply_to_message.sticker.file_id;
+        }
+    }
+
+    fs.write(fdAltCorpus, JSON.stringify(obj) + '\n', () => {
+        // nothing
+    });
+
+    // talk
 
     const now = Date.now();
 
