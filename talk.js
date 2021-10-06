@@ -17,104 +17,129 @@ const log = (head, body) => {
 };
 
 const coolDown = {};
-let corpus1 = [];
-let corpus2 = [];
+let corpus1 = {};
+let corpus2 = {};
 
 const updateCorpus = () => {
-    const newCorpus1 = [];
-    const newCorpus2 = [];
+    const newCorpus1 = {};
+    const newCorpus2 = {};
 
-    let last = {};
+    const last = {};
 
     readline.createInterface({
         input: fs.createReadStream(config.talkPathCorpus),
     }).on('line', (line) => {
         const obj = JSON.parse(line);
+        const tag = config.talkDataSource[obj.chat] || 'public';
 
-        if (config.talkDataSource[obj.chat]) {
-            if (obj.reply_id) {
-                last = {};
+        let reply = last[obj.chat] || {};
 
-                if (obj.reply_text) {
-                    last.text = obj.reply_text;
-                }
+        if (obj.reply_id) {
+            reply = {};
 
-                if (obj.reply_sticker) {
-                    last.sticker = obj.reply_sticker;
-                }
+            if (obj.reply_text) {
+                reply.text = obj.reply_text;
             }
 
-            const payload = {};
-
-            if (obj.text) {
-                if (obj.text.match(/@\w+|\/\w+|:\/\//)) {
-                    return;
-                }
-
-                payload.text = obj.text;
+            if (obj.reply_sticker) {
+                reply.sticker = obj.reply_sticker;
             }
-
-            if (obj.sticker) {
-                payload.sticker = obj.sticker;
-            }
-
-            newCorpus1.push([payload]);
-
-            if (last.text || last.sticker) {
-                newCorpus2.push([last, payload]);
-            }
-
-            last = payload;
         }
+
+        const payload = {};
+
+        if (obj.text) {
+            if (
+                obj.text.length > 20
+                || tag === 'public' && obj.text.length > 10
+                || obj.text.match(/@\w+|\/\w+|:\/\//)
+            ) {
+                return;
+            }
+
+            payload.text = obj.text;
+        }
+
+        if (obj.sticker) {
+            payload.sticker = obj.sticker;
+        }
+
+        newCorpus1[tag] = newCorpus1[tag] || [];
+        newCorpus1[tag].push(payload);
+
+        if (newCorpus1[tag].length === 200000) {
+            newCorpus1[tag] = newCorpus1[tag].filter(() => {
+                return Math.random() < 0.5;
+            });
+        }
+
+        if (reply.text || reply.sticker) {
+            newCorpus2[tag] = newCorpus2[tag] || [];
+            newCorpus2[tag].push([reply, payload]);
+
+            if (newCorpus2[tag].length === 200000) {
+                newCorpus2[tag] = newCorpus2[tag].filter(() => {
+                    return Math.random() < 0.5;
+                });
+            }
+        }
+
+        last[obj.chat] = payload;
     }).on('close', () => {
         corpus1 = newCorpus1;
         corpus2 = newCorpus2;
     });
 };
 
-const getCandidates = (last) => {
+const getCandidates = (reply, tag) => {
     const candidates = [];
 
-    if (last.text) {
-        for (const i in corpus1) {
-            if (corpus1[i].text) {
-                const rate = fuzzball.ratio(last.text, corpus1[i].text) / 100;
+    if (reply.text) {
+        for (const i in corpus1[tag]) {
+            const payload = corpus1[tag][i];
 
-                if (rate > 0.5) {
-                    candidates.push([rate * rate * 0.5, corpus1[i]]);
+            if (payload.text) {
+                const rate = fuzzball.ratio(reply.text, payload.text) / 100;
+
+                if (rate > 0.5 && reply.text !== payload.text) {
+                    candidates.push([rate * rate * 0.5, payload]);
                 }
             }
         }
 
-        for (const i in corpus2) {
-            if (corpus2[i][0].text) {
-                const rate = fuzzball.ratio(last.text, corpus2[i][0].text) / 100;
+        for (const i in corpus2[tag]) {
+            const payloads = corpus2[tag][i];
+
+            if (payloads[0].text) {
+                const rate = fuzzball.ratio(reply.text, payloads[0].text) / 100;
 
                 if (rate > 0.5) {
                     if (
-                        corpus2[i][1].text
-                        && corpus2[i][1].text.length <= Math.max(16, last.text.length * 2)
+                        payloads[1].text
+                        && payloads[1].text.length <= reply.text.length
                     ) {
-                        candidates.push([rate * rate, corpus2[i][1]]);
+                        candidates.push([rate * rate, payloads[1]]);
                     }
 
-                    if (corpus2[i][1].sticker) {
-                        candidates.push([rate * rate, corpus2[i][1]]);
+                    if (payloads[1].sticker) {
+                        candidates.push([rate * rate, payloads[1]]);
                     }
                 }
             }
         }
     }
 
-    if (last.sticker) {
+    if (reply.sticker) {
         for (const i in corpus2) {
-            if (corpus2[i][0].sticker && last.sticker === corpus2[i][0].sticker) {
-                if (corpus2[i][1].text && corpus2[i][1].text.length <= 16) {
-                    candidates.push([0.25, corpus2[i][1]]);
+            const payloads = corpus2[tag][i];
+
+            if (payloads[0].sticker && reply.sticker === payloads[0].sticker) {
+                if (payloads[1].text) {
+                    candidates.push([0.25, payloads[1]]);
                 }
 
-                if (corpus2[i][1].sticker) {
-                    candidates.push([1, corpus2[i][1]]);
+                if (payloads[1].sticker) {
+                    candidates.push([1, payloads[1]]);
                 }
             }
         }
@@ -197,24 +222,25 @@ bot.on('message', (msg) => {
         || msg.text && config.talkTrigger.exec(msg.text);
 
     if (force || Math.random() < config.talkRate) {
-        const last = {};
+        const reply = {};
 
         if (msg.text) {
-            last.text = msg.text;
+            reply.text = msg.text;
         }
 
         if (msg.sticker) {
-            last.sticker = msg.sticker.file_id;
+            reply.sticker = msg.sticker.file_id;
         }
 
-        const candidates = getCandidates(last);
+        const tag = config.talkDataSource[msg.chat.id] || 'public';
+        const candidates = getCandidates(reply, tag);
         const payload = chooseCandidate(candidates, force);
 
         if (payload !== null) {
             log(
                 msg.chat.id + '@' + (msg.chat.username || '')
                     + ':' + msg.from.id + '@' + (msg.from.username || ''),
-                (last.text || last.sticker) + ':' + (payload.text || payload.sticker)
+                (reply.text || reply.sticker) + ':' + (payload.text || payload.sticker)
             );
 
             if (payload.text) {
