@@ -46,8 +46,6 @@ const updateCorpus = () => {
             }
         }
 
-        last[obj.chat] = payload;
-
         const payload = {};
 
         if (obj.text) {
@@ -56,6 +54,8 @@ const updateCorpus = () => {
                 || tag === 'public' && obj.text.length > 10
                 || obj.text.match(/@\w+|\/\w+|:\/\//)
             ) {
+                last[obj.chat] = payload;
+
                 return;
             }
 
@@ -85,6 +85,8 @@ const updateCorpus = () => {
                 });
             }
         }
+
+        last[obj.chat] = payload;
     }).on('close', () => {
         corpus1 = newCorpus1;
         corpus2 = newCorpus2;
