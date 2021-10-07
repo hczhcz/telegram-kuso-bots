@@ -46,6 +46,8 @@ const updateCorpus = () => {
             }
         }
 
+        last[obj.chat] = payload;
+
         const payload = {};
 
         if (obj.text) {
@@ -83,8 +85,6 @@ const updateCorpus = () => {
                 });
             }
         }
-
-        last[obj.chat] = payload;
     }).on('close', () => {
         corpus1 = newCorpus1;
         corpus2 = newCorpus2;
