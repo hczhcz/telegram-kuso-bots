@@ -104,6 +104,10 @@ module.exports = (bot, event, playerEvent, env) => {
         draw(msg, match, tutouImages.tutou);
     }, 1));
 
+    bot.onText(/^\/addtoutu(@\w+)?(?: (-?[\d.]+) (-?[\d.]+))?(?: (-?)([\d.]+))?(?: (-?[\d.]+))?$/, event((msg, match) => {
+        draw(msg, match, tutouImages.toutu);
+    }, 1));
+
     bot.onText(/^\/addkangaroo(@\w+)?(?: (-?[\d.]+) (-?[\d.]+))?(?: (-?)([\d.]+))?(?: (-?[\d.]+))?$/, event((msg, match) => {
         draw(msg, match, tutouImages.kangaroo);
     }, 1));
@@ -114,9 +118,7 @@ module.exports = (bot, event, playerEvent, env) => {
             + '/addtutou <left> <top> 指定位置画兔头\n'
             + '/addtutou <left> <top> <size> 指定位置和尺寸画兔头\n'
             + '/addtutou <left> <top> <size> <angle> 指定位置、尺寸、角度画兔头\n'
-            + '/addkangaroo 给图片加上袋鼠头\n'
-            + '/addkangaroo <left> <top> 指定位置画袋鼠头\n'
-            + '/addkangaroo <left> <top> <size> 指定位置和尺寸画袋鼠头\n'
-            + '/addkangaroo <left> <top> <size> <angle> 指定位置、尺寸、角度画袋鼠头'
+            + '/addtoutu <...> 给图片加上兔头（同分异构体）\n'
+            + '/addkangaroo <...> 给图片加上袋鼠头'
     );
 };
