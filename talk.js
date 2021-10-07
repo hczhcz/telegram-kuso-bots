@@ -100,10 +100,10 @@ const getCandidates = (reply, tag) => {
         for (const i in corpus1[tag]) {
             const payload = corpus1[tag][i];
 
-            if (payload.text) {
+            if (payload.text && payload.text !== reply.text) {
                 const rate = fuzzball.ratio(reply.text, payload.text) / 100;
 
-                if (rate > 0.5 && reply.text !== payload.text) {
+                if (rate > 0.5) {
                     candidates.push([rate * rate * 0.5, payload]);
                 }
             }
@@ -116,10 +116,7 @@ const getCandidates = (reply, tag) => {
                 const rate = fuzzball.ratio(reply.text, payloads[0].text) / 100;
 
                 if (rate > 0.5) {
-                    if (
-                        payloads[1].text
-                        && payloads[1].text.length <= reply.text.length
-                    ) {
+                    if (payloads[1].text && payloads[1].text.length <= reply.text.length) {
                         candidates.push([rate * rate, payloads[1]]);
                     }
 
@@ -157,7 +154,7 @@ const chooseCandidate = (candidates, force) => {
         total += candidates[i][0];
     }
 
-    if (force || total >= 1) {
+    if (force || total > 1) {
         let target = Math.random() * total;
 
         for (const i in candidates) {
