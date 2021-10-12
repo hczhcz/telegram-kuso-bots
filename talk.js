@@ -49,17 +49,18 @@ const updateCorpus = () => {
         const payload = {};
 
         if (obj.text) {
+            payload.text = obj.text;
+
             if (
-                obj.text.length > 20
-                || tag === 'public' && obj.text.length > 10
-                || obj.text.match(/@\w+|\/\w+|:\/\//)
+                payload.text.length > 20
+                || tag === 'public' && payload.text.length > 10
+                || payload.text === reply.text
+                || payload.text.match(/@\w+|\/\w+|:\/\//)
             ) {
                 last[obj.chat] = payload;
 
                 return;
             }
-
-            payload.text = obj.text;
         }
 
         if (obj.sticker) {
