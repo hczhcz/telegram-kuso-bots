@@ -17,13 +17,10 @@ const log = (head, body) => {
 };
 
 const coolDown = {};
-let corpus1 = {};
-let corpus2 = {};
+let corpus = {};
 
 const updateCorpus = () => {
-    const newCorpus1 = {};
-    const newCorpus2 = {};
-
+    const newCorpus = {};
     const last = {};
 
     readline.createInterface({
@@ -67,21 +64,12 @@ const updateCorpus = () => {
             payload.sticker = obj.sticker;
         }
 
-        newCorpus1[tag] = newCorpus1[tag] || [];
-        newCorpus1[tag].push(payload);
-
-        if (newCorpus1[tag].length === 200000) {
-            newCorpus1[tag] = newCorpus1[tag].filter(() => {
-                return Math.random() < 0.5;
-            });
-        }
-
         if (reply.text || reply.sticker) {
-            newCorpus2[tag] = newCorpus2[tag] || [];
-            newCorpus2[tag].push([reply, payload]);
+            newCorpus[tag] = newCorpus[tag] || [];
+            newCorpus[tag].push([reply, payload]);
 
-            if (newCorpus2[tag].length === 200000) {
-                newCorpus2[tag] = newCorpus2[tag].filter(() => {
+            if (newCorpus[tag].length === 200000) {
+                newCorpus[tag] = newCorpus[tag].filter(() => {
                     return Math.random() < 0.5;
                 });
             }
@@ -89,8 +77,7 @@ const updateCorpus = () => {
 
         last[obj.chat] = payload;
     }).on('close', () => {
-        corpus1 = newCorpus1;
-        corpus2 = newCorpus2;
+        corpus = newCorpus;
     });
 };
 
@@ -98,20 +85,8 @@ const getCandidates = (reply, tag) => {
     const candidates = [];
 
     if (reply.text) {
-        for (const i in corpus1[tag]) {
-            const payload = corpus1[tag][i];
-
-            if (payload.text && payload.text !== reply.text) {
-                const rate = fuzzball.ratio(reply.text, payload.text) / 100;
-
-                if (rate > 0.5) {
-                    candidates.push([rate * rate * 0.5, payload]);
-                }
-            }
-        }
-
-        for (const i in corpus2[tag]) {
-            const payloads = corpus2[tag][i];
+        for (const i in corpus[tag]) {
+            const payloads = corpus[tag][i];
 
             if (payloads[0].text) {
                 const rate = fuzzball.ratio(reply.text, payloads[0].text) / 100;
@@ -130,8 +105,8 @@ const getCandidates = (reply, tag) => {
     }
 
     if (reply.sticker) {
-        for (const i in corpus2) {
-            const payloads = corpus2[tag][i];
+        for (const i in corpus) {
+            const payloads = corpus[tag][i];
 
             if (payloads[0].sticker && reply.sticker === payloads[0].sticker) {
                 if (payloads[1].text) {
