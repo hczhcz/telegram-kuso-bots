@@ -105,7 +105,7 @@ const getCandidates = (reply, tag) => {
     }
 
     if (reply.sticker) {
-        for (const i in corpus) {
+        for (const i in corpus[tag]) {
             const payloads = corpus[tag][i];
 
             if (payloads[0].sticker && reply.sticker === payloads[0].sticker) {
