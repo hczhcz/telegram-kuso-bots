@@ -207,7 +207,7 @@ bot.on('message', (msg) => {
             reply.sticker = msg.sticker.file_id;
         }
 
-        const tag = config.talkDataSource[msg.chat.id] || 'public';
+        const tag = config.talkDataTarget[msg.chat.id] || 'public';
         const candidates = getCandidates(reply, tag);
         const payload = chooseCandidate(candidates, force);
 
