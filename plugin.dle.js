@@ -92,7 +92,10 @@ module.exports = (bot, event, playerEvent, env) => {
                 }
             }
 
-            let text = '';
+            let text = '猜短语\n'
+                + '<b>粗体</b> 表示字或拼音正确\n'
+                + '<i>斜体</i> 表示字或拼音存在，但位置错误\n'
+                + '每天 UTC 零点更新\n';
 
             for (let i = 0; i < length; i += 1) {
                 if (i) {
@@ -121,9 +124,9 @@ module.exports = (bot, event, playerEvent, env) => {
         }
     }, 2));
 
-    // env.info.addPluginHelp(
-    //     '123',
-    //     '123<...>人 触发木头人事件\n'
-    //         + '123不许<...> 触发不许动事件'
-    // );
+    env.info.addPluginHelp(
+        'dle',
+        '/4dle <guess> 猜四字短语\n'
+            + '/12dle <guess> 猜十二字短语'
+    );
 };
