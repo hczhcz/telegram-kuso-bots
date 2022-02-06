@@ -95,7 +95,8 @@ module.exports = (bot, event, playerEvent, env) => {
             let text = '猜短语\n'
                 + '<b>粗体</b> 表示字或拼音正确\n'
                 + '<i>斜体</i> 表示字或拼音存在，但位置错误\n'
-                + '每天 UTC 零点更新\n';
+                + '每天 UTC 零点更新\n'
+                + '\n';
 
             for (let i = 0; i < length; i += 1) {
                 if (i) {
