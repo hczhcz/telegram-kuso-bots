@@ -64,16 +64,12 @@ module.exports = (bot, event, playerEvent, env) => {
                 const pos = [];
 
                 for (let j = 0; j < length; j += 1) {
-                    if (guessPinyin[j][i]) {
-                        if (guessPinyin[j][i] === targetPinyin[j][i]) {
-                            pos.push(0);
-                        } else {
-                            guessCounts[guessPinyin[j][i]] = (guessCounts[guessPinyin[j][i]] || 0) + 1;
-                            targetCounts[targetPinyin[j][i]] = (targetCounts[targetPinyin[j][i]] || 0) + 1;
-                            pos.push(guessCounts[guessPinyin[j][i]]);
-                        }
+                    if (guessPinyin[j][i] === targetPinyin[j][i]) {
+                        pos.push(0);
                     } else {
-                        pos.push(-1);
+                        guessCounts[guessPinyin[j][i]] = (guessCounts[guessPinyin[j][i]] || 0) + 1;
+                        targetCounts[targetPinyin[j][i]] = (targetCounts[targetPinyin[j][i]] || 0) + 1;
+                        pos.push(guessCounts[guessPinyin[j][i]]);
                     }
                 }
 
