@@ -4,7 +4,7 @@ const child_process = require('child_process');
 
 const config = require('./config');
 
-const run_calc = (path, expression, onDone, onFail) => {
+const runCalc = (path, expression, onDone, onFail) => {
     const process = child_process.spawn('timeout', ['0.2s', path]);
     let result = '';
 
@@ -35,7 +35,7 @@ module.exports = (bot, event, playerEvent, env) => {
             match[3] = match[3].split('').reverse().join('');
         }
 
-        run_calc('calc/eigenmath', match[3], (result) => {
+        runCalc('calc/eigenmath', match[3], (result) => {
             // done
 
             bot.sendMessage(
@@ -50,7 +50,7 @@ module.exports = (bot, event, playerEvent, env) => {
         }, () => {
             // fail
 
-            run_calc('calc/eigenmath_format', match[3], (result) => {
+            runCalc('calc/eigenmath_format', match[3], (result) => {
                 // done
 
                 bot.sendMessage(

@@ -75,17 +75,17 @@ module.exports = (bot, event, playerEvent, env) => {
             }
 
             if (msg.reply_to_message.photo) {
-                let best_width = 0;
-                let file_id = null;
+                let bestWidth = 0;
+                let fileId = null;
 
                 for (const i in msg.reply_to_message.photo) {
-                    if (best_width < msg.reply_to_message.photo[i].width) {
-                        best_width = msg.reply_to_message.photo[i].width;
-                        file_id = msg.reply_to_message.photo[i].file_id;
+                    if (bestWidth < msg.reply_to_message.photo[i].width) {
+                        bestWidth = msg.reply_to_message.photo[i].width;
+                        fileId = msg.reply_to_message.photo[i].file_id;
                     }
                 }
 
-                bot.getFileLink(file_id).then((link) => {
+                bot.getFileLink(fileId).then((link) => {
                     canvas.loadImage(link).then((bgImage) => {
                         bot.sendPhoto(
                             msg.chat.id,

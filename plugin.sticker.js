@@ -35,17 +35,17 @@ module.exports = (bot, event, playerEvent, env) => {
     }, -1);
 
     const imageEvent = event((msg, match) => {
-        let best_width = 0;
-        let file_id = msg.document && msg.document.file_id;
+        let bestWidth = 0;
+        let fileId = msg.document && msg.document.file_id;
 
         for (const i in msg.photo) {
-            if (best_width < msg.photo[i].width) {
-                best_width = msg.photo[i].width;
-                file_id = msg.photo[i].file_id;
+            if (bestWidth < msg.photo[i].width) {
+                bestWidth = msg.photo[i].width;
+                fileId = msg.photo[i].file_id;
             }
         }
 
-        bot.getFileLink(file_id).then((link) => {
+        bot.getFileLink(fileId).then((link) => {
             canvas.loadImage(link).then((bgImage) => {
                 const size = Math.max(bgImage.width, bgImage.height);
 
@@ -59,7 +59,7 @@ module.exports = (bot, event, playerEvent, env) => {
                     image.toBuffer(),
                     {},
                     {
-                        filename: file_id + '.png',
+                        filename: fileId + '.png',
                         contentType: 'image/png',
                     }
                 );

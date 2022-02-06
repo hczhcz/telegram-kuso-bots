@@ -226,17 +226,17 @@ bot.onText(/^\/(nono|onon)(@\w+)?(?: (\d+) (\d+))?(?: (\d+))?$/, event((msg, mat
             });
         });
     } else if (msg.reply_to_message && msg.reply_to_message.photo) {
-        let best_width = 0;
-        let file_id = null;
+        let bestWidth = 0;
+        let fileId = null;
 
         for (const i in msg.reply_to_message.photo) {
-            if (best_width < msg.reply_to_message.photo[i].width) {
-                best_width = msg.reply_to_message.photo[i].width;
-                file_id = msg.reply_to_message.photo[i].file_id;
+            if (bestWidth < msg.reply_to_message.photo[i].width) {
+                bestWidth = msg.reply_to_message.photo[i].width;
+                fileId = msg.reply_to_message.photo[i].file_id;
             }
         }
 
-        bot.getFileLink(file_id).then((link) => {
+        bot.getFileLink(fileId).then((link) => {
             canvas.loadImage(link).then((bgImage) => {
                 init(pix.generate(rows, columns, bgImage));
             });
