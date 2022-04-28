@@ -7,19 +7,41 @@ const config = require('./config');
 
 module.exports = (bot, event, playerEvent, env) => {
     const stickerEvent = event((msg, match) => {
-        const decoder = new cwebp.DWebp(bot.getFileStream(msg.sticker.file_id));
-
-        decoder.toBuffer((err, buffer) => {
+        if (msg.sticker.is_animated) {
             bot.sendDocument(
                 msg.chat.id,
-                buffer,
+                bot.getFileStream(msg.sticker.file_id),
                 {},
                 {
-                    filename: msg.sticker.file_id + '.png',
-                    contentType: 'image/png',
+                    filename: msg.sticker.file_id + '.gz',
+                    contentType: 'application/gzip',
                 }
             );
-        });
+        } else if (msg.sticker.is_video) {
+            bot.sendDocument(
+                msg.chat.id,
+                bot.getFileStream(msg.sticker.file_id),
+                {},
+                {
+                    filename: msg.sticker.file_id + '.webm',
+                    contentType: 'video/webm',
+                }
+            );
+        } else {
+            const decoder = new cwebp.DWebp(bot.getFileStream(msg.sticker.file_id));
+
+            decoder.toBuffer((err, buffer) => {
+                bot.sendDocument(
+                    msg.chat.id,
+                    buffer,
+                    {},
+                    {
+                        filename: msg.sticker.file_id + '.png',
+                        contentType: 'image/png',
+                    }
+                );
+            });
+        }
     }, -1);
 
     const animationEvent = event((msg, match) => {
@@ -29,7 +51,7 @@ module.exports = (bot, event, playerEvent, env) => {
             {},
             {
                 filename: msg.animation.file_id + '.m4v',
-                contentType: 'video/x-m4v',
+                contentType: 'video/mp4',
             }
         );
     }, -1);
