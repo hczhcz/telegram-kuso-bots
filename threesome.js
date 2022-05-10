@@ -366,6 +366,10 @@ bot.on('chosen_inline_result', (chosen) => {
     data.writeQuery(chosen);
 });
 
+for (const i in config.banChat) {
+    bot.leaveChat(i);
+}
+
 data.loadCommands();
 data.loadStats();
 

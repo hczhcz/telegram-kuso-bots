@@ -243,6 +243,10 @@ bot.on('message', (msg) => {
     }
 });
 
+for (const i in config.banChat) {
+    bot.leaveChat(i);
+}
+
 updateCorpus();
 
 setInterval(updateCorpus, config.talkUpdateInterval);
