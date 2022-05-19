@@ -124,7 +124,7 @@ const gameImage = (guess, total) => {
             ctx.fillRect(left + j * 64 + 1, top + 1, 62, 62);
             ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][guess[i][j]];
             ctx.fillRect(left + j * 64 + 2, top + 2, 60, 60);
-            ctx.font = '48px Sans';
+            ctx.font = '48px Helvetica';
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
