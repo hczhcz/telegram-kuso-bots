@@ -22,3 +22,4 @@ Game Bots
 * [Minesweeper @mine_sweeper_bot](https://t.me/mine_sweeper_bot)
 * [Nonogram @nonogram_bot](https://t.me/nonogram_bot)
 * [Sokoban @sokoban_bot](https://t.me/sokoban_bot)
+* [Wordle @wordle5_bot](https://t.me/wordle5_bot)
