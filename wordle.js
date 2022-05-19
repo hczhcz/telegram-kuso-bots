@@ -128,7 +128,7 @@ const gameImage = (guess, total) => {
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(i[j + 1], left + j * 64 + 32, top + 32);
+            ctx.fillText(i[j + 1].toUpperCase(), left + j * 64 + 32, top + 32);
         }
 
         top += 64;
