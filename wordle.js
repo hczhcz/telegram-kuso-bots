@@ -107,7 +107,7 @@ const playerUpdate = (msg, list) => {
     });
 };
 
-const gameInfo = (guess, hint) => {
+const gameInfo = (guess) => {
     let info = '猜测历史：\n';
     let total = 0;
 
@@ -117,10 +117,7 @@ const gameInfo = (guess, hint) => {
         total += 1;
     }
 
-    info += '（总共' + total + '次）\n'
-        + '\n'
-        + '猜测目标：\n'
-        + hint;
+    info += '（总共' + total + '次）';
 
     return info;
 };
@@ -148,7 +145,7 @@ const gameEvent = event((msg, match) => {
 
             bot.sendMessage(
                 msg.chat.id,
-                gameInfo(game.guess, game.hint) + playerLine(multiplayer.get(msg.chat.id)),
+                gameInfo(game.guess) + playerLine(multiplayer.get(msg.chat.id)),
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -167,7 +164,7 @@ const gameEvent = event((msg, match) => {
 
             bot.sendMessage(
                 msg.chat.id,
-                gameInfo(game.guess, game.charset) + '\n'
+                gameInfo(game.guess) + '\n'
                     + '\n'
                     + '猜对啦！答案是：\n'
                     + game.answer + '\n'
@@ -210,7 +207,7 @@ const gameEvent = event((msg, match) => {
     );
 }, -1);
 
-bot.onText(/^[a-z]5$/, (msg, match) => {
+bot.onText(/^[a-z]{5}$/, (msg, match) => {
     multiplayer.verify(
         msg.chat.id,
         msg.from,
@@ -337,7 +334,7 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
 
             bot.sendMessage(
                 msg.chat.id,
-                gameInfo(game.guess, game.charset) + '\n'
+                gameInfo(game.guess) + '\n'
                     + '\n'
                     + '游戏结束啦，答案是：\n'
                     + game.answer + '\n'
