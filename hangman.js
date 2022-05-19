@@ -135,7 +135,7 @@ const messageUpdate = (msg, game, win) => {
     // keyboard
 
     const matrix = [];
-    const lineCount = Math.floor((game.keyboard.length - 1) / 8) + 1;
+    const lineCount = Math.ceil(game.keyboard.length / 8);
 
     const keyPerLine = Math.floor(game.keyboard.length / lineCount);
     const keyRemain = game.keyboard.length - keyPerLine * lineCount;

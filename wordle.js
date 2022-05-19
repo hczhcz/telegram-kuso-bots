@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const canvas = require('canvas');
 
 const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.wordleToken);
@@ -107,19 +108,38 @@ const playerUpdate = (msg, list) => {
     });
 };
 
-const gameInfo = (guess) => {
-    let info = '猜测历史：\n';
-    let total = 0;
+const gameImage = (guess, total) => {
+    const width = 328 * Math.ceil(total / 32) - 8;
+    const height = 64 * Math.min(total, 32);
 
-    // TODO
+    const image = canvas.createCanvas(width, height);
+    const ctx = image.getContext('2d');
+
+    let left = 0;
+    let top = 0;
+
     for (const i in guess) {
-        info += i.slice(1) + ' ' + guess[i] + '\n';
-        total += 1;
+        for (let j = 0; j < 5; j += 1) {
+            ctx.fillStyle = '#787c7e';
+            ctx.fillRect(left + j * 64 + 1, top + 1, 62, 62);
+            ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][guess[i][j]];
+            ctx.fillRect(left + j * 64 + 2, top + 2, 60, 60);
+            ctx.font = '48px Sans';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(i[j + 1], left + j * 64 + 32, top + 32);
+        }
+
+        top += 64;
+
+        if (top === 2048) {
+            left += 328;
+            top = 0;
+        }
     }
 
-    info += '（总共' + total + '次）';
-
-    return info;
+    return image;
 };
 
 const gameEnd = (game) => {
@@ -143,10 +163,14 @@ const gameEvent = event((msg, match) => {
         (game) => {
             // guess
 
-            bot.sendMessage(
+            const total = Object.keys(game.guess).length;
+
+            bot.sendPhoto(
                 msg.chat.id,
-                gameInfo(game.guess) + playerLine(multiplayer.get(msg.chat.id)),
+                gameImage(game.guess, total).toBuffer(),
                 {
+                    caption: '猜词进行中\n'
+                        + '已猜' + total + '次' + playerLine(multiplayer.get(msg.chat.id)),
                     reply_to_message_id: msg.message_id,
                 }
             ).then((sentmsg) => {
@@ -162,16 +186,17 @@ const gameEvent = event((msg, match) => {
 
             gameEnd(game);
 
-            bot.sendMessage(
+            const total = Object.keys(game.guess).length;
+
+            bot.sendPhoto(
                 msg.chat.id,
-                gameInfo(game.guess) + '\n'
-                    + '\n'
-                    + '猜对啦！答案是：\n'
-                    + game.answer + '\n'
-                    + '\n'
-                    + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
-                    + '/wordles@' + config.wordleUsername + ' 多人模式',
+                gameImage(game.guess, total).toBuffer(),
                 {
+                    caption: '猜对啦！答案是：\n'
+                        + game.answer + '\n'
+                        + '\n'
+                        + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+                        + '/wordles@' + config.wordleUsername + ' 多人模式',
                     reply_to_message_id: msg.message_id,
                 }
             );
@@ -230,7 +255,7 @@ bot.onText(/^\/wordle(@\w+)?$/, event((msg, match) => {
 
             bot.sendMessage(
                 msg.chat.id,
-                '游戏开始啦',
+                '游戏开始啦' + playerLine(multiplayer.get(msg.chat.id)),
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -332,16 +357,17 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
 
             gameEnd(game);
 
-            bot.sendMessage(
+            const total = Object.keys(game.guess).length;
+
+            bot.sendPhoto(
                 msg.chat.id,
-                gameInfo(game.guess) + '\n'
-                    + '\n'
-                    + '游戏结束啦，答案是：\n'
-                    + game.answer + '\n'
-                    + '\n'
-                    + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
-                    + '/wordles@' + config.wordleUsername + ' 多人模式',
+                gameImage(game.guess, total).toBuffer(),
                 {
+                    caption: '游戏结束啦，答案是：\n'
+                        + game.answer + '\n'
+                        + '\n'
+                        + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+                        + '/wordles@' + config.wordleUsername + ' 多人模式',
                     reply_to_message_id: msg.message_id,
                 }
             );
