@@ -117,6 +117,7 @@ const gameStat = (msg, game, title, last) => {
         + '\n'
         + '正确 ' + totCorrect + ' / 错误 ' + totError + '\n'
         + '空格消耗率 ' + Math.round(100 * totError / (game.rows * game.columns - totCorrect) | 0) + '%\n'
+        + '耗时 ' + (game.timeEnd - game.timeBegin) / 1000 + 's\n'
         + '\n'
         + '统计：\n';
 

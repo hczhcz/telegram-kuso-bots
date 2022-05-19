@@ -16,6 +16,8 @@ const init = (id, rows, columns, boxes, correct, onGameInit, onNotValid, onGameE
             boxes: boxes,
             correct: correct,
             map: core.init(rows, columns, boxes, correct),
+            timeBegin: null,
+            timeEnd: null,
             history: [],
         };
 
@@ -32,10 +34,16 @@ const click = (id, playerId, targetI, targetJ, onGameContinue, onGameWin, onNotC
 
     const game = games[id];
 
+    if (!game.timeBegin) {
+        game.timeBegin = Date.now();
+    }
+
     if (core.click(game.map, game.correct, targetI, targetJ)) {
         game.history.push([playerId, targetI, targetJ, game.map[targetI][targetJ] === game.correct]);
 
         if (core.finished(game.map, game.correct)) {
+            game.timeEnd = Date.now();
+
             delete games[id];
 
             return onGameWin(game);
