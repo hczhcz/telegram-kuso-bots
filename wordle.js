@@ -109,8 +109,8 @@ const playerUpdate = (msg, list) => {
 };
 
 const gameImage = (guess, total) => {
-    const width = 328 * Math.ceil(total / 32) - 8;
-    const height = 64 * Math.min(total, 32);
+    const width = 328 * Math.ceil(total / 16) - 8;
+    const height = 64 * Math.min(total, 16);
 
     const image = canvas.createCanvas(width, height);
     const ctx = image.getContext('2d');
@@ -133,7 +133,7 @@ const gameImage = (guess, total) => {
 
         top += 64;
 
-        if (top === 2048) {
+        if (top === 1024) {
             left += 328;
             top = 0;
         }
