@@ -143,13 +143,13 @@ const gameImage = (guess, total) => {
 };
 
 const gameEnd = (game) => {
-    for (const i in game.guess) {
-        const sentmsg = game.guess[i].msg;
+    for (const i in game.msgs) {
+        const sentmsg = game.msgs[i];
 
-        if (sentmsg) {
-            bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
-        }
+        bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
     }
+
+    delete game.msgs;
 
     fs.write(fd, JSON.stringify(game) + '\n', () => {
         // nothing
@@ -174,8 +174,8 @@ const gameEvent = event((msg, match) => {
                     reply_to_message_id: msg.message_id,
                 }
             ).then((sentmsg) => {
-                if (game.active) {
-                    game.guess['#' + match[0]].msg = sentmsg;
+                if (game.msgs) {
+                    game.msgs.push(sentmsg);
                 } else {
                     bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
                 }
@@ -252,6 +252,8 @@ bot.onText(/^\/wordle(@\w+)?$/, event((msg, match) => {
         msg.chat.id,
         (game) => {
             // game init
+
+            game.msgs = [];
 
             bot.sendMessage(
                 msg.chat.id,

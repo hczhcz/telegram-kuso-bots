@@ -57,7 +57,6 @@ const init = (id, text, meowId, onGameInit, onGameExist) => {
         charset: null,
         answer: null,
         hint: null,
-        active: true,
         guess: {},
     };
 
@@ -98,7 +97,6 @@ const end = (id, onGameEnd, onGameNotExist) => {
     const game = games[id];
 
     delete game.hint;
-    delete game.active;
 
     delete games[id];
 

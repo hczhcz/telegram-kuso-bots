@@ -13,7 +13,6 @@ const init = (id, onGameInit, onGameExist) => {
 
     games[id] = {
         answer: core.init(),
-        active: true,
         guess: {},
     };
 
@@ -28,8 +27,6 @@ const end = (id, onGameEnd, onGameNotExist) => {
     }
 
     const game = games[id];
-
-    delete game.active;
 
     delete games[id];
 
