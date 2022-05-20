@@ -276,7 +276,7 @@ bot.onText(/^[a-z]+$/, (msg, match) => {
 });
 
 bot.onText(/^\/wordle(@\w+)?(?: (\w+))?$/, event((msg, match) => {
-    const mode = match[2] || 'wordle';
+    const mode = match[2] || config.wordleDefaultDict;
 
     resource.verify(
         mode,
@@ -460,6 +460,8 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '\n'
             + '命令列表：\n'
             + '/wordle 开始新游戏\n'
+            + '/wordle en 开始新游戏（使用 Google Ngrams 词库，默认）\n'
+            + '/wordle wordle 开始新游戏（使用 Wordle 官方词库）\n'
             + '/wordles 多人模式\n'
             + '/eldrow 结束游戏\n'
             + '/help 显示帮助\n'
