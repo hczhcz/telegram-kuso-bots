@@ -7,6 +7,7 @@ const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.wordleToken);
 const multiplayer = require('./multiplayer')();
 
+const resource = require('./wordle.resource');
 const play = require('./wordle.play');
 
 const fd = fs.openSync('log_wordle', 'a');
@@ -108,8 +109,8 @@ const playerUpdate = (msg, list) => {
     });
 };
 
-const gameImage = (guess, total) => {
-    const width = 328 * Math.ceil(total / 16) - 8;
+const gameImage = (guess, size, total) => {
+    const width = 64 * size * Math.ceil(total / 16) + 8 * (size - 1);
     const height = 64 * Math.min(total, 16);
 
     const image = canvas.createCanvas(width, height);
@@ -119,7 +120,7 @@ const gameImage = (guess, total) => {
     let top = 0;
 
     for (const i in guess) {
-        for (let j = 0; j < 5; j += 1) {
+        for (let j = 0; j < size; j += 1) {
             ctx.fillStyle = '#787c7e';
             ctx.fillRect(left + j * 64 + 1, top + 1, 62, 62);
             ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][guess[i][j]];
@@ -134,7 +135,7 @@ const gameImage = (guess, total) => {
         top += 64;
 
         if (top === 1024) {
-            left += 328;
+            left += 64 * size + 8;
             top = 0;
         }
     }
@@ -167,7 +168,7 @@ const gameEvent = event((msg, match) => {
 
             bot.sendPhoto(
                 msg.chat.id,
-                gameImage(game.guess, total).toBuffer(),
+                gameImage(game.guess, game.answer.length, total).toBuffer(),
                 {
                     caption: '猜词进行中\n'
                         + '已猜' + total + '次' + playerLine(multiplayer.get(msg.chat.id)),
@@ -190,7 +191,7 @@ const gameEvent = event((msg, match) => {
 
             bot.sendPhoto(
                 msg.chat.id,
-                gameImage(game.guess, total).toBuffer(),
+                gameImage(game.guess, game.answer.length, total).toBuffer(),
                 {
                     caption: '猜对啦！答案是：\n'
                         + game.answer + '\n'
@@ -247,28 +248,52 @@ bot.onText(/^[a-z]{5}$/, (msg, match) => {
     );
 });
 
-bot.onText(/^\/wordle(@\w+)?$/, event((msg, match) => {
-    play.init(
-        msg.chat.id,
-        (game) => {
-            // game init
+bot.onText(/^\/wordle(@\w+)?(?: ([a-z]+)(\d*))?$/, event((msg, match) => {
+    const id = match[1] || 'wordle';
+    const size = parseInt(match[2] || '5', 10);
 
-            game.msgs = [];
+    resource.load(
+        id,
+        size,
+        (dict) => {
+            // loaded
 
-            bot.sendMessage(
+            play.init(
                 msg.chat.id,
-                '游戏开始啦' + playerLine(multiplayer.get(msg.chat.id)),
-                {
-                    reply_to_message_id: msg.message_id,
+                id + size,
+                dict,
+                (game) => {
+                    // game init
+
+                    game.msgs = [];
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '游戏开始啦' + playerLine(multiplayer.get(msg.chat.id)),
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                },
+                () => {
+                    // game exist
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '已经开始啦',
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
                 }
             );
         },
         () => {
-            // game exist
+            // not valid
 
             bot.sendMessage(
                 msg.chat.id,
-                '已经开始啦',
+                '不…这样的参数…不可以…',
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -363,7 +388,7 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
 
             bot.sendPhoto(
                 msg.chat.id,
-                gameImage(game.guess, total).toBuffer(),
+                gameImage(game.guess, game.answer.length, total).toBuffer(),
                 {
                     caption: '游戏结束啦，答案是：\n'
                         + game.answer + '\n'
