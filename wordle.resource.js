@@ -9,6 +9,24 @@ const core = require('./wordle.core');
 
 const dicts = {};
 
+const verify = (id, onValid, onNotValid) => {
+    let dictInfo = null;
+
+    for (const i in config.wordleDict) {
+        if (config.wordleDict[i].id === id) {
+            dictInfo = config.wordleDict[i];
+
+            break;
+        }
+    }
+
+    if (dictInfo) {
+        onValid();
+    } else {
+        onNotValid();
+    }
+};
+
 const load = (id, size, onDone, onNotValid) => {
     let dictInfo = null;
 
@@ -53,5 +71,6 @@ const load = (id, size, onDone, onNotValid) => {
 };
 
 module.exports = {
+    verify: verify,
     load: load,
 };

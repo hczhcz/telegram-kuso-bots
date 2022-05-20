@@ -6,15 +6,14 @@ const core = require('./wordle.core');
 
 const games = {};
 
-const init = (id, mode, dict, onGameInit, onGameExist) => {
+const init = (id, mode, onGameInit, onGameExist) => {
     if (games[id]) {
         return onGameExist();
     }
 
     games[id] = {
-        answer: core.dictSelect(dict),
         mode: mode,
-        dict: dict,
+        answer: null,
         guess: {},
     };
 
@@ -30,25 +29,45 @@ const end = (id, onGameEnd, onGameNotExist) => {
 
     const game = games[id];
 
-    delete game.dict;
-
     delete games[id];
 
     return onGameEnd(game);
 };
 
-const guess = (id, word, onGuess, onGameEnd, onGuessDuplicated, onNotValid, onGameNotExist) => {
+const verify = (id, word, onValid, onNotValid, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
 
     const game = games[id];
 
+    if (game.answer) {
+        if (word.length === game.answer.length) {
+            return onValid(game.mode);
+        }
+
+        return onNotValid();
+    }
+
+    return onValid(game.mode);
+};
+
+const guess = (id, dict, word, onGuess, onGameEnd, onGuessDuplicated, onNotValid, onGameNotExist) => {
+    if (!games[id]) {
+        return onGameNotExist();
+    }
+
+    const game = games[id];
+
+    if (!game.answer) {
+        game.answer = core.dictSelect(dict);
+    }
+
     if (game.guess['#' + word]) {
         return onGuessDuplicated();
     }
 
-    const result = core.guess(game.dict, word, game.answer);
+    const result = core.guess(dict, word, game.answer);
 
     if (result === -1) {
         return onNotValid();
@@ -79,6 +98,7 @@ const count = () => {
 module.exports = {
     init: init,
     end: end,
+    verify: verify,
     guess: guess,
     count: count,
 };

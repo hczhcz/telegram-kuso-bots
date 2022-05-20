@@ -110,7 +110,7 @@ const playerUpdate = (msg, list) => {
 };
 
 const gameImage = (guess, size, total) => {
-    const width = 64 * size * Math.ceil(total / 16) + 8 * (size - 1);
+    const width = (64 * size + 8) * Math.ceil(total / 16) - 8;
     const height = 64 * Math.min(total, 16);
 
     const image = canvas.createCanvas(width, height);
@@ -158,110 +158,134 @@ const gameEnd = (game) => {
 };
 
 const gameEvent = event((msg, match) => {
-    play.guess(
-        msg.chat.id,
-        match[0],
-        (game) => {
-            // guess
+    resource.load(
+        match[1],
+        match[0].length,
+        (dict) => {
+            // loaded
 
-            const total = Object.keys(game.guess).length;
-
-            bot.sendPhoto(
+            play.guess(
                 msg.chat.id,
-                gameImage(game.guess, game.answer.length, total).toBuffer(),
-                {
-                    caption: '猜词进行中\n'
-                        + '已猜' + total + '次' + playerLine(multiplayer.get(msg.chat.id)),
-                    reply_to_message_id: msg.message_id,
-                }
-            ).then((sentmsg) => {
-                if (game.msgs) {
-                    game.msgs.push(sentmsg);
-                } else {
-                    bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
-                }
-            });
-        },
-        (game) => {
-            // game end
+                dict,
+                match[0],
+                (game) => {
+                    // guess
 
-            gameEnd(game);
+                    const total = Object.keys(game.guess).length;
 
-            const total = Object.keys(game.guess).length;
+                    bot.sendPhoto(
+                        msg.chat.id,
+                        gameImage(game.guess, game.answer.length, total).toBuffer(),
+                        {
+                            caption: '猜词进行中\n'
+                                + '已猜' + total + '次' + playerLine(multiplayer.get(msg.chat.id)),
+                            reply_to_message_id: msg.message_id,
+                        }
+                    ).then((sentmsg) => {
+                        if (game.msgs) {
+                            game.msgs.push(sentmsg);
+                        } else {
+                            bot.deleteMessage(sentmsg.chat.id, sentmsg.message_id);
+                        }
+                    });
+                },
+                (game) => {
+                    // game end
 
-            bot.sendPhoto(
-                msg.chat.id,
-                gameImage(game.guess, game.answer.length, total).toBuffer(),
-                {
-                    caption: '猜对啦！答案是：\n'
-                        + game.answer + '\n'
-                        + '\n'
-                        + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
-                        + '/wordles@' + config.wordleUsername + ' 多人模式',
-                    reply_to_message_id: msg.message_id,
-                }
-            );
-        },
-        () => {
-            // guess duplicated
+                    gameEnd(game);
 
-            bot.sendMessage(
-                msg.chat.id,
-                '已经猜过啦',
-                {
-                    reply_to_message_id: msg.message_id,
+                    const total = Object.keys(game.guess).length;
+
+                    bot.sendPhoto(
+                        msg.chat.id,
+                        gameImage(game.guess, game.answer.length, total).toBuffer(),
+                        {
+                            caption: '猜对啦！答案是：\n'
+                                + game.answer + '\n'
+                                + '\n'
+                                + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+                                + '/wordles@' + config.wordleUsername + ' 多人模式',
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                },
+                () => {
+                    // guess duplicated
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '已经猜过啦',
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                },
+                () => {
+                    // not valid
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '这个单词不在词汇表里哦',
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                },
+                () => {
+                    // game not exist
+
+                    // never reach
+                    throw Error(JSON.stringify(msg));
                 }
             );
         },
         () => {
             // not valid
-
-            bot.sendMessage(
-                msg.chat.id,
-                '这个单词不在词汇表里哦',
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
-        },
-        () => {
-            // game not exist
-
-            // never reach
-            throw Error(JSON.stringify(msg));
         }
     );
 }, -1);
 
-bot.onText(/^[a-z]{5}$/, (msg, match) => {
-    multiplayer.verify(
+bot.onText(/^[a-z]+$/, (msg, match) => {
+    play.verify(
         msg.chat.id,
-        msg.from,
-        () => {
+        match[0],
+        (mode) => {
             // valid
 
-            gameEvent(msg, match);
+            multiplayer.verify(
+                msg.chat.id,
+                msg.from,
+                () => {
+                    // valid
+
+                    match.push(mode);
+                    gameEvent(msg, match);
+                },
+                () => {
+                    // not valid
+                }
+            );
         },
         () => {
             // not valid
+        },
+        () => {
+            // game not exist
         }
     );
 });
 
-bot.onText(/^\/wordle(@\w+)?(?: ([a-z]+)(\d*))?$/, event((msg, match) => {
-    const id = match[1] || 'wordle';
-    const size = parseInt(match[2] || '5', 10);
+bot.onText(/^\/wordle(@\w+)?(?: (\w+))?$/, event((msg, match) => {
+    const mode = match[2] || 'wordle';
 
-    resource.load(
-        id,
-        size,
-        (dict) => {
-            // loaded
+    resource.verify(
+        mode,
+        () => {
+            // valid
 
             play.init(
                 msg.chat.id,
-                id + size,
-                dict,
+                mode,
                 (game) => {
                     // game init
 
@@ -384,20 +408,33 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
 
             gameEnd(game);
 
-            const total = Object.keys(game.guess).length;
+            if (game.answer) {
+                const total = Object.keys(game.guess).length;
 
-            bot.sendPhoto(
-                msg.chat.id,
-                gameImage(game.guess, game.answer.length, total).toBuffer(),
-                {
-                    caption: '游戏结束啦，答案是：\n'
-                        + game.answer + '\n'
+                bot.sendPhoto(
+                    msg.chat.id,
+                    gameImage(game.guess, game.answer.length, total).toBuffer(),
+                    {
+                        caption: '游戏结束啦，答案是：\n'
+                            + game.answer + '\n'
+                            + '\n'
+                            + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+                            + '/wordles@' + config.wordleUsername + ' 多人模式',
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
+            } else {
+                bot.sendMessage(
+                    msg.chat.id,
+                    '游戏结束啦\n'
                         + '\n'
                         + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
                         + '/wordles@' + config.wordleUsername + ' 多人模式',
-                    reply_to_message_id: msg.message_id,
-                }
-            );
+                    {
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
+            }
         },
         () => {
             // game not exist
