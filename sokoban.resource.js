@@ -10,6 +10,7 @@ for (const i in levelNames) {
     if (levelNames[i].slice(levelNames[i].length - 4) !== '.txt') {
         throw Error(JSON.stringify(levelNames));
     }
+
     levelNames[i] = levelNames[i].slice(0, levelNames[i].length - 4);
 }
 

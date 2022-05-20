@@ -30,9 +30,9 @@ const load = (id, limit, onDone, onNotValid) => {
 
             const dict = core.dictInit();
 
-            rl.on('line', (str) => {
+            rl.on('line', (line) => {
                 if (!limit || dict.list.length < limit) {
-                    core.dictAdd(dict, str);
+                    core.dictAdd(dict, line);
                 }
             }).on('close', () => {
                 dicts[id + '_' + limit] = dict;
