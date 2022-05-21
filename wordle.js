@@ -109,26 +109,40 @@ const playerUpdate = (msg, list) => {
     });
 };
 
-const gameImage = (guess, size, total) => {
-    const width = (64 * size + 8) * Math.ceil(total / 16) - 8;
-    const height = 64 * Math.min(total, 16);
+const gameImage = (guess, size, total, hint) => {
+    let realTotal = total;
+
+    if (hint) {
+        realTotal += Math.ceil(13 / size) / 2;
+    }
+
+    const width = (64 * size + 8) * Math.ceil(realTotal / 16) - 8;
+    const height = 64 * Math.min(realTotal, 16);
 
     const image = canvas.createCanvas(width, height);
     const ctx = image.getContext('2d');
 
+    const best = {};
     let left = 0;
     let top = 0;
 
+    ctx.font = '48px Helvetica';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
     for (const i in guess) {
         for (let j = 0; j < size; j += 1) {
+            best[i[j + 1]] = best[i[j + 1]] || '';
+
+            if (best[i[j + 1]] < guess[i][j]) {
+                best[i[j + 1]] = guess[i][j];
+            }
+
             ctx.fillStyle = '#787c7e';
             ctx.fillRect(left + j * 64 + 1, top + 1, 62, 62);
             ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][guess[i][j]];
             ctx.fillRect(left + j * 64 + 2, top + 2, 60, 60);
-            ctx.font = '48px Helvetica';
             ctx.fillStyle = '#ffffff';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
             ctx.fillText(i[j + 1].toUpperCase(), left + j * 64 + 32, top + 32);
         }
 
@@ -137,6 +151,32 @@ const gameImage = (guess, size, total) => {
         if (top === 1024) {
             left += 64 * size + 8;
             top = 0;
+        }
+    }
+
+    if (hint) {
+        const letter = 'abcdefghijklmnopqrstuvwxyz';
+
+        ctx.font = '24px Helvetica';
+
+        for (const i in letter) {
+            const j = i % (size * 2);
+            const k = Math.floor(i / (size * 2));
+
+            ctx.fillStyle = '#787c7e';
+            ctx.fillRect(left + j * 32 + 1, top + k * 32 + 1, 30, 30);
+
+            if (best[letter[i]]) {
+                ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][best[letter[i]]];
+                ctx.fillRect(left + j * 32 + 2, top + k * 32 + 2, 28, 28);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(letter[i].toUpperCase(), left + j * 32 + 16, top + k * 32 + 16);
+            } else {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(left + j * 32 + 2, top + k * 32 + 2, 28, 28);
+                ctx.fillStyle = '#000000';
+                ctx.fillText(letter[i].toUpperCase(), left + j * 32 + 16, top + k * 32 + 16);
+            }
         }
     }
 
@@ -175,7 +215,7 @@ const gameEvent = event((msg, match) => {
 
                     bot.sendPhoto(
                         msg.chat.id,
-                        gameImage(game.guess, game.answer.length, total).toBuffer(),
+                        gameImage(game.guess, game.answer.length, total, true).toBuffer(),
                         {
                             caption: '猜词进行中\n'
                                 + '已猜' + total + '次' + playerLine(multiplayer.get(msg.chat.id)),
@@ -198,7 +238,7 @@ const gameEvent = event((msg, match) => {
 
                     bot.sendPhoto(
                         msg.chat.id,
-                        gameImage(game.guess, game.answer.length, total).toBuffer(),
+                        gameImage(game.guess, game.answer.length, total, false).toBuffer(),
                         {
                             caption: '猜对啦！答案是：\n'
                                 + game.answer + '\n'
@@ -413,7 +453,7 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
 
                 bot.sendPhoto(
                     msg.chat.id,
-                    gameImage(game.guess, game.answer.length, total).toBuffer(),
+                    gameImage(game.guess, game.answer.length, total, false).toBuffer(),
                     {
                         caption: '游戏结束啦，答案是：\n'
                             + game.answer + '\n'
