@@ -217,8 +217,7 @@ const gameEvent = event((msg, match) => {
                         msg.chat.id,
                         gameImage(game.guess, game.answer.length, total, true).toBuffer(),
                         {
-                            caption: '猜词进行中\n'
-                                + '已猜' + total + '次' + playerLine(multiplayer.get(msg.chat.id)),
+                            caption: '（总共' + total + '次）' + playerLine(multiplayer.get(msg.chat.id)),
                             reply_to_message_id: msg.message_id,
                         }
                     ).then((sentmsg) => {
@@ -240,7 +239,9 @@ const gameEvent = event((msg, match) => {
                         msg.chat.id,
                         gameImage(game.guess, game.answer.length, total, false).toBuffer(),
                         {
-                            caption: '猜对啦！答案是：\n'
+                            caption: '（总共' + total + '次）\n'
+                                + '\n'
+                                + '猜对啦！答案是：\n'
                                 + game.answer + '\n'
                                 + '\n'
                                 + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
@@ -455,7 +456,9 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
                     msg.chat.id,
                     gameImage(game.guess, game.answer.length, total, false).toBuffer(),
                     {
-                        caption: '游戏结束啦，答案是：\n'
+                        caption: '（总共' + total + '次）\n'
+                            + '\n'
+                            + '游戏结束啦，答案是：\n'
                             + game.answer + '\n'
                             + '\n'
                             + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
