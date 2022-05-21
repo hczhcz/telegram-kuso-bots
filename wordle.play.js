@@ -34,22 +34,18 @@ const end = (id, onGameEnd, onGameNotExist) => {
     return onGameEnd(game);
 };
 
-const verify = (id, word, onValid, onNotValid, onGameNotExist) => {
+const verify = (id, size, onValid, onNotValid, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
     }
 
     const game = games[id];
 
-    if (game.answer) {
-        if (word.length === game.answer.length) {
-            return onValid(game.mode);
-        }
-
-        return onNotValid();
+    if (!game.answer || game.answer.length === size) {
+        return onValid(game.mode);
     }
 
-    return onValid(game.mode);
+    return onNotValid();
 };
 
 const guess = (id, dict, word, onGuess, onGameEnd, onGuessDuplicated, onNotValid, onGameNotExist) => {
@@ -58,21 +54,19 @@ const guess = (id, dict, word, onGuess, onGameEnd, onGuessDuplicated, onNotValid
     }
 
     const game = games[id];
-
-    if (!game.answer) {
-        game.answer = core.dictSelect(dict);
-    }
+    const answer = game.answer || core.dictSelect(dict);
 
     if (game.guess['#' + word]) {
         return onGuessDuplicated();
     }
 
-    const result = core.guess(dict, word, game.answer);
+    const result = core.guess(dict, word, answer);
 
     if (result === -1) {
         return onNotValid();
     }
 
+    game.answer = answer;
     game.guess['#' + word] = ('0'.repeat(word.length) + result).slice(-word.length);
 
     if (Object.keys(game.guess).length > config.wordleMaxGuess) {

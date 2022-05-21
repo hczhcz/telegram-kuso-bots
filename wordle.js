@@ -159,7 +159,7 @@ const gameEnd = (game) => {
 
 const gameEvent = event((msg, match) => {
     resource.load(
-        match[1],
+        match.mode,
         match[0].length,
         (dict) => {
             // loaded
@@ -167,7 +167,7 @@ const gameEvent = event((msg, match) => {
             play.guess(
                 msg.chat.id,
                 dict,
-                match[0],
+                match[0].toLowerCase(),
                 (game) => {
                     // guess
 
@@ -245,10 +245,10 @@ const gameEvent = event((msg, match) => {
     );
 }, -1);
 
-bot.onText(/^[a-z]+$/, (msg, match) => {
+bot.onText(/^[A-Za-z]+$/, (msg, match) => {
     play.verify(
         msg.chat.id,
-        match[0],
+        match[0].length,
         (mode) => {
             // valid
 
@@ -258,7 +258,7 @@ bot.onText(/^[a-z]+$/, (msg, match) => {
                 () => {
                     // valid
 
-                    match.push(mode);
+                    match.mode = mode;
                     gameEvent(msg, match);
                 },
                 () => {
