@@ -79,7 +79,7 @@ module.exports = (bot, event, playerEvent, env) => {
                             if (pos[j] <= (targetCounts[guessPinyin[j][i]] || 0)) {
                                 guessPinyin[j][i] = '<i>' + guessPinyin[j][i] + '</i>';
                             } else {
-                                guessPinyin[j][i] = '<del>' + guessPinyin[j][i] + '</del>';
+                                guessPinyin[j][i] = '<tg-spoiler>' + guessPinyin[j][i] + '</tg-spoiler>';
                             }
                         } else {
                             guessPinyin[j][i] = '<b>' + guessPinyin[j][i] + '</b>';
@@ -91,15 +91,10 @@ module.exports = (bot, event, playerEvent, env) => {
             let text = '猜短语\n'
                 + '<b>粗体</b> 表示字或拼音正确\n'
                 + '<i>斜体</i> 表示字或拼音存在，但位置错误\n'
-                + '每天 UTC 零点更新\n'
-                + '\n';
+                + '每天 UTC 零点更新\n';
 
             for (let i = 0; i < length; i += 1) {
-                if (i) {
-                    text += ' ';
-                }
-
-                text += guessPinyin[i][0] + ' ' + guessPinyin[i][1] + guessPinyin[i][2] + guessPinyin[i][3];
+                text += '\n' + guessPinyin[i][0] + ' ' + guessPinyin[i][1] + guessPinyin[i][2] + guessPinyin[i][3];
             }
 
             bot.sendMessage(
