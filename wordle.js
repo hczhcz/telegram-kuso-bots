@@ -229,9 +229,9 @@ const gameImageCn = (guess, size, total, hint) => {
             ctx.fillText(pinyin[j][0], left + j * 80 + 40, top + 48);
             ctx.font = '16px Helvetica';
 
-            const m1 = ctx.measureText(pinyin[j][1].toUpperCase()) / 2;
-            const m2 = ctx.measureText(pinyin[j][1].toUpperCase()) / 2;
-            const m3 = ctx.measureText(pinyin[j][3]) / 2;
+            const m1 = ctx.measureText(pinyin[j][1].toUpperCase()).width / 2;
+            const m2 = ctx.measureText(pinyin[j][2].toUpperCase()).width / 2;
+            const m3 = ctx.measureText(pinyin[j][3]).width / 2;
 
             ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][1][j] > guess[i][0][j]) * guess[i][1][j]];
             ctx.fillText(pinyin[j][1].toUpperCase(), left + j * 80 + 40 - m2 - m3, top + 16);
@@ -260,7 +260,7 @@ const gameImageCn = (guess, size, total, hint) => {
             'v', 've',
         ];
 
-        ctx.font = '24px Helvetica';
+        ctx.font = '16px Helvetica';
 
         for (const i in part) {
             const j = i % (size * 2);
@@ -273,12 +273,12 @@ const gameImageCn = (guess, size, total, hint) => {
                 ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][best[part[i]]];
                 ctx.fillRect(left + j * 40 + 2, top + k * 32 + 2, 36, 28);
                 ctx.fillStyle = '#ffffff';
-                ctx.fillText(part[i], left + j * 40 + 20, top + k * 32 + 16);
+                ctx.fillText(part[i].toUpperCase(), left + j * 40 + 20, top + k * 32 + 16);
             } else {
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(left + j * 40 + 2, top + k * 32 + 2, 36, 28);
                 ctx.fillStyle = '#000000';
-                ctx.fillText(part[i], left + j * 40 + 20, top + k * 32 + 16);
+                ctx.fillText(part[i].toUpperCase(), left + j * 40 + 20, top + k * 32 + 16);
             }
         }
     }
