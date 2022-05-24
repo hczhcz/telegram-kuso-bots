@@ -2,6 +2,7 @@
 
 const dictInit = () => {
     return {
+        language: 'en',
         list: [],
         words: {},
     };
@@ -27,25 +28,25 @@ const guess = (dict, word, answer) => {
 
         for (let i = 0; i < answer.length; i += 1) {
             if (word[i] === answer[i]) {
-                pos[i] = 0;
+                pos.push(0);
             } else {
                 guessCounts[word[i].charCodeAt(0)] = (guessCounts[word[i].charCodeAt(0)] || 0) + 1;
                 answerCounts[answer[i].charCodeAt(0)] = (answerCounts[answer[i].charCodeAt(0)] || 0) + 1;
-                pos[i] = guessCounts[word[i].charCodeAt(0)];
+                pos.push(guessCounts[word[i].charCodeAt(0)]);
             }
         }
 
-        let tag = 0;
+        let tag = '';
 
         for (let i = 0; i < answer.length; i += 1) {
-            tag *= 10;
-
             if (pos[i]) {
                 if (pos[i] <= (answerCounts[word[i].charCodeAt(0)] || 0)) {
-                    tag += 1;
+                    tag += '1';
+                } else {
+                    tag += '0';
                 }
             } else {
-                tag += 2;
+                tag += '2';
             }
         }
 

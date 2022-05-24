@@ -12,7 +12,7 @@ const makePinyin = (text) => {
     let j = 0;
 
     for (const i in tokens) {
-        const match = tokens[i][0].match(/^([bcdfghjklmnpqrstwxyz]|[csz]h|)([aeiouv]+n?g?r?)(\d?)$/);
+        const match = tokens[i][0].match(/^([bcdfghjklmnpqrstwxyz]|ch|sh|zh|)([aeiouv]+(?:n|ng|)|ng|er)(\d?)$/);
 
         if (match) {
             result.push([text[j], match[1], match[2], match[3]]);

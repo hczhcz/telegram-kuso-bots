@@ -7,7 +7,8 @@ const config = require('./config');
 const bot = require('./bot.' + config.bot)(config.wordleToken);
 const multiplayer = require('./multiplayer')();
 
-const resource = require('./wordle.resource');
+const enResource = require('./wordle.en.resource');
+// const cnResource = require('./wordle.cn.resource');
 const play = require('./wordle.play');
 
 const fd = fs.openSync('log_wordle', 'a');
@@ -198,7 +199,7 @@ const gameEnd = (game) => {
 };
 
 const gameEvent = event((msg, match) => {
-    resource.load(
+    enResource.load(
         match.mode,
         match[0].length,
         (dict) => {
@@ -317,9 +318,9 @@ bot.onText(/^[A-Za-z]+$/, (msg, match) => {
 });
 
 bot.onText(/^\/wordle(@\w+)?(?: (\w+))?$/, event((msg, match) => {
-    const mode = match[2] || config.wordleDefaultDict;
+    const mode = match[2] || config.wordleEnDefaultDict;
 
-    resource.verify(
+    enResource.verify(
         mode,
         () => {
             // valid

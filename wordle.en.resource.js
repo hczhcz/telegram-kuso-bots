@@ -5,16 +5,16 @@ const readline = require('readline');
 
 const config = require('./config');
 
-const core = require('./wordle.core');
+const core = require('./wordle.en.core');
 
 const dicts = {};
 
 const verify = (id, onValid, onNotValid) => {
     let dictInfo = null;
 
-    for (const i in config.wordleDict) {
-        if (config.wordleDict[i].id === id) {
-            dictInfo = config.wordleDict[i];
+    for (const i in config.wordleEnDict) {
+        if (config.wordleEnDict[i].id === id) {
+            dictInfo = config.wordleEnDict[i];
 
             break;
         }
@@ -30,9 +30,9 @@ const verify = (id, onValid, onNotValid) => {
 const load = (id, size, onDone, onNotValid) => {
     let dictInfo = null;
 
-    for (const i in config.wordleDict) {
-        if (config.wordleDict[i].id === id) {
-            dictInfo = config.wordleDict[i];
+    for (const i in config.wordleEnDict) {
+        if (config.wordleEnDict[i].id === id) {
+            dictInfo = config.wordleEnDict[i];
 
             break;
         }
@@ -49,9 +49,9 @@ const load = (id, size, onDone, onNotValid) => {
             const dict = core.dictInit();
             let count = 0;
 
-            for (const i in config.wordleCustomWord) {
-                if (config.wordleCustomWord[i].length === size) {
-                    core.dictAdd(dict, config.wordleCustomWord[i], true);
+            for (const i in config.wordleEnCustomWord) {
+                if (config.wordleEnCustomWord[i].length === size) {
+                    core.dictAdd(dict, config.wordleEnCustomWord[i], true);
                 }
             }
 

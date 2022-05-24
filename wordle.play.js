@@ -2,7 +2,8 @@
 
 const config = require('./config');
 
-const core = require('./wordle.core');
+const enCore = require('./wordle.en.core');
+// const cnCore = require('./wordle.cn.core');
 
 const games = {};
 
@@ -53,6 +54,10 @@ const guess = (id, dict, word, onGuess, onGameEnd, onGuessDuplicated, onNotValid
         return onGameNotExist();
     }
 
+    const core = {
+        en: enCore,
+        // cn: cnCore,
+    }[dict.language];
     const game = games[id];
     const answer = game.answer || core.dictSelect(dict);
 
@@ -67,7 +72,7 @@ const guess = (id, dict, word, onGuess, onGameEnd, onGuessDuplicated, onNotValid
     }
 
     game.answer = answer;
-    game.guess['#' + word] = ('0'.repeat(word.length) + result).slice(-word.length);
+    game.guess['#' + word] = result;
 
     if (Object.keys(game.guess).length > config.wordleMaxGuess) {
         for (const i in game.guess) {
@@ -78,7 +83,7 @@ const guess = (id, dict, word, onGuess, onGameEnd, onGuessDuplicated, onNotValid
         }
     }
 
-    if (game.guess['#' + word] === '2'.repeat(word.length)) {
+    if (word === game.answer) {
         return end(id, onGameEnd, onGameNotExist);
     }
 
