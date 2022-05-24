@@ -115,7 +115,7 @@ const gameImageEn = (guess, size, total, hint) => {
     let realTotal = total;
 
     if (hint) {
-        realTotal += Math.ceil(13 / size) / 2;
+        realTotal += 0.5 * Math.ceil(13 / size);
     }
 
     const width = (64 * size + 8) * Math.ceil(realTotal / 16) - 8;
@@ -157,7 +157,7 @@ const gameImageEn = (guess, size, total, hint) => {
     }
 
     if (hint) {
-        const letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const letter = 'abcdefghijklmnopqrstuvwxyz';
 
         ctx.font = '24px Helvetica';
 
@@ -172,12 +172,12 @@ const gameImageEn = (guess, size, total, hint) => {
                 ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][best[letter[i]]];
                 ctx.fillRect(left + j * 32 + 2, top + k * 32 + 2, 28, 28);
                 ctx.fillStyle = '#ffffff';
-                ctx.fillText(letter[i], left + j * 32 + 16, top + k * 32 + 16);
+                ctx.fillText(letter[i].toUpperCase(), left + j * 32 + 16, top + k * 32 + 16);
             } else {
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(left + j * 32 + 2, top + k * 32 + 2, 28, 28);
                 ctx.fillStyle = '#000000';
-                ctx.fillText(letter[i], left + j * 32 + 16, top + k * 32 + 16);
+                ctx.fillText(letter[i].toUpperCase(), left + j * 32 + 16, top + k * 32 + 16);
             }
         }
     }
@@ -186,8 +186,14 @@ const gameImageEn = (guess, size, total, hint) => {
 };
 
 const gameImageCn = (guess, size, total, hint) => {
-    const width = (80 * size + 8) * Math.ceil(total / 16) - 8;
-    const height = 80 * Math.min(total, 16);
+    let realTotal = total;
+
+    if (hint) {
+        realTotal += 0.4 * Math.ceil(29 / size);
+    }
+
+    const width = (80 * size + 8) * Math.ceil(realTotal / 16) - 8;
+    const height = 80 * Math.min(realTotal, 16);
 
     const image = canvas.createCanvas(width, height);
     const ctx = image.getContext('2d');
@@ -222,12 +228,17 @@ const gameImageCn = (guess, size, total, hint) => {
             ctx.fillStyle = '#ffffff';
             ctx.fillText(pinyin[j][0], left + j * 80 + 40, top + 48);
             ctx.font = '16px Helvetica';
+
+            const m1 = ctx.measureText(pinyin[j][1].toUpperCase()) / 2;
+            const m2 = ctx.measureText(pinyin[j][1].toUpperCase()) / 2;
+            const m3 = ctx.measureText(pinyin[j][3]) / 2;
+
             ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][1][j] > guess[i][0][j]) * guess[i][1][j]];
-            ctx.fillText(pinyin[j][1].toUpperCase(), left + j * 80 + 20, top + 16);
+            ctx.fillText(pinyin[j][1].toUpperCase(), left + j * 80 + 40 - m2 - m3, top + 16);
             ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][2][j] > guess[i][0][j]) * guess[i][2][j]];
-            ctx.fillText(pinyin[j][2].toUpperCase(), left + j * 80 + 40, top + 16);
+            ctx.fillText(pinyin[j][2].toUpperCase(), left + j * 80 + 40 + m1 - m3, top + 16);
             ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][3][j] > guess[i][0][j]) * guess[i][3][j]];
-            ctx.fillText(pinyin[j][3], left + j * 80 + 60, top + 16);
+            ctx.fillText(pinyin[j][3], left + j * 80 + 40 + m1 + m2, top + 16);
         }
 
         top += 80;
@@ -235,6 +246,40 @@ const gameImageCn = (guess, size, total, hint) => {
         if (top === 1280) {
             left += 80 * size + 8;
             top = 0;
+        }
+    }
+
+    if (hint) {
+        const part = [
+            'b', 'c', 'ch', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 'sh', 't', 'w', 'x', 'y', 'z', 'zh',
+            'a', 'ai', 'an', 'ang', 'ao',
+            'e', 'ei', 'en', 'eng', 'er',
+            'i', 'ia', 'ian', 'iang', 'iao', 'ie', 'in', 'ing', 'iong', 'iu',
+            'o', 'ong', 'ou',
+            'u', 'ua', 'uai', 'uan', 'uang', 'ue', 'ui', 'un', 'uo',
+            'v', 've',
+        ];
+
+        ctx.font = '24px Helvetica';
+
+        for (const i in part) {
+            const j = i % (size * 2);
+            const k = Math.floor(i / (size * 2));
+
+            ctx.fillStyle = '#787c7e';
+            ctx.fillRect(left + j * 40 + 1, top + k * 32 + 1, 38, 30);
+
+            if (best[part[i]]) {
+                ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][best[part[i]]];
+                ctx.fillRect(left + j * 40 + 2, top + k * 32 + 2, 36, 28);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(part[i], left + j * 40 + 20, top + k * 32 + 16);
+            } else {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(left + j * 40 + 2, top + k * 32 + 2, 36, 28);
+                ctx.fillStyle = '#000000';
+                ctx.fillText(part[i], left + j * 40 + 20, top + k * 32 + 16);
+            }
         }
     }
 
