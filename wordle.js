@@ -8,7 +8,7 @@ const bot = require('./bot.' + config.bot)(config.wordleToken);
 const multiplayer = require('./multiplayer')();
 
 const enResource = require('./wordle.en.resource');
-// const cnResource = require('./wordle.cn.resource');
+const cnResource = require('./wordle.cn.resource');
 const play = require('./wordle.play');
 
 const fd = fs.openSync('log_wordle', 'a');
@@ -81,6 +81,7 @@ const playerUpdate = (msg, list) => {
         playerInfo(list) + '\n'
             + '\n'
             + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+            + '/handle@' + config.wordleUsername + ' 开始中文模式\n'
             + '/eldrow@' + config.wordleUsername + ' 结束游戏',
         {
             chat_id: msg.chat.id,
@@ -110,7 +111,7 @@ const playerUpdate = (msg, list) => {
     });
 };
 
-const gameImage = (guess, size, total, hint) => {
+const gameImageEn = (guess, size, total, hint) => {
     let realTotal = total;
 
     if (hint) {
@@ -184,6 +185,62 @@ const gameImage = (guess, size, total, hint) => {
     return image;
 };
 
+const gameImageCn = (guess, size, total, hint) => {
+    const width = (64 * size + 8) * Math.ceil(total / 16) - 8;
+    const height = 80 * Math.min(total, 16);
+
+    const image = canvas.createCanvas(width, height);
+    const ctx = image.getContext('2d');
+
+    const best = {};
+    let left = 0;
+    let top = 0;
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (const i in guess) {
+        const pinyin = guess[i].pinyin();
+
+        for (let j = 0; j < size; j += 1) {
+            best[pinyin[j][1]] = best[pinyin[j][1]] || '';
+            best[pinyin[j][2]] = best[pinyin[j][2]] || '';
+
+            if (best[pinyin[j][1]] < guess[i][1][j]) {
+                best[pinyin[j][1]] = guess[i][1][j];
+            }
+
+            if (best[pinyin[j][2]] < guess[i][2][j]) {
+                best[pinyin[j][2]] = guess[i][2][j];
+            }
+
+            ctx.fillStyle = '#787c7e';
+            ctx.fillRect(left + j * 64 + 1, top + 1, 62, 78);
+            ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][guess[i][0][j]];
+            ctx.fillRect(left + j * 64 + 2, top + 2, 60, 76);
+            ctx.font = '48px Helvetica';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(pinyin[j][0], left + j * 64 + 32, top + 48);
+            ctx.font = '16px Helvetica';
+            ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][1][j] > guess[i][0][j]) * guess[i][1][j]];
+            ctx.fillText(pinyin[j][1].toUpperCase(), left + j * 64 + 16, top + 16);
+            ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][2][j] > guess[i][0][j]) * guess[i][2][j]];
+            ctx.fillText(pinyin[j][2].toUpperCase(), left + j * 64 + 32, top + 16);
+            ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][3][j] > guess[i][0][j]) * guess[i][3][j]];
+            ctx.fillText(pinyin[j][3], left + j * 64 + 48, top + 16);
+        }
+
+        top += 80;
+
+        if (top === 1280) {
+            left += 64 * size + 8;
+            top = 0;
+        }
+    }
+
+    return image;
+};
+
 const gameEnd = (game) => {
     for (const i in game.msgs) {
         const sentmsg = game.msgs[i];
@@ -199,7 +256,16 @@ const gameEnd = (game) => {
 };
 
 const gameEvent = event((msg, match) => {
-    enResource.load(
+    const resource = {
+        en: enResource,
+        cn: cnResource,
+    }[match.language];
+    const word = {
+        en: match[0].toLowerCase(),
+        cn: match[0],
+    }[match.language];
+
+    resource.load(
         match.mode,
         match[0].length,
         (dict) => {
@@ -208,10 +274,14 @@ const gameEvent = event((msg, match) => {
             play.guess(
                 msg.chat.id,
                 dict,
-                match[0].toLowerCase(),
+                word,
                 (game) => {
                     // guess
 
+                    const gameImage = {
+                        en: gameImageEn,
+                        cn: gameImageCn,
+                    }[game.language];
                     const total = Object.keys(game.guess).length;
 
                     bot.sendPhoto(
@@ -234,6 +304,10 @@ const gameEvent = event((msg, match) => {
 
                     gameEnd(game);
 
+                    const gameImage = {
+                        en: gameImageEn,
+                        cn: gameImageCn,
+                    }[game.language];
                     const total = Object.keys(game.guess).length;
 
                     bot.sendPhoto(
@@ -246,6 +320,7 @@ const gameEvent = event((msg, match) => {
                                 + game.answer + '\n'
                                 + '\n'
                                 + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+                                + '/handle@' + config.wordleUsername + ' 开始中文模式\n'
                                 + '/wordles@' + config.wordleUsername + ' 多人模式',
                             reply_to_message_id: msg.message_id,
                         }
@@ -267,7 +342,7 @@ const gameEvent = event((msg, match) => {
 
                     bot.sendMessage(
                         msg.chat.id,
-                        '这个单词不在词汇表里哦',
+                        '这个词语不在词库里哦',
                         {
                             reply_to_message_id: msg.message_id,
                         }
@@ -290,6 +365,7 @@ const gameEvent = event((msg, match) => {
 bot.onText(/^[A-Za-z]+$/, (msg, match) => {
     play.verify(
         msg.chat.id,
+        'en',
         match[0].length,
         (mode) => {
             // valid
@@ -300,6 +376,39 @@ bot.onText(/^[A-Za-z]+$/, (msg, match) => {
                 () => {
                     // valid
 
+                    match.language = 'en';
+                    match.mode = mode;
+                    gameEvent(msg, match);
+                },
+                () => {
+                    // not valid
+                }
+            );
+        },
+        () => {
+            // not valid
+        },
+        () => {
+            // game not exist
+        }
+    );
+});
+
+bot.onText(/^[\u4e00-\u9fff]+$/, (msg, match) => {
+    play.verify(
+        msg.chat.id,
+        'cn',
+        match[0].length,
+        (mode) => {
+            // valid
+
+            multiplayer.verify(
+                msg.chat.id,
+                msg.from,
+                () => {
+                    // valid
+
+                    match.language = 'cn';
                     match.mode = mode;
                     gameEvent(msg, match);
                 },
@@ -327,6 +436,59 @@ bot.onText(/^\/wordle(@\w+)?(?: (\w+))?$/, event((msg, match) => {
 
             play.init(
                 msg.chat.id,
+                'en',
+                mode,
+                (game) => {
+                    // game init
+
+                    game.msgs = [];
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '游戏开始啦' + playerLine(multiplayer.get(msg.chat.id)),
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                },
+                () => {
+                    // game exist
+
+                    bot.sendMessage(
+                        msg.chat.id,
+                        '已经开始啦',
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                }
+            );
+        },
+        () => {
+            // not valid
+
+            bot.sendMessage(
+                msg.chat.id,
+                '不…这样的参数…不可以…',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        }
+    );
+}, 1));
+
+bot.onText(/^\/handle(@\w+)?(?: (\w+))?$/, event((msg, match) => {
+    const mode = match[2] || config.wordleCnDefaultDict;
+
+    cnResource.verify(
+        mode,
+        () => {
+            // valid
+
+            play.init(
+                msg.chat.id,
+                'cn',
                 mode,
                 (game) => {
                     // game init
@@ -451,6 +613,10 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
             gameEnd(game);
 
             if (game.answer) {
+                const gameImage = {
+                    en: gameImageEn,
+                    cn: gameImageCn,
+                }[game.language];
                 const total = Object.keys(game.guess).length;
 
                 bot.sendPhoto(
@@ -463,6 +629,7 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
                             + game.answer + '\n'
                             + '\n'
                             + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+                            + '/handle@' + config.wordleUsername + ' 开始中文模式\n'
                             + '/wordles@' + config.wordleUsername + ' 多人模式',
                         reply_to_message_id: msg.message_id,
                     }
@@ -473,6 +640,7 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
                     '游戏结束啦\n'
                         + '\n'
                         + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+                        + '/handle@' + config.wordleUsername + ' 开始中文模式\n'
                         + '/wordles@' + config.wordleUsername + ' 多人模式',
                     {
                         reply_to_message_id: msg.message_id,
@@ -488,6 +656,7 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
                 '不存在的！\n'
                     + '\n'
                     + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+                    + '/handle@' + config.wordleUsername + ' 开始中文模式\n'
                     + '/wordles@' + config.wordleUsername + ' 多人模式',
                 {
                     reply_to_message_id: msg.message_id,
@@ -506,6 +675,9 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/wordle 开始新游戏\n'
             + '/wordle en 开始新游戏（使用 Google Ngrams 词库，默认）\n'
             + '/wordle wordle 开始新游戏（使用 Wordle 官方词库）\n'
+            + '/handle 开始中文模式\n'
+            + '/handle cn 开始中文模式（使用中文常用词库，默认）\n'
+            + '/handle cn.idiom 开始中文模式（使用 THUOCL 成语词库）\n'
             + '/wordles 多人模式\n'
             + '/eldrow 结束游戏\n'
             + '/help 显示帮助\n'
