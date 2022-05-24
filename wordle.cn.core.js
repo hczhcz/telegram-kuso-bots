@@ -19,6 +19,10 @@ const makePinyin = (word) => {
             return null;
         }
 
+        if (match[2] === 'ng') {
+            match[2] = 'eng';
+        }
+
         result.push([word[i], match[1], match[2], match[3]]);
     }
 

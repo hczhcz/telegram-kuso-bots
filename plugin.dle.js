@@ -15,6 +15,10 @@ const makePinyin = (text) => {
         const match = tokens[i][0].match(/^([bcdfghjklmnpqrstwxyz]|ch|sh|zh|)([aeiouv]+(?:n|ng|)|ng|er)(\d?)$/);
 
         if (match) {
+            if (match[2] === 'ng') {
+                match[2] = 'eng';
+            }
+
             result.push([text[j], match[1], match[2], match[3]]);
             j += 1;
         } else {
