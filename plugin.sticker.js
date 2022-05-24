@@ -78,7 +78,7 @@ module.exports = (bot, event, playerEvent, env) => {
 
                 bot.sendDocument(
                     msg.chat.id,
-                    image.toBuffer(),
+                    image.toBuffer('image/png'),
                     {},
                     {
                         filename: fileId + '.png',

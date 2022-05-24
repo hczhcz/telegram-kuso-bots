@@ -227,7 +227,7 @@ const gameImageCn = (guess, size, total, hint) => {
             ctx.font = '48px Helvetica';
             ctx.fillStyle = '#ffffff';
             ctx.fillText(pinyin[j][0], left + j * 80 + 40, top + 48);
-            ctx.font = '16px Helvetica';
+            ctx.font = '14px Helvetica';
 
             const m1 = ctx.measureText(pinyin[j][1].toUpperCase()).width / 2;
             const m2 = ctx.measureText(pinyin[j][2].toUpperCase()).width / 2;
@@ -260,7 +260,7 @@ const gameImageCn = (guess, size, total, hint) => {
             'v', 've',
         ];
 
-        ctx.font = '16px Helvetica';
+        ctx.font = '14px Helvetica';
 
         for (const i in part) {
             const j = i % (size * 2);
@@ -331,7 +331,7 @@ const gameEvent = event((msg, match) => {
 
                     bot.sendPhoto(
                         msg.chat.id,
-                        gameImage(game.guess, game.answer.length, total, true).toBuffer(),
+                        gameImage(game.guess, game.answer.length, total, true).toBuffer('image/png'),
                         {
                             caption: '（总共' + total + '次）' + playerLine(multiplayer.get(msg.chat.id)),
                             reply_to_message_id: msg.message_id,
@@ -357,7 +357,7 @@ const gameEvent = event((msg, match) => {
 
                     bot.sendPhoto(
                         msg.chat.id,
-                        gameImage(game.guess, game.answer.length, total, false).toBuffer(),
+                        gameImage(game.guess, game.answer.length, total, false).toBuffer('image/png'),
                         {
                             caption: '（总共' + total + '次）\n'
                                 + '\n'
@@ -666,7 +666,7 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
 
                 bot.sendPhoto(
                     msg.chat.id,
-                    gameImage(game.guess, game.answer.length, total, false).toBuffer(),
+                    gameImage(game.guess, game.answer.length, total, false).toBuffer('image/png'),
                     {
                         caption: '（总共' + total + '次）\n'
                             + '\n'
