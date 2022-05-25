@@ -115,7 +115,7 @@ const gameImageEn = (guess, size, total, hint) => {
     let realTotal = total;
 
     if (hint) {
-        realTotal += 0.5 * Math.ceil(13 / size);
+        realTotal += Math.ceil(13 / size) / 2;
     }
 
     const width = (64 * size + 8) * Math.ceil(realTotal / 16) - 8;
@@ -189,11 +189,11 @@ const gameImageCn = (guess, size, total, hint) => {
     let realTotal = total;
 
     if (hint) {
-        realTotal += 0.4 * Math.ceil(29 / size);
+        realTotal += Math.ceil(29 / size) / 4;
     }
 
-    const width = (80 * size + 8) * Math.ceil(realTotal / 16) - 8;
-    const height = 80 * Math.min(realTotal, 16);
+    const width = (96 * size + 8) * Math.ceil(realTotal / 16) - 8;
+    const height = 96 * Math.min(realTotal, 16);
 
     const image = canvas.createCanvas(width, height);
     const ctx = image.getContext('2d');
@@ -221,30 +221,30 @@ const gameImageCn = (guess, size, total, hint) => {
             }
 
             ctx.fillStyle = '#787c7e';
-            ctx.fillRect(left + j * 80 + 1, top + 1, 78, 78);
+            ctx.fillRect(left + j * 96 + 1, top + 1, 94, 94);
             ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][guess[i][0][j]];
-            ctx.fillRect(left + j * 80 + 2, top + 2, 76, 76);
-            ctx.font = '48px Helvetica';
+            ctx.fillRect(left + j * 96 + 2, top + 2, 92, 92);
+            ctx.font = '56px Helvetica';
             ctx.fillStyle = '#ffffff';
-            ctx.fillText(pinyin[j][0], left + j * 80 + 40, top + 48);
-            ctx.font = '14px Helvetica';
+            ctx.fillText(pinyin[j][0], left + j * 96 + 48, top + 56);
+            ctx.font = '18px Helvetica';
 
             const m1 = ctx.measureText(pinyin[j][1].toUpperCase()).width / 2;
             const m2 = ctx.measureText(pinyin[j][2].toUpperCase()).width / 2;
             const m3 = ctx.measureText(pinyin[j][3]).width / 2;
 
             ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][1][j] > guess[i][0][j]) * guess[i][1][j]];
-            ctx.fillText(pinyin[j][1].toUpperCase(), left + j * 80 + 40 - m2 - m3, top + 16);
+            ctx.fillText(pinyin[j][1].toUpperCase(), left + j * 96 + 48 - m2 - m3, top + 16);
             ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][2][j] > guess[i][0][j]) * guess[i][2][j]];
-            ctx.fillText(pinyin[j][2].toUpperCase(), left + j * 80 + 40 + m1 - m3, top + 16);
+            ctx.fillText(pinyin[j][2].toUpperCase(), left + j * 96 + 48 + m1 - m3, top + 16);
             ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][3][j] > guess[i][0][j]) * guess[i][3][j]];
-            ctx.fillText(pinyin[j][3], left + j * 80 + 40 + m1 + m2, top + 16);
+            ctx.fillText(pinyin[j][3], left + j * 96 + 48 + m1 + m2, top + 16);
         }
 
-        top += 80;
+        top += 96;
 
-        if (top === 1280) {
-            left += 80 * size + 8;
+        if (top === 1536) {
+            left += 96 * size + 8;
             top = 0;
         }
     }
@@ -260,25 +260,25 @@ const gameImageCn = (guess, size, total, hint) => {
             'v', 've',
         ];
 
-        ctx.font = '14px Helvetica';
+        ctx.font = '18px Helvetica';
 
         for (const i in part) {
             const j = i % (size * 2);
             const k = Math.floor(i / (size * 2));
 
             ctx.fillStyle = '#787c7e';
-            ctx.fillRect(left + j * 40 + 1, top + k * 32 + 1, 38, 30);
+            ctx.fillRect(left + j * 48 + 1, top + k * 24 + 1, 46, 22);
 
             if (best[part[i]]) {
                 ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][best[part[i]]];
-                ctx.fillRect(left + j * 40 + 2, top + k * 32 + 2, 36, 28);
+                ctx.fillRect(left + j * 48 + 2, top + k * 24 + 2, 44, 20);
                 ctx.fillStyle = '#ffffff';
-                ctx.fillText(part[i].toUpperCase(), left + j * 40 + 20, top + k * 32 + 16);
+                ctx.fillText(part[i].toUpperCase(), left + j * 48 + 24, top + k * 24 + 12);
             } else {
                 ctx.fillStyle = '#ffffff';
-                ctx.fillRect(left + j * 40 + 2, top + k * 32 + 2, 36, 28);
+                ctx.fillRect(left + j * 48 + 2, top + k * 24 + 2, 44, 20);
                 ctx.fillStyle = '#000000';
-                ctx.fillText(part[i].toUpperCase(), left + j * 40 + 20, top + k * 32 + 16);
+                ctx.fillText(part[i].toUpperCase(), left + j * 48 + 24, top + k * 24 + 12);
             }
         }
     }
