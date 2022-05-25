@@ -331,7 +331,7 @@ const gameEvent = event((msg, match) => {
 
                     bot.sendPhoto(
                         msg.chat.id,
-                        gameImage(game.guess, game.answer.length, total, true).toBuffer('image/png'),
+                        gameImage(game.guess, game.answer.length, total, true).toBuffer(),
                         {
                             caption: '（总共' + total + '次）' + playerLine(multiplayer.get(msg.chat.id)),
                             reply_to_message_id: msg.message_id,
@@ -357,7 +357,7 @@ const gameEvent = event((msg, match) => {
 
                     bot.sendPhoto(
                         msg.chat.id,
-                        gameImage(game.guess, game.answer.length, total, false).toBuffer('image/png'),
+                        gameImage(game.guess, game.answer.length, total, false).toBuffer(),
                         {
                             caption: '（总共' + total + '次）\n'
                                 + '\n'
@@ -471,7 +471,7 @@ bot.onText(/^[\u4e00-\u9fff]+$/, (msg, match) => {
     );
 });
 
-bot.onText(/^\/wordle(@\w+)?(?: (\w+))?$/, event((msg, match) => {
+bot.onText(/^\/wordle(@\w+)?(?: ([\w\.]+))?$/, event((msg, match) => {
     const mode = match[2] || config.wordleEnDefaultDict;
 
     enResource.verify(
@@ -523,7 +523,7 @@ bot.onText(/^\/wordle(@\w+)?(?: (\w+))?$/, event((msg, match) => {
     );
 }, 1));
 
-bot.onText(/^\/handle(@\w+)?(?: (\w+))?$/, event((msg, match) => {
+bot.onText(/^\/handle(@\w+)?(?: ([\w\.]+))?$/, event((msg, match) => {
     const mode = match[2] || config.wordleCnDefaultDict;
 
     cnResource.verify(
@@ -666,7 +666,7 @@ bot.onText(/^\/eldrow(@\w+)?$/, event((msg, match) => {
 
                 bot.sendPhoto(
                     msg.chat.id,
-                    gameImage(game.guess, game.answer.length, total, false).toBuffer('image/png'),
+                    gameImage(game.guess, game.answer.length, total, false).toBuffer(),
                     {
                         caption: '（总共' + total + '次）\n'
                             + '\n'

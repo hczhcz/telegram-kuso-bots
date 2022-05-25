@@ -80,7 +80,7 @@ module.exports = (bot, event, playerEvent, env) => {
 
             bot.sendPhoto(
                 msg.chat.id,
-                image.toBuffer('image/png'),
+                image.toBuffer(),
                 {
                     reply_to_message_id: msg.message_id,
                 }
