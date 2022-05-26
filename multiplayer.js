@@ -126,7 +126,7 @@ module.exports = () => {
 
                 const list = self.lists[id];
 
-                if (!list.length) {
+                if (list.length <= 1) {
                     return onValid();
                 }
 
