@@ -140,10 +140,8 @@ const gameImageEn = (guess, size, total, hint) => {
                 best[i[j + 1]] = guess[i][j];
             }
 
-            ctx.fillStyle = '#787c7e';
-            ctx.fillRect(left + j * 64 + 1, top + 1, 62, 62);
             ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][guess[i][j]];
-            ctx.fillRect(left + j * 64 + 2, top + 2, 60, 60);
+            ctx.fillRect(left + j * 64 + 1, top + 1, 62, 62);
             ctx.fillStyle = '#ffffff';
             ctx.fillText(i[j + 1].toUpperCase(), left + j * 64 + 32, top + 32);
         }
@@ -165,18 +163,22 @@ const gameImageEn = (guess, size, total, hint) => {
             const j = i % (size * 2);
             const k = Math.floor(i / (size * 2));
 
-            ctx.fillStyle = '#787c7e';
-            ctx.fillRect(left + j * 32 + 1, top + k * 32 + 1, 30, 30);
+            if (top + k * 32 == 1536) {
+                left += 96 * size + 8;
+                top = -k * 32;
+            }
 
             if (best[letter[i]]) {
                 ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][best[letter[i]]];
-                ctx.fillRect(left + j * 32 + 2, top + k * 32 + 2, 28, 28);
+                ctx.fillRect(left + j * 32 + 1, top + k * 32 + 1, 30, 30);
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(letter[i].toUpperCase(), left + j * 32 + 16, top + k * 32 + 16);
             } else {
+                ctx.fillStyle = '#787c7e';
+                ctx.fillRect(left + j * 32 + 1, top + k * 32 + 1, 30, 30);
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(left + j * 32 + 2, top + k * 32 + 2, 28, 28);
-                ctx.fillStyle = '#000000';
+                ctx.fillStyle = '#787c7e';
                 ctx.fillText(letter[i].toUpperCase(), left + j * 32 + 16, top + k * 32 + 16);
             }
         }
@@ -220,25 +222,33 @@ const gameImageCn = (guess, size, total, hint) => {
                 best[pinyin[j][2]] = guess[i][2][j];
             }
 
-            ctx.fillStyle = '#787c7e';
-            ctx.fillRect(left + j * 96 + 1, top + 1, 94, 94);
-            ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][guess[i][0][j]];
-            ctx.fillRect(left + j * 96 + 2, top + 2, 92, 92);
+            ctx.fillStyle = ['#f7f8f9', '#de7525', '#1d9c9c'][guess[i][0][j]];
+            ctx.fillRect(left + j * 96 + 2, top + 2, 94, 94);
             ctx.font = '56px Helvetica';
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = ['#5d6572', '#ffffff', '#ffffff'][guess[i][0][j]];
             ctx.fillText(pinyin[j][0], left + j * 96 + 48, top + 56);
-            ctx.font = '18px Helvetica';
+
+            if ((pinyin[j][1] + pinyin[j][2] + pinyin[j][3]).length <= 6) {
+                ctx.font = '22px Helvetica';
+            } else {
+                ctx.font = '18px Helvetica';
+            }
 
             const m1 = ctx.measureText(pinyin[j][1].toUpperCase()).width / 2;
             const m2 = ctx.measureText(pinyin[j][2].toUpperCase()).width / 2;
             const m3 = ctx.measureText(pinyin[j][3]).width / 2;
+            const colorMap = [
+                ['#5d6572', '#de7525', '#1d9c9c'],
+                ['#5d6572', '#ffffff', '#1d9c9c'],
+                ['#5d6572', '#de7525', '#ffffff'],
+            ];
 
-            ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][1][j] > guess[i][0][j]) * guess[i][1][j]];
-            ctx.fillText(pinyin[j][1].toUpperCase(), left + j * 96 + 48 - m2 - m3, top + 16);
-            ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][2][j] > guess[i][0][j]) * guess[i][2][j]];
-            ctx.fillText(pinyin[j][2].toUpperCase(), left + j * 96 + 48 + m1 - m3, top + 16);
-            ctx.fillStyle = ['#ffffff', '#c9b458', '#6aaa64'][(guess[i][3][j] > guess[i][0][j]) * guess[i][3][j]];
-            ctx.fillText(pinyin[j][3], left + j * 96 + 48 + m1 + m2, top + 16);
+            ctx.fillStyle = colorMap[guess[i][0][j]][guess[i][1][j]];
+            ctx.fillText(pinyin[j][1].toUpperCase(), left + j * 96 + 48 - m2 - m3, top + 20);
+            ctx.fillStyle = colorMap[guess[i][0][j]][guess[i][2][j]];
+            ctx.fillText(pinyin[j][2].toUpperCase(), left + j * 96 + 48 + m1 - m3, top + 20);
+            ctx.fillStyle = colorMap[guess[i][0][j]][guess[i][3][j]];
+            ctx.fillText(pinyin[j][3], left + j * 96 + 48 + m1 + m2, top + 20);
         }
 
         top += 96;
@@ -260,24 +270,32 @@ const gameImageCn = (guess, size, total, hint) => {
             'v', 've',
         ];
 
-        ctx.font = '18px Helvetica';
-
         for (const i in part) {
             const j = i % (size * 2);
             const k = Math.floor(i / (size * 2));
 
-            ctx.fillStyle = '#787c7e';
-            ctx.fillRect(left + j * 48 + 1, top + k * 24 + 1, 46, 22);
+            if (top + k * 24 == 1536) {
+                left += 96 * size + 8;
+                top = -k * 24;
+            }
+
+            if (part[i].length <= 3) {
+                ctx.font = '18px Helvetica';
+            } else {
+                ctx.font = '14px Helvetica';
+            }
 
             if (best[part[i]]) {
-                ctx.fillStyle = ['#787c7e', '#c9b458', '#6aaa64'][best[part[i]]];
-                ctx.fillRect(left + j * 48 + 2, top + k * 24 + 2, 44, 20);
+                ctx.fillStyle = ['#5d6572', '#de7525', '#1d9c9c'][best[part[i]]];
+                ctx.fillRect(left + j * 48 + 1, top + k * 24 + 1, 46, 22);
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(part[i].toUpperCase(), left + j * 48 + 24, top + k * 24 + 12);
             } else {
+                ctx.fillStyle = '#5d6572';
+                ctx.fillRect(left + j * 48 + 1, top + k * 24 + 1, 46, 22);
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(left + j * 48 + 2, top + k * 24 + 2, 44, 20);
-                ctx.fillStyle = '#000000';
+                ctx.fillStyle = '#5d6572';
                 ctx.fillText(part[i].toUpperCase(), left + j * 48 + 24, top + k * 24 + 12);
             }
         }
