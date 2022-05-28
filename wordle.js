@@ -222,10 +222,10 @@ const gameImageCn = (guess, size, total, hint) => {
                 best[pinyin[j][2]] = guess[i][2][j];
             }
 
-            ctx.fillStyle = ['#f7f8f9', '#de7525', '#1d9c9c'][guess[i][0][j]];
+            ctx.fillStyle = ['#f7f8f9', '#f7f8f9', '#1d9c9c'][guess[i][0][j]];
             ctx.fillRect(left + j * 96 + 2, top + 2, 94, 94);
             ctx.font = '52px Helvetica';
-            ctx.fillStyle = ['#5d6572', '#ffffff', '#ffffff'][guess[i][0][j]];
+            ctx.fillStyle = ['#5d6572', '#de7525', '#ffffff'][guess[i][0][j]];
             ctx.fillText(pinyin[j][0], left + j * 96 + 48, top + 60);
 
             if ((pinyin[j][1] + pinyin[j][2] + pinyin[j][3]).length <= 6) {
@@ -239,15 +239,15 @@ const gameImageCn = (guess, size, total, hint) => {
             const m3 = ctx.measureText(pinyin[j][3]).width / 2;
             const colorMap = [
                 ['#b4b8be', '#de7525', '#1d9c9c'],
-                ['#5d6572', '#ffffff', '#1d9c9c'],
+                ['#b4b8be', '#de7525', '#1d9c9c'],
                 ['#5d6572', '#de7525', '#ffffff'],
-            ];
+            ][guess[i][0][j]];
 
-            ctx.fillStyle = colorMap[guess[i][0][j]][guess[i][1][j]];
+            ctx.fillStyle = colorMap[guess[i][1][j]];
             ctx.fillText(pinyin[j][1].toUpperCase(), left + j * 96 + 48 - m2 - m3, top + 20);
-            ctx.fillStyle = colorMap[guess[i][0][j]][guess[i][2][j]];
+            ctx.fillStyle = colorMap[guess[i][2][j]];
             ctx.fillText(pinyin[j][2].toUpperCase(), left + j * 96 + 48 + m1 - m3, top + 20);
-            ctx.fillStyle = colorMap[guess[i][0][j]][guess[i][3][j]];
+            ctx.fillStyle = colorMap[guess[i][3][j]];
             ctx.fillText(pinyin[j][3], left + j * 96 + 48 + m1 + m2, top + 20);
         }
 
