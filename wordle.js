@@ -744,6 +744,7 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/handle 开始中文模式\n'
             + '/handle cn 开始中文模式（使用中文常用词库，默认）\n'
             + '/handle cn.idiom 开始中文模式（使用 THUOCL 成语词库）\n'
+            + '/handle cn.poem 开始中文模式（使用 THUOCL 诗歌词库）\n'
             + '/wordles 多人模式\n'
             + '/eldrow 结束游戏\n'
             + '/help 显示帮助\n'
