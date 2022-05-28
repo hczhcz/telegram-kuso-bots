@@ -175,9 +175,9 @@ const gameImageEn = (guess, size, total, hint) => {
                 ctx.fillText(letter[i].toUpperCase(), left + j * 32 + 16, top + k * 32 + 16);
             } else {
                 ctx.fillStyle = '#787c7e';
-                ctx.fillRect(left + j * 32 + 1, top + k * 32 + 1, 30, 30);
+                ctx.fillRect(left + j * 32 + 2, top + k * 32 + 2, 30, 30);
                 ctx.fillStyle = '#ffffff';
-                ctx.fillRect(left + j * 32 + 2, top + k * 32 + 2, 28, 28);
+                ctx.fillRect(left + j * 32 + 1, top + k * 32 + 1, 30, 30);
                 ctx.fillStyle = '#787c7e';
                 ctx.fillText(letter[i].toUpperCase(), left + j * 32 + 16, top + k * 32 + 16);
             }
@@ -224,9 +224,9 @@ const gameImageCn = (guess, size, total, hint) => {
 
             ctx.fillStyle = ['#f7f8f9', '#de7525', '#1d9c9c'][guess[i][0][j]];
             ctx.fillRect(left + j * 96 + 2, top + 2, 94, 94);
-            ctx.font = '56px Helvetica';
+            ctx.font = '52px Helvetica';
             ctx.fillStyle = ['#5d6572', '#ffffff', '#ffffff'][guess[i][0][j]];
-            ctx.fillText(pinyin[j][0], left + j * 96 + 48, top + 56);
+            ctx.fillText(pinyin[j][0], left + j * 96 + 48, top + 60);
 
             if ((pinyin[j][1] + pinyin[j][2] + pinyin[j][3]).length <= 6) {
                 ctx.font = '22px Helvetica';
@@ -238,7 +238,7 @@ const gameImageCn = (guess, size, total, hint) => {
             const m2 = ctx.measureText(pinyin[j][2].toUpperCase()).width / 2;
             const m3 = ctx.measureText(pinyin[j][3]).width / 2;
             const colorMap = [
-                ['#5d6572', '#de7525', '#1d9c9c'],
+                ['#b4b8be', '#de7525', '#1d9c9c'],
                 ['#5d6572', '#ffffff', '#1d9c9c'],
                 ['#5d6572', '#de7525', '#ffffff'],
             ];
@@ -282,7 +282,7 @@ const gameImageCn = (guess, size, total, hint) => {
             if (part[i].length <= 3) {
                 ctx.font = '18px Helvetica';
             } else {
-                ctx.font = '14px Helvetica';
+                ctx.font = '15px Helvetica';
             }
 
             if (best[part[i]]) {
@@ -292,9 +292,9 @@ const gameImageCn = (guess, size, total, hint) => {
                 ctx.fillText(part[i].toUpperCase(), left + j * 48 + 24, top + k * 24 + 12);
             } else {
                 ctx.fillStyle = '#5d6572';
-                ctx.fillRect(left + j * 48 + 1, top + k * 24 + 1, 46, 22);
+                ctx.fillRect(left + j * 48 + 2, top + k * 24 + 2, 46, 22);
                 ctx.fillStyle = '#ffffff';
-                ctx.fillRect(left + j * 48 + 2, top + k * 24 + 2, 44, 20);
+                ctx.fillRect(left + j * 48 + 1, top + k * 24 + 1, 46, 22);
                 ctx.fillStyle = '#5d6572';
                 ctx.fillText(part[i].toUpperCase(), left + j * 48 + 24, top + k * 24 + 12);
             }
