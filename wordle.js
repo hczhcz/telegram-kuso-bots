@@ -163,8 +163,8 @@ const gameImageEn = (guess, size, total, hint) => {
             const j = i % (size * 2);
             const k = Math.floor(i / (size * 2));
 
-            if (top + k * 32 === 1536) {
-                left += 96 * size + 8;
+            if (top + k * 32 === 1024) {
+                left += 64 * size + 8;
                 top = -k * 32;
             }
 
