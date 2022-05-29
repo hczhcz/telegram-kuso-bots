@@ -40,7 +40,7 @@ const load = (id, size, onDone, onNotValid) => {
 
     if (dictInfo && dictInfo.size.indexOf(size) >= 0) {
         if (dicts[id + size]) {
-            onDone(dicts[id + size]);
+            onDone(dictInfo, dicts[id + size]);
         } else {
             const rl = readline.createInterface({
                 input: fs.createReadStream('wordle/' + id + '.dict'),
@@ -64,7 +64,7 @@ const load = (id, size, onDone, onNotValid) => {
             }).on('close', () => {
                 dicts[id + size] = dict;
 
-                onDone(dict);
+                onDone(dictInfo, dict);
             });
         }
     } else {

@@ -22,7 +22,7 @@ const load = (id, limit, onDone, onNotValid) => {
 
     if (dictInfo) {
         if (dicts[id + '_' + limit]) {
-            onDone(dicts[id + '_' + limit]);
+            onDone(dictInfo, dicts[id + '_' + limit]);
         } else {
             const rl = readline.createInterface({
                 input: fs.createReadStream('hangman/' + id + '.dict'),
@@ -37,7 +37,7 @@ const load = (id, limit, onDone, onNotValid) => {
             }).on('close', () => {
                 dicts[id + '_' + limit] = dict;
 
-                onDone(dict);
+                onDone(dictInfo, dict);
             });
         }
     } else {

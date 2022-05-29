@@ -334,7 +334,7 @@ const gameEvent = event((msg, match) => {
     resource.load(
         match.mode,
         match[0].length,
-        (dict) => {
+        (dictInfo, dict) => {
             // loaded
 
             play.guess(
@@ -375,19 +375,27 @@ const gameEvent = event((msg, match) => {
                         cn: gameImageCn,
                     }[game.language];
                     const total = Object.keys(game.guess).length;
+                    let caption = '（总共' + total + '次）\n'
+                        + '\n'
+                        + '猜对啦！答案是：\n'
+                        + game.answer + '\n'
+                        + '\n';
+
+                    if (dictInfo.url) {
+                        caption += '所以…<a href="' + encodeURI(dictInfo.url + game.answer) + '">' + game.answer + '是什么呢？好吃吗？</a>\n'
+                            + '\n';
+                    }
+
+                    caption += '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+                        + '/handle@' + config.wordleUsername + ' 开始中文模式\n'
+                        + '/wordles@' + config.wordleUsername + ' 多人模式';
 
                     bot.sendPhoto(
                         msg.chat.id,
                         gameImage(game.guess, game.answer.length, total, false).toBuffer(),
                         {
-                            caption: '（总共' + total + '次）\n'
-                                + '\n'
-                                + '猜对啦！答案是：\n'
-                                + game.answer + '\n'
-                                + '\n'
-                                + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
-                                + '/handle@' + config.wordleUsername + ' 开始中文模式\n'
-                                + '/wordles@' + config.wordleUsername + ' 多人模式',
+                            caption: caption,
+                            parse_mode: 'HTML',
                             reply_to_message_id: msg.message_id,
                         }
                     );

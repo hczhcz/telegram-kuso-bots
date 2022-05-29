@@ -122,15 +122,7 @@ const messageUpdate = (msg, game, win) => {
 
     // dict info
 
-    let dictInfo = null;
-
-    for (const i in config.hangmanDict) {
-        if (config.hangmanDict[i].id === game.dictSettings()[0]) {
-            dictInfo = config.hangmanDict[i];
-
-            break;
-        }
-    }
+    const dictInfo = game.dictSettings()[0];
 
     // keyboard
 
@@ -630,7 +622,7 @@ bot.on('callback_query', (query) => {
         resource.load(
             info[1],
             info[2],
-            (dict) => {
+            (dictInfo, dict) => {
                 // loaded
 
                 play.init(
@@ -642,7 +634,7 @@ bot.on('callback_query', (query) => {
                         // game init
 
                         game.dictSettings = () => {
-                            return [info[1], info[2] || dict.list.length];
+                            return [dictInfo, info[2] || dict.list.length];
                         };
 
                         const nameMap = {};
