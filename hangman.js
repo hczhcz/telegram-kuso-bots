@@ -319,7 +319,7 @@ const messageUpdate = (msg, game, win) => {
             .replace('>', '&gt;');
 
         endText += '\n'
-            + lastName + ' 猜对了！\n'
+            + lastName + ' 猜对啦！\n'
             + '\n';
 
         if (dictInfo.url) {
@@ -344,7 +344,7 @@ const messageUpdate = (msg, game, win) => {
             + text + '\n'
             + '[ ' + dictInfo.title + ' - ' + game.dictSettings()[1] + ' ]\n'
             + '[ ' + hint + ' ]\n'
-            + '[ 剩余生命：' + (9 - totError) + ' ]\n'
+            + '[ 剩余生命 ' + (9 - totError) + ' ]\n'
             + '</pre>' + endText,
         {
             chat_id: msg.chat.id,

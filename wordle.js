@@ -163,7 +163,7 @@ const gameImageEn = (guess, size, total, hint) => {
             const j = i % (size * 2);
             const k = Math.floor(i / (size * 2));
 
-            if (top + k * 32 == 1536) {
+            if (top + k * 32 === 1536) {
                 left += 96 * size + 8;
                 top = -k * 32;
             }
@@ -275,7 +275,7 @@ const gameImageCn = (guess, size, total, hint) => {
             const j = i % (size * 2);
             const k = Math.floor(i / (size * 2));
 
-            if (top + k * 24 == 1536) {
+            if (top + k * 24 === 1536) {
                 left += 96 * size + 8;
                 top = -k * 24;
             }
@@ -492,7 +492,7 @@ bot.onText(/^[\u4e00-\u9fff]+$/, (msg, match) => {
     );
 });
 
-bot.onText(/^\/wordle(@\w+)?(?: ([\w\.]+))?$/, event((msg, match) => {
+bot.onText(/^\/wordle(@\w+)?(?: ([\w.]+))?$/, event((msg, match) => {
     const mode = match[2] || config.wordleEnDefaultDict;
 
     enResource.verify(
@@ -544,7 +544,7 @@ bot.onText(/^\/wordle(@\w+)?(?: ([\w\.]+))?$/, event((msg, match) => {
     );
 }, 1));
 
-bot.onText(/^\/handle(@\w+)?(?: ([\w\.]+))?$/, event((msg, match) => {
+bot.onText(/^\/handle(@\w+)?(?: ([\w.]+))?$/, event((msg, match) => {
     const mode = match[2] || config.wordleCnDefaultDict;
 
     cnResource.verify(
