@@ -22,7 +22,9 @@ module.exports = () => {
 
                 const list = self.lists[id];
 
-                return list[0];
+                if (list.length >= 2) {
+                    return list[0];
+                }
             }
 
             return null;
@@ -43,7 +45,9 @@ module.exports = () => {
 
                 const list = self.lists[id];
 
-                return list[Math.floor(Math.random() * list.length)];
+                if (list.length >= 2) {
+                    return list[Math.floor(Math.random() * list.length)];
+                }
             }
 
             return null;
