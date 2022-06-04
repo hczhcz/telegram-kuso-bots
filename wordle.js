@@ -414,13 +414,15 @@ const gameEvent = event((msg, match) => {
                 () => {
                     // not valid
 
-                    bot.sendMessage(
-                        msg.chat.id,
-                        '这个词语不在词库里哦',
-                        {
-                            reply_to_message_id: msg.message_id,
-                        }
-                    );
+                    if (match.language === 'en') {
+                        bot.sendMessage(
+                            msg.chat.id,
+                            '这个词语不在词库里哦',
+                            {
+                                reply_to_message_id: msg.message_id,
+                            }
+                        );
+                    }
                 },
                 () => {
                     // game not exist

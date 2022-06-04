@@ -52,6 +52,10 @@ const guess = (dict, word, answer) => {
     const targetPinyin = makePinyin(answer);
     const tag = ['', '', '', ''];
 
+    if (!guessPinyin) {
+        return -1;
+    }
+
     tag.pinyin = () => {
         return guessPinyin;
     };
