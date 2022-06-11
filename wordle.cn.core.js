@@ -14,10 +14,14 @@ const makePinyin = (word) => {
     }
 
     for (const i in word) {
-        const match = tokens[i][0].match(/^([bcdfghjklmnpqrstwxyz]|ch|sh|zh|)([aeiouv]+(?:n|ng|)|ng|er)(\d?)$/);
+        const match = tokens[i][0].match(/^([bcdfghjklmnpqrstwxyz]|ch|sh|zh|)([aeiouv]+(?:n|ng|)|n|ng|er)(\d?)$/);
 
         if (!match) {
             return null;
+        }
+
+        if (match[2] === 'n') {
+            match[2] = 'en';
         }
 
         if (match[2] === 'ng') {
