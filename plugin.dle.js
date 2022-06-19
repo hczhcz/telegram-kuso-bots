@@ -6,7 +6,7 @@ const pinyin = require('pinyin');
 const makePinyin = (text) => {
     const tokens = pinyin(text, {
         style: pinyin.STYLE_TONE2,
-        segment: true,
+        segment: '@node-rs/jieba',
     });
     const result = [];
 
