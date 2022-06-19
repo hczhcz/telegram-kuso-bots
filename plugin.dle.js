@@ -4,8 +4,8 @@ const crypto = require('crypto');
 const pinyin = require('pinyin');
 
 const makePinyin = (text) => {
-    const tokens = pinyin(text, {
-        style: pinyin.STYLE_TONE2,
+    const tokens = pinyin.pinyin(text, {
+        style: 'TONE2',
         segment: '@node-rs/jieba',
     });
     const result = [];

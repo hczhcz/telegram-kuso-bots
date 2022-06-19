@@ -3,8 +3,8 @@
 const pinyin = require('pinyin');
 
 const makePinyin = (word) => {
-    const tokens = pinyin(word, {
-        style: pinyin.STYLE_TONE2,
+    const tokens = pinyin.pinyin(word, {
+        style: 'TONE2',
         segment: '@node-rs/jieba',
     });
     const result = [];
