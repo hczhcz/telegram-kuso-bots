@@ -87,14 +87,14 @@ const updateCorpus = () => {
 const getCandidates = (reply, tag) => {
     const candidates = [];
 
-    if (reply.text) {
+    if (reply.text && reply.text.length <= 120) {
         for (const i in corpus[tag]) {
             const payloads = corpus[tag][i];
 
             if (payloads[0].text) {
                 const rate = fuzzball.ratio(reply.text, payloads[0].text) / 100;
 
-                if (rate > 0.5) {
+                if (rate >= 0.5) {
                     if (payloads[1].text && payloads[1].text.length <= reply.text.length) {
                         candidates.push([rate * rate, payloads[1]]);
                     }
