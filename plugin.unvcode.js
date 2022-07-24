@@ -910,7 +910,7 @@ module.exports = (bot, event, playerEvent, env) => {
         return result;
     };
 
-    bot.onText(/^\/unvcode(@\w+)?(?: (.*))$/, event((msg, match) => {
+    bot.onText(/^\/unvcode(@\w+)?(?: (.*))?$/, event((msg, match) => {
         if (msg.reply_to_message && msg.reply_to_message.text) {
             bot.sendMessage(
                 msg.chat.id,
@@ -934,7 +934,7 @@ module.exports = (bot, event, playerEvent, env) => {
 
     env.info.addPluginHelp(
         'unvcode',
-        '/unvcode 对回复消息进行反和谐'
+        '/unvcode 对回复消息进行反和谐\n'
             + '/unvcode <content> 对文本进行反和谐'
     );
 };
