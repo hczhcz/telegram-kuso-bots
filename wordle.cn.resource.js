@@ -50,13 +50,13 @@ const load = (id, size, onDone, onNotValid) => {
 
             for (const i in config.wordleCnCustomWord) {
                 if (config.wordleCnCustomWord[i].length === size) {
-                    core.dictAdd(dict, config.wordleCnCustomWord[i]);
+                    core.dictAdd(dict, config.wordleCnCustomWord[i], true);
                 }
             }
 
             rl.on('line', (line) => {
                 if (line.length === size) {
-                    core.dictAdd(dict, line);
+                    core.dictAdd(dict, line, true);
                 }
             }).on('close', () => {
                 dicts[id + size] = dict;

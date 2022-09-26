@@ -938,5 +938,3 @@ module.exports = (bot, event, playerEvent, env) => {
             + '/unvcode <content> 对文本进行反和谐'
     );
 };
-
-

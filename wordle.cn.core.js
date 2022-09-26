@@ -41,7 +41,9 @@ const dictInit = () => {
     };
 };
 
-const dictAdd = (dict, word) => {
+const dictAdd = (dict, word, enabled) => {
+    // <enabled> is not used
+
     dict.list.push(word);
 };
 
@@ -50,7 +52,7 @@ const dictSelect = (dict) => {
 };
 
 const guess = (dict, word, answer) => {
-    // dict is not used
+    // <dict> is not used
 
     const guessPinyin = makePinyin(word);
     const targetPinyin = makePinyin(answer);
