@@ -438,7 +438,7 @@ const gameEvent = event((msg, match) => {
     );
 }, -1);
 
-bot.onText(/^[A-Za-z]+$/, (msg, match) => {
+bot.onText(/^[A-Za-z]{1,20}$/, (msg, match) => {
     play.verify(
         msg.chat.id,
         'en',
@@ -470,7 +470,7 @@ bot.onText(/^[A-Za-z]+$/, (msg, match) => {
     );
 });
 
-bot.onText(/^[\u4e00-\u9fff]+$/, (msg, match) => {
+bot.onText(/^[\u4e00-\u9fff]{1,20}$/, (msg, match) => {
     play.verify(
         msg.chat.id,
         'cn',
@@ -502,7 +502,7 @@ bot.onText(/^[\u4e00-\u9fff]+$/, (msg, match) => {
     );
 });
 
-bot.onText(/^\/wordlesay(@\w+)? ([A-Za-z]+)$/, (msg, match) => {
+bot.onText(/^\/wordlesay(@\w+)? ([A-Za-z]{1,20})$/, (msg, match) => {
     play.say(
         'en',
         match[2],
@@ -531,7 +531,7 @@ bot.onText(/^\/wordlesay(@\w+)? ([A-Za-z]+)$/, (msg, match) => {
     );
 });
 
-bot.onText(/^\/handlesay(@\w+)? ([\u4e00-\u9fff]+)$/, (msg, match) => {
+bot.onText(/^\/handlesay(@\w+)? ([\u4e00-\u9fff]{1,20})$/, (msg, match) => {
     play.say(
         'cn',
         match[2],
