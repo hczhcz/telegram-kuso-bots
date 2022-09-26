@@ -197,7 +197,7 @@ bot.on('message', (msg) => {
 
     const force = msg.chat.id === msg.from.id
         || msg.reply_to_message && msg.reply_to_message.from.username === config.talkUsername
-        || msg.text && config.talkTrigger.exec(msg.text);
+        || msg.text && msg.text.match(config.talkTrigger);
 
     if (force || Math.random() < config.talkRate) {
         const reply = {};

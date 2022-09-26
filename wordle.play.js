@@ -91,6 +91,32 @@ const guess = (id, dict, word, onGuess, onGameEnd, onGuessDuplicated, onNotValid
     return onGuess(game);
 };
 
+const say = (language, word, onSay, onNotValid) => {
+    const core = {
+        en: enCore,
+        cn: cnCore,
+    }[language];
+
+    const dict = core.dictInit();
+
+    core.dictAdd(dict, word, true);
+
+    const game = {
+        language: language,
+        answer: word,
+        guess: {},
+    };
+    const result = core.guess(dict, word, word);
+
+    if (result === -1) {
+        return onNotValid();
+    }
+
+    game.guess['#' + word] = result;
+
+    return onSay(game);
+};
+
 const count = () => {
     return Object.keys(games).length;
 };
@@ -100,5 +126,6 @@ module.exports = {
     end: end,
     verify: verify,
     guess: guess,
+    say: say,
     count: count,
 };

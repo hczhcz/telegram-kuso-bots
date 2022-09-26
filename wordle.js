@@ -502,6 +502,64 @@ bot.onText(/^[\u4e00-\u9fff]+$/, (msg, match) => {
     );
 });
 
+bot.onText(/^\/wordlesay(@\w+)? ([A-Za-z]+)$/, (msg, match) => {
+    play.say(
+        'en',
+        match[2],
+        (game) => {
+            // say
+
+            bot.sendPhoto(
+                msg.chat.id,
+                gameImageEn(game.guess, game.answer.length, 1, false).toBuffer(),
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        },
+        () => {
+            // not valid
+
+            bot.sendMessage(
+                msg.chat.id,
+                '不…这样的参数…不可以…',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        }
+    );
+});
+
+bot.onText(/^\/handlesay(@\w+)? ([\u4e00-\u9fff]+)$/, (msg, match) => {
+    play.say(
+        'cn',
+        match[2],
+        (game) => {
+            // say
+
+            bot.sendPhoto(
+                msg.chat.id,
+                gameImageCn(game.guess, game.answer.length, 1, false).toBuffer(),
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        },
+        () => {
+            // not valid
+
+            bot.sendMessage(
+                msg.chat.id,
+                '不…这样的参数…不可以…',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        }
+    );
+});
+
 bot.onText(/^\/wordle(@\w+)?(?: ([\w.]+))?$/, event((msg, match) => {
     const mode = match[2] || config.wordleEnDefaultDict;
 
@@ -751,10 +809,12 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/wordle 开始新游戏\n'
             + '/wordle en 开始新游戏（使用 Google Ngrams 词库，默认）\n'
             + '/wordle wordle 开始新游戏（使用 Wordle 官方词库）\n'
+            + '/wordlesay <word> 说单词\n'
             + '/handle 开始中文模式\n'
             + '/handle cn 开始中文模式（使用中文常用词库，默认）\n'
             + '/handle cn.idiom 开始中文模式（使用 THUOCL 成语词库）\n'
             + '/handle cn.poem 开始中文模式（使用 THUOCL 诗歌词库）\n'
+            + '/handlesay <word> 说中文\n'
             + '/wordles 多人模式\n'
             + '/eldrow 结束游戏\n'
             + '/help 显示帮助\n'
