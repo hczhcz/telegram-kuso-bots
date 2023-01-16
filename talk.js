@@ -55,7 +55,7 @@ const updateCorpus = () => {
             if (
                 payload.text.length > 20
                 || tag === 'public' && payload.text.length > 10
-                || payload.text.match(/@\w+|\/\w+|:\/\//)
+                || payload.text.match(config.talkIgnore)
             ) {
                 last[obj.chat] = payload;
 
