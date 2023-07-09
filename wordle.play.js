@@ -36,6 +36,16 @@ const end = (id, onGameEnd, onGameNotExist) => {
     return onGameEnd(game);
 };
 
+const get = (id, onDone, onGameNotExist) => {
+    if (!games[id]) {
+        return onGameNotExist();
+    }
+
+    const game = games[id];
+
+    return onDone(game);
+};
+
 const verify = (id, language, size, onValid, onNotValid, onGameNotExist) => {
     if (!games[id]) {
         return onGameNotExist();
@@ -124,6 +134,7 @@ const count = () => {
 module.exports = {
     init: init,
     end: end,
+    get: get,
     verify: verify,
     guess: guess,
     say: say,

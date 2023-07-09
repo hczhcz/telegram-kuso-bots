@@ -111,6 +111,34 @@ const playerUpdate = (msg, list) => {
     });
 };
 
+const gameInfoEn = (guess) => {
+    let info = '猜测历史：\n';
+    let total = 0;
+
+    for (const i in guess) {
+        info += i.slice(1) + ' ' + guess[i] + '\n';
+        total += 1;
+    }
+
+    info += '（总共' + total + '次）';
+
+    return info;
+};
+
+const gameInfoCn = (guess) => {
+    let info = '猜测历史：\n';
+    let total = 0;
+
+    for (const i in guess) {
+        info += i.slice(1) + ' ' + guess[i][0] + ' (' + guess[i][1] + '/' + guess[i][2] + '/' + guess[i][3] + ')\n';
+        total += 1;
+    }
+
+    info += '（总共' + total + '次）';
+
+    return info;
+};
+
 const gameImageEn = (guess, size, total, hint) => {
     let realTotal = total;
 
@@ -502,64 +530,6 @@ bot.onText(/^[\u4e00-\u9fff]{1,20}$/, (msg, match) => {
     );
 });
 
-bot.onText(/^\/wordlesay(@\w+)? ([A-Za-z]{1,20})$/, (msg, match) => {
-    play.say(
-        'en',
-        match[2],
-        (game) => {
-            // say
-
-            bot.sendPhoto(
-                msg.chat.id,
-                gameImageEn(game.guess, game.answer.length, 1, false).toBuffer(),
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
-        },
-        () => {
-            // not valid
-
-            bot.sendMessage(
-                msg.chat.id,
-                '不…这样的参数…不可以…',
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
-        }
-    );
-});
-
-bot.onText(/^\/handlesay(@\w+)? ([\u4e00-\u9fff]{1,20})$/, (msg, match) => {
-    play.say(
-        'cn',
-        match[2],
-        (game) => {
-            // say
-
-            bot.sendPhoto(
-                msg.chat.id,
-                gameImageCn(game.guess, game.answer.length, 1, false).toBuffer(),
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
-        },
-        () => {
-            // not valid
-
-            bot.sendMessage(
-                msg.chat.id,
-                '不…这样的参数…不可以…',
-                {
-                    reply_to_message_id: msg.message_id,
-                }
-            );
-        }
-    );
-});
-
 bot.onText(/^\/wordle(@\w+)?(?: ([\w.]+))?$/, event((msg, match) => {
     const mode = match[2] || config.wordleEnDefaultDict;
 
@@ -612,6 +582,35 @@ bot.onText(/^\/wordle(@\w+)?(?: ([\w.]+))?$/, event((msg, match) => {
     );
 }, 1));
 
+bot.onText(/^\/wordlesay(@\w+)? ([A-Za-z]{1,20})$/, (msg, match) => {
+    play.say(
+        'en',
+        match[2],
+        (game) => {
+            // say
+
+            bot.sendPhoto(
+                msg.chat.id,
+                gameImageEn(game.guess, game.answer.length, 1, false).toBuffer(),
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        },
+        () => {
+            // not valid
+
+            bot.sendMessage(
+                msg.chat.id,
+                '不…这样的参数…不可以…',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        }
+    );
+});
+
 bot.onText(/^\/handle(@\w+)?(?: ([\w.]+))?$/, event((msg, match) => {
     const mode = match[2] || config.wordleCnDefaultDict;
 
@@ -656,6 +655,72 @@ bot.onText(/^\/handle(@\w+)?(?: ([\w.]+))?$/, event((msg, match) => {
             bot.sendMessage(
                 msg.chat.id,
                 '不…这样的参数…不可以…',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        }
+    );
+}, 1));
+
+bot.onText(/^\/handlesay(@\w+)? ([\u4e00-\u9fff]{1,20})$/, (msg, match) => {
+    play.say(
+        'cn',
+        match[2],
+        (game) => {
+            // say
+
+            bot.sendPhoto(
+                msg.chat.id,
+                gameImageCn(game.guess, game.answer.length, 1, false).toBuffer(),
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        },
+        () => {
+            // not valid
+
+            bot.sendMessage(
+                msg.chat.id,
+                '不…这样的参数…不可以…',
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        }
+    );
+});
+
+bot.onText(/^\/whatdle(@\w+)?$/, event((msg, match) => {
+    play.get(
+        msg.chat.id,
+        (game) => {
+            // got
+
+            const gameInfo = {
+                en: gameInfoEn,
+                cn: gameInfoCn,
+            }[game.language];
+
+            bot.sendMessage(
+                msg.chat.id,
+                gameInfo(game.guess),
+                {
+                    reply_to_message_id: msg.message_id,
+                }
+            );
+        },
+        () => {
+            // game not exist
+
+            bot.sendMessage(
+                msg.chat.id,
+                '不存在的！\n'
+                    + '\n'
+                    + '/wordle@' + config.wordleUsername + ' 开始新游戏\n'
+                    + '/handle@' + config.wordleUsername + ' 开始中文模式\n'
+                    + '/wordles@' + config.wordleUsername + ' 多人模式',
                 {
                     reply_to_message_id: msg.message_id,
                 }
@@ -815,6 +880,7 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/handle cn.idiom 开始中文模式（使用 THUOCL 成语词库）\n'
             + '/handle cn.poem 开始中文模式（使用 THUOCL 诗歌词库）\n'
             + '/handlesay <word> 说中文\n'
+            + '/whatdle 显示当前游戏文本\n'
             + '/wordles 多人模式\n'
             + '/eldrow 结束游戏\n'
             + '/help 显示帮助\n'
