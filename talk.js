@@ -69,7 +69,12 @@ const updateCorpus = () => {
 
         if (reply.text || reply.sticker) {
             newCorpus[tag] = newCorpus[tag] || [];
-            newCorpus[tag].push([reply, payload]);
+
+            if (obj.reply_id) {
+                newCorpus[tag].push([reply, payload, 5]);
+            } else {
+                newCorpus[tag].push([reply, payload, 1]);
+            }
 
             if (newCorpus[tag].length === 200000) {
                 newCorpus[tag] = newCorpus[tag].filter(() => {
@@ -96,11 +101,11 @@ const getCandidates = (reply, tag) => {
 
                 if (rate >= 0.5) {
                     if (payloads[1].text && payloads[1].text.length <= reply.text.length) {
-                        candidates.push([rate * rate, payloads[1]]);
+                        candidates.push([rate * rate * payloads[2], payloads[1]]);
                     }
 
                     if (payloads[1].sticker) {
-                        candidates.push([rate * rate, payloads[1]]);
+                        candidates.push([rate * rate * payloads[2], payloads[1]]);
                     }
                 }
             }
@@ -113,11 +118,11 @@ const getCandidates = (reply, tag) => {
 
             if (payloads[0].sticker && reply.sticker === payloads[0].sticker) {
                 if (payloads[1].text) {
-                    candidates.push([0.25, payloads[1]]);
+                    candidates.push([0.2 * payloads[2], payloads[1]]);
                 }
 
                 if (payloads[1].sticker) {
-                    candidates.push([1, payloads[1]]);
+                    candidates.push([payloads[2], payloads[1]]);
                 }
             }
         }
