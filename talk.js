@@ -76,7 +76,7 @@ const updateCorpus = () => {
                 newCorpus[tag].push([reply, payload, 1]);
             }
 
-            if (newCorpus[tag].length === 200000) {
+            if (newCorpus[tag].length === config.talkCorpusLimit) {
                 newCorpus[tag] = newCorpus[tag].filter(() => {
                     return Math.random() < 0.5;
                 });
