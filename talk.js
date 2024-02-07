@@ -80,7 +80,7 @@ const updateCorpus = () => {
         }
     }).on('close', () => {
         corpus = newCorpus;
-        log('ready ' + corpus.length);
+        log('ready', '');
     });
 };
 
@@ -145,11 +145,11 @@ const chooseCandidate = (candidates, force) => {
 const chooseCandidateLlm = (reply, candidates, send) => {
     const lines = [];
 
-    for (let i = 0; i < 10; i += 1) {
+    for (let i = 0; i < 100 && lines.length < 10; i += 1) {
         const candidate = candidates[Math.floor(Math.random() * candidates.length)];
 
-        if (candidate.text && lines.indexOf(candidate.text) < 0) {
-            lines.push(candidate.text);
+        if (candidate[1].text && lines.indexOf(candidate[1].text) < 0) {
+            lines.push(candidate[1].text);
         }
     }
 
@@ -176,14 +176,14 @@ const chooseCandidateLlm = (reply, candidates, send) => {
             });
 
             res.on('end', () => {
-                const result = JSON.parse(Buffer.concat(data).toString()).choices[0].message;
+                const result = JSON.parse(Buffer.concat(data).toString()).choices[0].message.content;
                 const i = parseInt(result, 10);
 
-                log('llm ' + query.replaceAll('\n', ' ') + ':' + result);
+                log('llm', query.replaceAll('\n', ' ') + ':' + result);
 
                 if (i >= 0 && i < lines.length) {
                     send({
-                        text: result.choices[0].message,
+                        text: lines[i],
                     });
                 } else {
                     send(null);
@@ -199,7 +199,7 @@ const chooseCandidateLlm = (reply, candidates, send) => {
             messages: [
                 {
                     role: 'system',
-                    content: '选出一行用于回复Q#,你的回答只应包含行号,例如0#',
+                    content: '选择最可能是Q#的回复的一行,你的回答只应包含行号,例如0#',
                 },
                 {
                     role: 'user',
@@ -286,7 +286,7 @@ bot.on('message', (msg) => {
             );
 
             if (payload.text) {
-                if (!reply.text || reply.text.length > 60 || tag === 'public' || Math.random() < 0.5) {
+                if (!reply.text || reply.text.length > 60 || tag === 'public') {
                     bot.sendMessage(
                         msg.chat.id,
                         payload.text,
