@@ -30,9 +30,11 @@ const updateCorpus = () => {
         const tag = config.talkDataSource[obj.chat] || 'public';
 
         let reply = last[obj.chat] || {};
+        let weight = 1;
 
         if (obj.reply_id) {
             reply = {};
+            weight = 5;
 
             if (obj.reply_text) {
                 reply.text = obj.reply_text;
@@ -48,15 +50,11 @@ const updateCorpus = () => {
         if (obj.text) {
             payload.text = obj.text;
 
-            if (payload.text.length > 60 || payload.text === reply.text) {
+            if (payload.text.length > 60) {
                 return;
             }
 
-            if (
-                payload.text.length > 20
-                || tag === 'public' && payload.text.length > 10
-                || payload.text.match(config.talkIgnore)
-            ) {
+            if (payload.text.length > 20 || payload.text.match(config.talkIgnore)) {
                 last[obj.chat] = payload;
 
                 return;
@@ -67,14 +65,11 @@ const updateCorpus = () => {
             payload.sticker = obj.sticker;
         }
 
-        if (reply.text || reply.sticker) {
-            newCorpus[tag] = newCorpus[tag] || [];
+        last[obj.chat] = payload;
 
-            if (obj.reply_id) {
-                newCorpus[tag].push([reply, payload, 5]);
-            } else {
-                newCorpus[tag].push([reply, payload, 1]);
-            }
+        if (reply.text && (obj.text || obj.sticker) || reply.sticker && obj.sticker) {
+            newCorpus[tag] = newCorpus[tag] || [];
+            newCorpus[tag].push([reply, payload, weight]);
 
             if (newCorpus[tag].length === config.talkCorpusLimit) {
                 newCorpus[tag] = newCorpus[tag].filter(() => {
@@ -82,8 +77,6 @@ const updateCorpus = () => {
                 });
             }
         }
-
-        last[obj.chat] = payload;
     }).on('close', () => {
         corpus = newCorpus;
     });
@@ -116,14 +109,8 @@ const getCandidates = (reply, tag) => {
         for (const i in corpus[tag]) {
             const payloads = corpus[tag][i];
 
-            if (payloads[0].sticker && reply.sticker === payloads[0].sticker) {
-                if (payloads[1].text) {
-                    candidates.push([0.2 * payloads[2], payloads[1]]);
-                }
-
-                if (payloads[1].sticker) {
-                    candidates.push([payloads[2], payloads[1]]);
-                }
+            if (payloads[0].sticker && reply.sticker === payloads[0].sticker && payloads[1].sticker) {
+                candidates.push([payloads[2], payloads[1]]);
             }
         }
     }
