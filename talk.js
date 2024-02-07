@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const fuzzball = require('fuzzball');
+const https = require('https');
 const readline = require('readline');
 
 const config = require('./config');
@@ -79,6 +80,7 @@ const updateCorpus = () => {
         }
     }).on('close', () => {
         corpus = newCorpus;
+        log('ready ' + corpus.length);
     });
 };
 
@@ -138,6 +140,76 @@ const chooseCandidate = (candidates, force) => {
     }
 
     return null;
+};
+
+const chooseCandidateLlm = (reply, candidates, send) => {
+    const lines = [];
+
+    for (let i = 0; i < 10; i += 1) {
+        const candidate = candidates[Math.floor(Math.random() * candidates.length)];
+
+        if (candidate.text && lines.indexOf(candidate.text) < 0) {
+            lines.push(candidate.text);
+        }
+    }
+
+    if (lines.length <= 1) {
+        send(null);
+    } else {
+        let query = 'Q#' + reply.text.replaceAll('#', ' ').replaceAll('\n', ' ') + '\n';
+
+        for (const i in lines) {
+            query += i + '#' + lines[i].replaceAll('#', ' ').replaceAll('\n', ' ') + '\n';
+        }
+
+        const req = https.request(config.talkLlmUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + config.talkLlmToken,
+            },
+        }, (res) => {
+            const data = [];
+
+            res.on('data', (chunk) => {
+                data.push(chunk);
+            });
+
+            res.on('end', () => {
+                const result = JSON.parse(Buffer.concat(data).toString()).choices[0].message;
+                const i = parseInt(result, 10);
+
+                log('llm ' + query.replaceAll('\n', ' ') + ':' + result);
+
+                if (i >= 0 && i < lines.length) {
+                    send({
+                        text: result.choices[0].message,
+                    });
+                } else {
+                    send(null);
+                }
+            });
+        }).on('error', (err) => {
+            console.error(err.message);
+            send(null);
+        });
+
+        req.write(JSON.stringify({
+            model: config.talkLlmModel,
+            messages: [
+                {
+                    role: 'system',
+                    content: '选出一行用于回复Q#,你的回答只应包含行号,例如0#',
+                },
+                {
+                    role: 'user',
+                    content: query,
+                },
+            ],
+            max_tokens: 3,
+        }));
+        req.end();
+    }
 };
 
 bot.on('message', (msg) => {
@@ -214,14 +286,29 @@ bot.on('message', (msg) => {
             );
 
             if (payload.text) {
-                bot.sendMessage(
-                    msg.chat.id,
-                    payload.text,
-                    {
-                        reply_to_message_id: msg.message_id,
-                        disable_notification: true,
-                    }
-                );
+                if (!reply.text || reply.text.length > 60 || tag === 'public' || Math.random() < 0.5) {
+                    bot.sendMessage(
+                        msg.chat.id,
+                        payload.text,
+                        {
+                            reply_to_message_id: msg.message_id,
+                            disable_notification: true,
+                        }
+                    );
+                } else {
+                    chooseCandidateLlm(reply, candidates, (payloadLlm) => {
+                        bot.sendMessage(
+                            msg.chat.id,
+                            payloadLlm === null
+                                ? payload.text
+                                : payloadLlm.text,
+                            {
+                                reply_to_message_id: msg.message_id,
+                                disable_notification: true,
+                            }
+                        );
+                    });
+                }
             }
 
             if (payload.sticker) {
