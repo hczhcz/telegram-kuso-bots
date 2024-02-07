@@ -51,7 +51,7 @@ const updateCorpus = () => {
         if (obj.text) {
             payload.text = obj.text;
 
-            if (payload.text.length > 60) {
+            if (payload.text.length > 60 || payload.text === reply.text) {
                 return;
             }
 
@@ -145,11 +145,11 @@ const chooseCandidate = (candidates, force) => {
 const chooseCandidateLlm = (reply, candidates, send) => {
     const lines = [];
 
-    for (let i = 0; i < 100 && lines.length < 10; i += 1) {
-        const candidate = candidates[Math.floor(Math.random() * candidates.length)];
+    for (let i = 0; i < 30 && lines.length < 10; i += 1) {
+        const payload = chooseCandidate(candidates, true);
 
-        if (candidate[1].text && lines.indexOf(candidate[1].text) < 0) {
-            lines.push(candidate[1].text);
+        if (payload.text && lines.indexOf(payload.text) < 0) {
+            lines.push(payload.text);
         }
     }
 
