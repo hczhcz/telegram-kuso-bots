@@ -199,7 +199,7 @@ const chooseCandidateLlm = (reply, candidates, send) => {
             messages: [
                 {
                     role: 'system',
-                    content: '选择最可能是Q#的回复的一行,你的回答只应包含行号,例如0#',
+                    content: '选出最可能是Q#的回复的一行,你必须回答行号,如0#,不能有其它文字',
                 },
                 {
                     role: 'user',
