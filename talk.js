@@ -177,7 +177,7 @@ const chooseCandidateLlm = (reply, candidates, send) => {
 
             res.on('end', () => {
                 const result = JSON.parse(Buffer.concat(data).toString()).choices[0].message.content;
-                const i = parseInt(result, 10);
+                const i = parseInt(result.replaceAll('#', ''), 10);
 
                 log('llm', query.replaceAll('\n', ' ') + ':' + result);
 
