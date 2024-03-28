@@ -21,12 +21,25 @@ const coolDown = {};
 let corpus = {};
 
 const updateCorpus = () => {
+    let count = 0;
     const newCorpus = {};
     const last = {};
 
-    readline.createInterface({
+    const rl = readline.createInterface({
         input: fs.createReadStream(config.talkPathCorpus),
     }).on('line', (line) => {
+        count += 1;
+
+        // to reduce cpu load
+        if (count === config.talkCorpusLimit) {
+            rl.pause();
+
+            setTimeout(() => {
+                count = 0;
+                rl.resume();
+            }, 1000);
+        }
+
         const obj = JSON.parse(line);
         const tag = config.talkDataSource[obj.chat] || 'public';
 
