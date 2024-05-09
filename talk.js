@@ -169,10 +169,10 @@ const chooseCandidateLlm = (reply, candidates, send) => {
     if (lines.length <= 1) {
         send(null);
     } else {
-        let query = 'Q#' + reply.text.replaceAll('#', ' ').replaceAll('\n', ' ') + '\n';
+        let query = 'Q:' + reply.text.replaceAll(':', ' ').replaceAll('\n', ' ') + '\n';
 
         for (const i in lines) {
-            query += i + '#' + lines[i].replaceAll('#', ' ').replaceAll('\n', ' ') + '\n';
+            query += i + ':' + lines[i].replaceAll(':', ' ').replaceAll('\n', ' ') + '\n';
         }
 
         const req = https.request(config.talkLlmUrl, {
@@ -190,7 +190,7 @@ const chooseCandidateLlm = (reply, candidates, send) => {
 
             res.on('end', () => {
                 const result = JSON.parse(Buffer.concat(data).toString()).choices[0].message.content;
-                const i = parseInt(result.replaceAll('#', ''), 10);
+                const i = parseInt(result, 10);
 
                 log('llm', query.replaceAll('\n', ' ') + ':' + result);
 
@@ -211,12 +211,12 @@ const chooseCandidateLlm = (reply, candidates, send) => {
             model: config.talkLlmModel,
             messages: [
                 {
-                    role: 'system',
-                    content: '选出最可能是Q#的回复的一行\n你必须回答行号,例如0#\n回答中不能包含文字',
-                },
-                {
                     role: 'user',
                     content: query,
+                },
+                {
+                    role: 'system',
+                    content: 'Choose the most likely reply to Q\nYou must respond a number',
                 },
             ],
             max_tokens: 3,
