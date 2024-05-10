@@ -33,9 +33,18 @@ module.exports = (bot, event, playerEvent, env) => {
                     msg.chat.id,
                     result,
                     {
+                        parse_mode: 'Markdown',
                         reply_to_message_id: msg.message_id,
                     }
-                );
+                ).catch((err) => {
+                    bot.sendMessage(
+                        msg.chat.id,
+                        result,
+                        {
+                            reply_to_message_id: msg.message_id,
+                        }
+                    );
+                });
             });
         });
 
