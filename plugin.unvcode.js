@@ -910,7 +910,7 @@ module.exports = (bot, event, playerEvent, env) => {
         return result;
     };
 
-    bot.onText(/^\/unvcode(@\w+)?(?: (.*))?$/, event((msg, match) => {
+    bot.onText(/^\/unvcode(@\w+)?(?: ([^\0]*))?$/, event((msg, match) => {
         if (msg.reply_to_message && msg.reply_to_message.text) {
             bot.sendMessage(
                 msg.chat.id,

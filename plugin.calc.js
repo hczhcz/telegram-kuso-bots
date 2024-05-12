@@ -26,7 +26,7 @@ const runCalc = (path, expression, onDone, onFail) => {
 };
 
 module.exports = (bot, event, playerEvent, env) => {
-    bot.onText(/^\/(calc|clac)(@\w+)? (.+)$/, event((msg, match) => {
+    bot.onText(/^\/(calc|clac)(@\w+)? ([^\0]+)$/, event((msg, match) => {
         if (match[3].length > config.calcMaxLength) {
             return;
         }

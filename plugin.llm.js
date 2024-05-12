@@ -8,7 +8,7 @@ const config = require('./config');
 module.exports = (bot, event, playerEvent, env) => {
     const fd = fs.openSync('log.llm', 'a');
 
-    bot.onText(/^\/ai(@\w+)? (.{1,1024})$/, event((msg, match) => {
+    bot.onText(/^\/ai(@\w+)? ([^\0]{1,1024})$/, event((msg, match) => {
         const req = https.request(config.llmUrl, {
             method: 'POST',
             headers: {
