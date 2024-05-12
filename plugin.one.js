@@ -95,16 +95,18 @@ module.exports = (bot, event, playerEvent, env) => {
         }
 
         for (const i in text) {
-            const options = [];
+            if (!text[i].match(/\s/)) {
+                const options = [];
 
-            for (const j in chars) {
-                if (chars[j].text === text[i]) {
-                    options.push(chars[j]);
+                for (const j in chars) {
+                    if (chars[j].text === text[i]) {
+                        options.push(chars[j]);
+                    }
                 }
-            }
 
-            if (options.length) {
-                selected.push(options[Math.floor(Math.random() * options.length)]);
+                if (options.length) {
+                    selected.push(options[Math.floor(Math.random() * options.length)]);
+                }
             }
         }
 
@@ -136,10 +138,12 @@ module.exports = (bot, event, playerEvent, env) => {
         }
 
         for (const i in text) {
-            const chosen = env.command.tryGet(msg, match[1], [text[i]], false, true);
+            if (!text[i].match(/\s/)) {
+                const chosen = env.command.tryGet(msg, match[1], [text[i]], false, true);
 
-            if (chosen) {
-                selected.push(chosen);
+                if (chosen) {
+                    selected.push(chosen);
+                }
             }
         }
 
