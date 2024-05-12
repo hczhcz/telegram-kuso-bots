@@ -216,7 +216,8 @@ const chooseCandidateLlm = (reply, candidates, send) => {
                 },
                 {
                     role: 'system',
-                    content: 'Choose the most likely reply to Q\nYou must respond a number',
+                    content: 'Choose the most likely reply to Q\n'
+                        + 'You must respond a number',
                 },
             ],
             max_tokens: 3,
