@@ -300,7 +300,7 @@ bot.on('message', (msg) => {
             );
 
             if (payload.text) {
-                if (!reply.text || reply.text.length > 60 || tag === 'public') {
+                if (!reply.text || reply.text.length > 60) {
                     bot.sendMessage(
                         msg.chat.id,
                         payload.text,
