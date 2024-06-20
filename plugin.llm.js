@@ -93,6 +93,7 @@ module.exports = (bot, event, playerEvent, env) => {
 
     env.info.addPluginHelp(
         'llm',
-        '/ai 向人工智能模型提问'
+        '/ai 向通用人工智能模型提问\n'
+            + '/aicode 向代码人工智能模型提问'
     );
 };
