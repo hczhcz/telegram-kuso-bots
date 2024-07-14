@@ -41,7 +41,11 @@ const updateCorpus = () => {
         }
 
         const obj = JSON.parse(line);
-        const tag = config.talkDataSource[obj.chat] || 'public';
+        const tag = config.talkDataSource[obj.chat];
+
+        if (!tag) {
+            return;
+        }
 
         let reply = last[obj.chat] || {};
         let weight = 1;
@@ -292,7 +296,7 @@ bot.on('message', (msg) => {
             reply.sticker = msg.sticker.file_id;
         }
 
-        const tag = config.talkDataTarget[msg.chat.id] || 'public';
+        const tag = config.talkDataTarget[msg.chat.id] || config.talkDataDefaultTarget;
         const candidates = getCandidates(reply, tag);
         const payload = chooseCandidate(candidates, force);
 
