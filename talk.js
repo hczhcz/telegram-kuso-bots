@@ -89,6 +89,10 @@ const updateCorpus = () => {
                 newCorpus[tag] = newCorpus[tag].filter(() => {
                     return Math.random() < 0.5;
                 });
+
+                if (global.gc) {
+                    global.gc();
+                }
             }
         }
     }).on('close', () => {
