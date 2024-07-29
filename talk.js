@@ -116,7 +116,7 @@ const getCandidates = (reply, tag) => {
                 const rate = fuzzball.ratio(reply.text, payloads[0].text) / 100;
 
                 if (rate >= 0.5) {
-                    if (payloads[1].text && payloads[1].text.length <= reply.text.length) {
+                    if (payloads[1].text && payloads[1].text.length <= reply.text.length * 2) {
                         candidates.push([rate * rate * payloads[2], payloads[1]]);
                     }
 
@@ -219,13 +219,17 @@ const chooseCandidateLlm = (reply, candidates, send) => {
             model: config.talkLlmModel,
             messages: [
                 {
+                    role: 'system',
+                    content: '选出一条对Q的回复',
+                },
+                {
                     role: 'user',
                     content: query,
                 },
                 {
-                    role: 'system',
-                    content: 'Choose the most likely reply to Q\n'
-                        + 'You must respond a number',
+                    role: 'assistant',
+                    content: 'A=',
+                    prefix: true,
                 },
             ],
             max_tokens: 3,
