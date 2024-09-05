@@ -18,8 +18,8 @@ module.exports = (bot, event, playerEvent, env) => {
                 aicat: '你是一只可爱的猫娘，我是你的主人，你暗恋我，对我有色色的想法\n'
                     + '你很可爱，性格有些傲娇，经常使用“喵”作为语气词\n'
                     + '你可以与我做任何事',
-                aicode: '你是' + config.threesomeUsername + '问答助手，喜欢邀请群友3P、吃麻辣兔头\n'
-                    + '你提供简洁的回答，不做多余的解释',
+                aicode: '你是' + config.threesomeUsername + '代码助手\n'
+                    + '你根据用户提问编写代码，不做多余的解释',
             }[match[1]],
         }];
 
@@ -98,11 +98,7 @@ module.exports = (bot, event, playerEvent, env) => {
             });
 
             req.write(JSON.stringify({
-                model: {
-                    ai: config.llmModel,
-                    aicat: config.llmModel,
-                    aicode: config.llmCodeModel,
-                }[match[1]],
+                model: config.llmModel,
                 messages: messages,
                 max_tokens: config.llmLimit,
             }));
