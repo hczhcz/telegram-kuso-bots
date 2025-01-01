@@ -102,7 +102,7 @@ bot.onText(/^\/ignite(@\w+)?(?: (.+))?$/, event((msg, match) => {
 
     const image = msg.reply_to_message
         && msg.reply_to_message.sticker
-        && msg.reply_to_message.sticker.file_unique_id;
+        && msg.reply_to_message.sticker.file_id;
 
     if (player === null) {
         bot.sendMessage(
@@ -132,6 +132,11 @@ bot.onText(/^\/ignite(@\w+)?(?: (.+))?$/, event((msg, match) => {
                     {
                         reply_to_message_id: msg.message_id,
                     }
+                );
+
+                bot.sendSticker(
+                    msg.chat.id,
+                    image || config.bombDefaultImage
                 );
             },
             (game) => {
@@ -237,7 +242,7 @@ bot.onText(/^\/help(@\w+)?$/, event((msg, match) => {
             + '/status 查看 bot 状态\n'
             + '\n'
             + '备注：\n'
-            + '/bomb 可使用回复的消息中的表情\n'
+            + '/bomb 可以使用回复的消息中的表情，代替默认的丢炸弹表情\n'
             + '\n'
             + '源码：\n'
             + 'https://github.com/hczhcz/telegram-kuso-bots'
@@ -262,7 +267,7 @@ bot.on('message', (msg) => {
     play.verify(
         msg.chat.id,
         msg.from,
-        msg.sticker.file_unique_id,
+        msg.sticker.file_id,
         () => {
             // valid
 
