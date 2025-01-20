@@ -312,16 +312,7 @@ bot.on('message', (msg) => {
             );
 
             if (payload.text) {
-                if (!reply.text || reply.text.length > 60) {
-                    bot.sendMessage(
-                        msg.chat.id,
-                        payload.text,
-                        {
-                            reply_to_message_id: msg.message_id,
-                            disable_notification: true,
-                        }
-                    );
-                } else {
+                if (reply.text && !config.talkLlmOff[msg.chat.id]) {
                     chooseCandidateLlm(reply, candidates, (payloadLlm) => {
                         bot.sendMessage(
                             msg.chat.id,
@@ -334,6 +325,15 @@ bot.on('message', (msg) => {
                             }
                         );
                     });
+                } else {
+                    bot.sendMessage(
+                        msg.chat.id,
+                        payload.text,
+                        {
+                            reply_to_message_id: msg.message_id,
+                            disable_notification: true,
+                        }
+                    );
                 }
             }
 
@@ -352,7 +352,9 @@ bot.on('message', (msg) => {
 });
 
 for (const i in config.banChat) {
-    bot.leaveChat(i);
+    bot.leaveChat(i).catch((err) => {
+        // nothing
+    });
 }
 
 updateCorpus();

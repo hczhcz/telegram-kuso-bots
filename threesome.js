@@ -367,7 +367,9 @@ bot.on('chosen_inline_result', (chosen) => {
 });
 
 for (const i in config.banChat) {
-    bot.leaveChat(i);
+    bot.leaveChat(i).catch((err) => {
+        // nothing
+    });
 }
 
 data.loadCommands();
