@@ -15,11 +15,11 @@ module.exports = (bot, event, playerEvent, env) => {
                     let chosen = null;
 
                     if (args.length) {
-                        chosen = env.command.tryGet(msg, args.shift(), [], false, true);
+                        chosen = env.command.chooseCommand(msg, args.shift(), [], false, true);
                     }
 
                     if (!chosen) {
-                        chosen = env.command.tryGet(msg, title[i].slice(1), [], false, true);
+                        chosen = env.command.chooseCommand(msg, title[i].slice(1), [], false, true);
                     }
 
                     if (!chosen) {

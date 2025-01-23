@@ -44,6 +44,139 @@ module.exports = (bot, games, commands, writeCommand) => {
             return result;
         },
 
+        chooseCommand: (msg, key, args, allowForward, allowUsed) => {
+            const game = games[msg.chat.id];
+            const now = Date.now();
+
+            let tot = [];
+            let level = 0;
+
+            const genText = (command) => {
+                let text = '';
+                const match = {};
+
+                for (let i = 0; i < command.text.length; i += 1) {
+                    const head = command.text.slice(i);
+
+                    if (head.startsWith('$ME')) {
+                        // notice: protection for mock objects
+                        if (msg.from) {
+                            text += msg.from.first_name;
+                            i += 2;
+                        } else {
+                            return;
+                        }
+                    } else if (head.startsWith('$YOU')) {
+                        if (msg.reply_to_message) {
+                            text += msg.reply_to_message.from.first_name;
+                            match.you = 1;
+                            i += 3;
+                        } else {
+                            return;
+                        }
+                    } else if (head.startsWith('$MODE')) {
+                        if (game) {
+                            text += game.modename;
+                            i += 4;
+                        } else {
+                            return;
+                        }
+                    } else if (head.startsWith('$1')) {
+                        if (args[0]) {
+                            text += args[0];
+                            match.args = Math.max(match.args || 0, 1);
+                            i += 1;
+                        } else {
+                            return;
+                        }
+                    } else if (head.startsWith('$2')) {
+                        if (args[1]) {
+                            text += args[1];
+                            match.args = Math.max(match.args || 0, 2);
+                            i += 1;
+                        } else {
+                            return;
+                        }
+                    } else if (head.startsWith('$3')) {
+                        if (args[2]) {
+                            text += args[2];
+                            match.args = Math.max(match.args || 0, 3);
+                            i += 1;
+                        } else {
+                            return;
+                        }
+                    } else {
+                        text += command.text[i];
+                    }
+                }
+
+                let newLevel = 0;
+
+                for (const i in match) {
+                    newLevel += match[i];
+                }
+
+                if (level <= newLevel) {
+                    if (level < newLevel) {
+                        tot = [];
+                        level = newLevel;
+                    }
+
+                    tot.push({
+                        command: command,
+                        text: text,
+                    });
+                }
+            };
+
+            const genForward = (command) => {
+                if (allowForward && level === 0) {
+                    tot.push({
+                        command: command,
+                        chat_id: command.chat_id,
+                        forward: command.forward,
+                    });
+                }
+            };
+
+            const fetched = self.fetchCommand(msg, key);
+
+            for (const i in fetched) {
+                const command = fetched[i];
+
+                if (
+                    allowUsed
+                    || !command[msg.chat.id]
+                    || Math.random() < (now - command[msg.chat.id].used) / 20000 - 1
+                ) {
+                    if (command.text) {
+                        if (command.mapped !== 0 && command.text.slice(0, 7) === '$SILENT') {
+                            return;
+                        }
+
+                        genText(command);
+                    } else if (command.forward) {
+                        genForward(command);
+                    } else {
+                        // never reach
+                        throw Error(JSON.stringify(command));
+                    }
+                }
+            }
+
+            if (tot.length) {
+                const choice = Math.floor(Math.random() * tot.length);
+
+                tot[choice].command[msg.chat.id] = {
+                    used: now,
+                    // TODO: storage & recall?
+                    args: args,
+                };
+
+                return tot[choice];
+            }
+        },
+
         all: (msg) => {
             let text = '';
 
@@ -216,137 +349,8 @@ module.exports = (bot, games, commands, writeCommand) => {
             );
         },
 
-        tryGet: (msg, key, args, allowForward, allowUsed) => {
-            const game = games[msg.chat.id];
-            const now = Date.now();
-
-            let tot = [];
-            let level = 0;
-
-            const genText = (command) => {
-                let text = '';
-                const match = {};
-
-                for (let i = 0; i < command.text.length; i += 1) {
-                    const head = command.text.slice(i);
-
-                    if (head.startsWith('$ME')) {
-                        // notice: protection for mock objects
-                        if (msg.from) {
-                            text += msg.from.first_name;
-                            i += 2;
-                        } else {
-                            return;
-                        }
-                    } else if (head.startsWith('$YOU')) {
-                        if (msg.reply_to_message) {
-                            text += msg.reply_to_message.from.first_name;
-                            match.you = 1;
-                            i += 3;
-                        } else {
-                            return;
-                        }
-                    } else if (head.startsWith('$MODE')) {
-                        if (game) {
-                            text += game.modename;
-                            i += 4;
-                        } else {
-                            return;
-                        }
-                    } else if (head.startsWith('$1')) {
-                        if (args[0]) {
-                            text += args[0];
-                            match.args = Math.max(match.args || 0, 1);
-                            i += 1;
-                        } else {
-                            return;
-                        }
-                    } else if (head.startsWith('$2')) {
-                        if (args[1]) {
-                            text += args[1];
-                            match.args = Math.max(match.args || 0, 2);
-                            i += 1;
-                        } else {
-                            return;
-                        }
-                    } else if (head.startsWith('$3')) {
-                        if (args[2]) {
-                            text += args[2];
-                            match.args = Math.max(match.args || 0, 3);
-                            i += 1;
-                        } else {
-                            return;
-                        }
-                    } else {
-                        text += command.text[i];
-                    }
-                }
-
-                let newLevel = 0;
-
-                for (const i in match) {
-                    newLevel += match[i];
-                }
-
-                if (level <= newLevel) {
-                    if (level < newLevel) {
-                        tot = [];
-                        level = newLevel;
-                    }
-
-                    tot.push({
-                        command: command,
-                        text: text,
-                    });
-                }
-            };
-
-            const genForward = (command) => {
-                if (allowForward && level === 0) {
-                    tot.push({
-                        command: command,
-                        chat_id: command.chat_id,
-                        forward: command.forward,
-                    });
-                }
-            };
-
-            const fetched = self.fetchCommand(msg, key);
-
-            for (const i in fetched) {
-                const command = fetched[i];
-
-                if (
-                    allowUsed
-                    || !command[msg.chat.id]
-                    || Math.random() < (now - command[msg.chat.id].used) / 20000 - 1
-                ) {
-                    if (command.text) {
-                        genText(command);
-                    } else if (command.forward) {
-                        genForward(command);
-                    } else {
-                        // never reach
-                        throw Error(JSON.stringify(command));
-                    }
-                }
-            }
-
-            if (tot.length) {
-                const choice = Math.floor(Math.random() * tot.length);
-
-                tot[choice].command[msg.chat.id] = {
-                    used: now,
-                    // TODO: storage & recall?
-                    args: args,
-                };
-
-                return tot[choice];
-            }
-        },
-
         get: (msg, key, args) => {
-            const chosen = self.tryGet(msg, key, args, true, false);
+            const chosen = self.chooseCommand(msg, key, args, true, false);
 
             if (chosen) {
                 if (chosen.text) {

@@ -139,7 +139,7 @@ module.exports = (bot, event, playerEvent, env) => {
 
         for (const i in text) {
             if (!text[i].match(/\s/)) {
-                const chosen = env.command.tryGet(msg, match[1], [text[i]], false, true);
+                const chosen = env.command.chooseCommand(msg, match[1], [text[i]], false, true);
 
                 if (chosen) {
                     selected.push(chosen);
