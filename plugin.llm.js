@@ -55,7 +55,10 @@ module.exports = (bot, event, playerEvent, env) => {
                 });
 
                 res.on('end', () => {
-                    const result = JSON.parse(Buffer.concat(data).toString()).choices[0].message.content;
+                    const dataObj = JSON.parse(Buffer.concat(data).toString());
+                    const result = dataObj.error
+                        ? dataObj.error.message
+                        : dataObj.choices[0].message.content;
 
                     rawMessages.push(result);
                     fs.write(fd, JSON.stringify(rawMessages) + '\n', () => {
@@ -159,8 +162,13 @@ module.exports = (bot, event, playerEvent, env) => {
                 });
 
                 res.on('end', () => {
-                    const think = JSON.parse(Buffer.concat(data).toString()).choices[0].message.reasoning_content;
-                    const result = JSON.parse(Buffer.concat(data).toString()).choices[0].message.content;
+                    const dataObj = JSON.parse(Buffer.concat(data).toString());
+                    const think = dataObj.error
+                        ? ''
+                        : dataObj.choices[0].message.reasoning_content;
+                    const result = dataObj.error
+                        ? dataObj.error.message
+                        : dataObj.choices[0].message.content;
 
                     rawMessages.push(think);
                     rawMessages.push(result);
@@ -168,22 +176,24 @@ module.exports = (bot, event, playerEvent, env) => {
                         // nothing
                     });
 
-                    bot.sendMessage(
-                        msg.chat.id,
-                        think,
-                        {
-                            parse_mode: 'Markdown',
-                            reply_to_message_id: msg.message_id,
-                        }
-                    ).catch((err) => {
+                    if (think.length) {
                         bot.sendMessage(
                             msg.chat.id,
                             think,
                             {
+                                parse_mode: 'Markdown',
                                 reply_to_message_id: msg.message_id,
                             }
-                        );
-                    });
+                        ).catch((err) => {
+                            bot.sendMessage(
+                                msg.chat.id,
+                                think,
+                                {
+                                    reply_to_message_id: msg.message_id,
+                                }
+                            );
+                        });
+                    }
 
                     bot.sendMessage(
                         msg.chat.id,
