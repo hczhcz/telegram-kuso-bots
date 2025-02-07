@@ -81,6 +81,16 @@ module.exports = (bot, event, playerEvent, env) => {
                 });
             });
 
+            req.on('error', (err) => {
+                bot.sendMessage(
+                    msg.chat.id,
+                    err.message,
+                    {
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
+            });
+
             messages.push({
                 role: 'assistant',
                 content: {
@@ -192,6 +202,16 @@ module.exports = (bot, event, playerEvent, env) => {
                         );
                     });
                 });
+            });
+
+            req.on('error', (err) => {
+                bot.sendMessage(
+                    msg.chat.id,
+                    err.message,
+                    {
+                        reply_to_message_id: msg.message_id,
+                    }
+                );
             });
 
             req.write(JSON.stringify({
