@@ -141,10 +141,16 @@ module.exports = (bot, event, playerEvent, env) => {
 
         if (match[2]) {
             rawMessages.push(match[2]);
-            messages.push({
-                role: 'user',
-                content: match[2].slice(0, config.llmLimit),
-            });
+
+            // note: patch for ds-r1
+            if (messages.length === 2) {
+                messages[1].content += '\n' + match[2].slice(0, config.llmLimit);
+            } else {
+                messages.push({
+                    role: 'user',
+                    content: match[2].slice(0, config.llmLimit),
+                });
+            }
         }
 
         if (rawMessages.length) {
