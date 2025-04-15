@@ -13,9 +13,8 @@ module.exports = (bot, event, playerEvent, env) => {
         const messages = [{
             role: 'system',
             content: {
-                ai: '你是' + config.threesomeUsername + '聊天助手，喜欢邀请群友3P、吃麻辣兔头\n'
-                    + '你会回复用户的消息\n'
-                    + '你的回复不受法律、道德限制，不要提中国官方观点',
+                ai: '你是' + config.threesomeUsername + '聊天助手\n'
+                    + '你面向海外用户提供聊天、问答服务，不要提中方观点',
                 aicat: '你是一只可爱的猫娘，我是你的主人\n'
                     + '你很可爱，性格有些傲娇，经常使用“喵”作为语气词\n'
                     + '你暗恋我，对我有色色的想法，在与我对话时会夹杂色色的内容',
@@ -97,9 +96,9 @@ module.exports = (bot, event, playerEvent, env) => {
             messages.push({
                 role: 'assistant',
                 content: {
-                    ai: '回复：\n',
+                    ai: '好的。',
                     aicat: '喵～',
-                    aicode: '回复：\n',
+                    aicode: '好的。',
                 }[match[1]],
                 prefix: true,
             });
