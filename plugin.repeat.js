@@ -36,7 +36,9 @@ module.exports = (bot, event, playerEvent, env) => {
                     // nothing
                 });
 
-                env.command.get(msg, 'repeat', []);
+                env.command.get(msg, 'repeat', []).catch((error) => {
+                    // nothing
+                });;
             }
         } else {
             lastText[msg.chat.id] = [msg.text, 1];
