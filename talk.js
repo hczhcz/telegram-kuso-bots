@@ -323,7 +323,9 @@ bot.on('message', (msg) => {
                                 reply_to_message_id: msg.message_id,
                                 disable_notification: true,
                             }
-                        );
+                        ).cache((error) => {
+                            // nothing
+                        });
                     });
                 } else {
                     bot.sendMessage(
@@ -333,7 +335,9 @@ bot.on('message', (msg) => {
                             reply_to_message_id: msg.message_id,
                             disable_notification: true,
                         }
-                    );
+                    ).cache((error) => {
+                        // nothing
+                    });
                 }
             }
 
