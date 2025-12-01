@@ -107,7 +107,7 @@ module.exports = (bot, event, playerEvent, env) => {
                 model: config.llmModel,
                 messages: messages,
                 frequency_penalty: {
-                    ai: 1,
+                    ai: 0.2,
                     aicat: 0,
                     aicode: 0,
                 }[match[1]],
