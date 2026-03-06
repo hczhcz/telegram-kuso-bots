@@ -335,7 +335,7 @@ bot.on('message', (msg) => {
                             reply_to_message_id: msg.message_id,
                             disable_notification: true,
                         }
-                    ).cache((error) => {
+                    ).catch((error) => {
                         // nothing
                     });
                 }
