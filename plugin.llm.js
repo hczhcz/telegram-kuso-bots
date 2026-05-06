@@ -107,6 +107,9 @@ module.exports = (bot, event, playerEvent, env) => {
 
             req.write(JSON.stringify({
                 model: config.llmModel,
+                thinking: {
+                    type: 'disabled',
+                },
                 messages: messages,
                 max_tokens: config.llmLimit,
                 temperature: {
@@ -179,6 +182,25 @@ module.exports = (bot, event, playerEvent, env) => {
                         // nothing
                     });
 
+                    const send = () => {
+                        bot.sendMessage(
+                            msg.chat.id,
+                            result,
+                            {
+                                parse_mode: 'MarkdownV2',
+                                reply_to_message_id: msg.message_id,
+                            }
+                        ).catch((err) => {
+                            bot.sendMessage(
+                                msg.chat.id,
+                                result,
+                                {
+                                    reply_to_message_id: msg.message_id,
+                                }
+                            );
+                        });
+                    };
+
                     if (think.length) {
                         bot.sendMessage(
                             msg.chat.id,
@@ -194,26 +216,11 @@ module.exports = (bot, event, playerEvent, env) => {
                                 {
                                     reply_to_message_id: msg.message_id,
                                 }
-                            );
-                        });
+                            ).then(send);
+                        }).then(send);
+                    } else {
+                        send();
                     }
-
-                    bot.sendMessage(
-                        msg.chat.id,
-                        result,
-                        {
-                            parse_mode: 'MarkdownV2',
-                            reply_to_message_id: msg.message_id,
-                        }
-                    ).catch((err) => {
-                        bot.sendMessage(
-                            msg.chat.id,
-                            result,
-                            {
-                                reply_to_message_id: msg.message_id,
-                            }
-                        );
-                    });
                 });
             });
 
@@ -228,9 +235,13 @@ module.exports = (bot, event, playerEvent, env) => {
             });
 
             req.write(JSON.stringify({
-                model: config.llmThinkModel,
+                model: config.llmModel,
+                thinking: {
+                    type: 'enabled',
+                },
                 messages: messages,
                 max_tokens: config.llmLimit,
+                temperature: 0,
             }));
             req.end();
         }
