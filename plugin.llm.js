@@ -108,11 +108,6 @@ module.exports = (bot, event, playerEvent, env) => {
             req.write(JSON.stringify({
                 model: config.llmModel,
                 messages: messages,
-                frequency_penalty: {
-                    ai: 0.2,
-                    aicat: 0,
-                    aicode: 0,
-                }[match[1]],
                 max_tokens: config.llmLimit,
                 temperature: {
                     ai: 1,
