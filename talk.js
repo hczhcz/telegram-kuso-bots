@@ -217,6 +217,9 @@ const chooseCandidateLlm = (reply, candidates, send) => {
 
         req.write(JSON.stringify({
             model: config.talkLlmModel,
+            thinking: {
+                type: 'disabled',
+            },
             messages: [
                 {
                     role: 'system',

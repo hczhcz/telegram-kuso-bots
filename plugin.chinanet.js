@@ -24,7 +24,7 @@ module.exports = (bot, event, playerEvent, env) => {
             if (!config.threesomeSilent[msg.chat.id]) {
                 env.command.get(msg, key, []).catch((error) => {
                     // nothing
-                });;
+                });
             }
         };
     };

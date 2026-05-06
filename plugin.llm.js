@@ -216,7 +216,7 @@ module.exports = (bot, event, playerEvent, env) => {
                                 {
                                     reply_to_message_id: msg.message_id,
                                 }
-                            ).then(send);
+                            );
                         }).then(send);
                     } else {
                         send();
