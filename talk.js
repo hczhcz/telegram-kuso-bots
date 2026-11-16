@@ -115,7 +115,7 @@ const getCandidates = (reply, tag) => {
             if (payloads[0].text) {
                 const rate = fuzzball.ratio(reply.text, payloads[0].text) / 100;
 
-                if (rate >= 0.5) {
+                if (rate >= 0.25) {
                     if (payloads[1].text && payloads[1].text.length <= reply.text.length * 2) {
                         candidates.push([rate * rate * payloads[2], payloads[1]]);
                     }
@@ -166,7 +166,7 @@ const chooseCandidate = (candidates, force) => {
 const chooseCandidateLlm = (reply, candidates, send) => {
     const lines = [];
 
-    for (let i = 0; i < 30 && lines.length < 10; i += 1) {
+    for (let i = 0; i < 100 && lines.length < 10; i += 1) {
         const payload = chooseCandidate(candidates, true);
 
         if (payload.text && lines.indexOf(payload.text) < 0) {
