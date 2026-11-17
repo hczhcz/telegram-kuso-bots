@@ -141,14 +141,14 @@ const getCandidates = (reply, tag) => {
     return candidates;
 };
 
-const chooseCandidate = (candidates, force) => {
+const chooseCandidate = (candidates) => {
     let total = 0;
 
     for (const i in candidates) {
         total += candidates[i][0];
     }
 
-    if (force || total > 1) {
+    if (total > 1) {
         let target = Math.random() * total;
 
         for (const i in candidates) {
@@ -319,7 +319,7 @@ bot.on('message', (msg) => {
 
         const tag = config.talkDataTarget[msg.chat.id] || config.talkDataDefaultTarget;
         const candidates = getCandidates(reply, tag);
-        const payload = chooseCandidate(candidates, force);
+        const payload = chooseCandidate(candidates);
 
         if (payload !== null) {
             log(
