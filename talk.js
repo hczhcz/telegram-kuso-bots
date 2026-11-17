@@ -72,7 +72,7 @@ const updateCorpus = () => {
                 return;
             }
 
-            if (payload.text.length > 20 || payload.text.match(config.talkIgnore)) {
+            if (payload.text.length > 30 || payload.text.match(config.talkIgnore)) {
                 last[obj.chat] = payload;
 
                 return;
@@ -113,15 +113,15 @@ const getCandidates = (reply, tag) => {
             const payloads = corpus[tag][i];
 
             if (payloads[0].text) {
-                const rate = fuzzball.ratio(reply.text, payloads[0].text) / 100;
+                const corr = fuzzball.ratio(reply.text, payloads[0].text) / 100;
 
-                if (rate >= 0.25) {
+                if (corr >= config.talkCorrLimit) {
                     if (payloads[1].text && payloads[1].text.length <= reply.text.length * 2) {
-                        candidates.push([rate * rate * payloads[2], payloads[1]]);
+                        candidates.push([corr * corr * payloads[2], payloads[1]]);
                     }
 
                     if (payloads[1].sticker) {
-                        candidates.push([rate * rate * payloads[2], payloads[1]]);
+                        candidates.push([corr * corr * payloads[2], payloads[1]]);
                     }
                 }
             }
@@ -166,7 +166,7 @@ const chooseCandidate = (candidates, force) => {
 const chooseCandidateLlm = (reply, candidates, send) => {
     const lines = [];
 
-    for (let i = 0; i < 100 && lines.length < 10; i += 1) {
+    for (let i = 0; i < config.talkLlmCandidateCount * 10 && lines.length < config.talkLlmCandidateCount; i += 1) {
         const payload = chooseCandidate(candidates, true);
 
         if (payload.text && lines.indexOf(payload.text) < 0) {
@@ -223,7 +223,7 @@ const chooseCandidateLlm = (reply, candidates, send) => {
             messages: [
                 {
                     role: 'system',
-                    content: '选出一条对Q的回复',
+                    content: '哪一条最有可能是Q的后文，给出序号',
                 },
                 {
                     role: 'user',
@@ -288,11 +288,25 @@ bot.on('message', (msg) => {
 
     coolDown[msg.chat.id] = now;
 
-    const force = msg.chat.id === msg.from.id
-        || msg.reply_to_message && msg.reply_to_message.from.username === config.talkUsername
-        || msg.text && msg.text.match(config.talkTrigger);
+    let rate = config.talkRate;
 
-    if (force || Math.random() < config.talkRate) {
+    if (msg.chat.id === msg.from.id) {
+        rate = 1;
+    }
+
+    if (msg.reply_to_message && msg.reply_to_message.from.username === config.talkUsername) {
+        rate = 1;
+    }
+
+    if (msg.text && msg.text.match(config.talkTrigger)) {
+        rate = 1;
+    }
+
+    if (msg.from.username && msg.from.username.toLowerCase().endsWith('bot')) {
+        rate *= config.talkBotRate;
+    }
+
+    if (Math.random() < rate) {
         const reply = {};
 
         if (msg.text) {
